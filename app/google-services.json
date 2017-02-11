@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "431150188033",
+    "firebase_url": "https://encircleme-d35f2.firebaseio.com",
+    "project_id": "encircleme-d35f2",
+    "storage_bucket": "encircleme-d35f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431150188033:android:a8a462fe785c9640",
+        "android_client_info": {
+          "package_name": "com.example.gurpreetsingh.encircleme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431150188033-oiv81tu75lb2or0bl4nr8oss4e71bg7j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqZMwRPT_-Zpan2ix1bfjEpzlAaqCqWTM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431150188033-oiv81tu75lb2or0bl4nr8oss4e71bg7j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
