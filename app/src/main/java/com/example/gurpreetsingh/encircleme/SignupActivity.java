@@ -25,9 +25,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import static android.R.attr.id;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -95,7 +92,7 @@ public class SignupActivity extends AppCompatActivity {
         btnLinkToLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });

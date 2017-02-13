@@ -31,7 +31,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".UserActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".SignupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

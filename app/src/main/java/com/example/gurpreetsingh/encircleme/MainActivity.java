@@ -1,7 +1,6 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -16,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,10 +22,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
 
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "MainActivity";
     private Button btnLogin, btnLinkToSignUp;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
@@ -44,8 +42,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
+
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -61,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
                 // ...
             }
         };
+
+
 
 
         loginInputLayoutEmail = (TextInputLayout) findViewById(R.id.login_input_layout_email);
@@ -80,10 +81,19 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        Button btnLogin = (Button) findViewById(R.id.btn_login);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                startActivity(intent);
+            }
+        });
+
         btnLinkToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
                 startActivity(intent);
             }
         });
@@ -135,17 +145,21 @@ public class LoginActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithEmail", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }else{
-                            Toast.makeText(LoginActivity.this, "You are logged in!",
+                            Toast.makeText(MainActivity.this, "You are logged in!",
                                     Toast.LENGTH_SHORT).show();
                         }
 
                         // ...
+
                     }
                 });
+
     }
+
+
 
     private boolean checkEmail() {
         String email = loginInputEmail.getText().toString().trim();
@@ -194,4 +208,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
         progressBar.setVisibility(View.GONE);
     }
+
+    public void sendMessage(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, UserActivity.class);
+        startActivity(intent);
+    }
+
 }

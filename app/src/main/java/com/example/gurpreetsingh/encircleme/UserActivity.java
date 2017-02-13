@@ -34,7 +34,7 @@ public class UserActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
                     // if user is null launch login activity
-                    startActivity(new Intent(UserActivity.this, LoginActivity.class));
+                    startActivity(new Intent(UserActivity.this, MainActivity.class));
                     finish();
                 }else{
                     helloUserText.setText("Hello  " + user.getEmail() +"");
