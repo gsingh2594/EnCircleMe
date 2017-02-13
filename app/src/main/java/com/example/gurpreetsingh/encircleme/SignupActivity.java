@@ -31,12 +31,11 @@ import static android.R.attr.id;
 
 
 public class SignupActivity extends AppCompatActivity {
-
     private static final String TAG = "SignupActivity";
     private Button btnSignUp, btnLinkToLogIn;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    //private FirebaseAuth.AuthStateListener mAuthListener;
     private EditText signupInputEmail, signupInputPassword;
     private TextInputLayout signupInputLayoutEmail, signupInputLayoutPassword;
 
@@ -46,9 +45,6 @@ public class SignupActivity extends AppCompatActivity {
     private Button buttonSignup;
     private ProgressDialog progressDialog;
 
-
-    //defining firebaseauth object
-    private FirebaseAuth firebaseAuth;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -62,7 +58,7 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         mAuth = FirebaseAuth.getInstance();
-
+        /*
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -77,6 +73,7 @@ public class SignupActivity extends AppCompatActivity {
                 // ...
             }
         };
+        */
 
         signupInputLayoutEmail = (TextInputLayout) findViewById(R.id.signup_input_layout_email);
         signupInputLayoutPassword = (TextInputLayout) findViewById(R.id.signup_input_layout_password);
@@ -88,12 +85,10 @@ public class SignupActivity extends AppCompatActivity {
         btnSignUp = (Button) findViewById(R.id.btn_signup);
         btnLinkToLogIn = (Button) findViewById(R.id.btn_link_login);
 
-
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submitForm();
-
             }
         });
 
@@ -113,10 +108,8 @@ public class SignupActivity extends AppCompatActivity {
      * Validating form
      */
     private void submitForm() {
-
         String email = signupInputEmail.getText().toString().trim();
         String password = signupInputPassword.getText().toString().trim();
-
         if (!checkEmail()) {
             return;
         }
@@ -132,49 +125,49 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this, "Authentication failed.",
+                            Toast.makeText(SignupActivity.this, "Registration failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "You are successfully registered!",
                                     Toast.LENGTH_SHORT).show();
                         }
-
                         // ...
                     }
                 });
-
-        Toast.makeText(getApplicationContext(), "You are successfully Registered !!", Toast.LENGTH_SHORT).show();
     }
 
     private boolean checkEmail() {
         String email = signupInputEmail.getText().toString().trim();
         if (email.isEmpty() || !isEmailValid(email)) {
-
             signupInputLayoutEmail.setErrorEnabled(true);
             signupInputLayoutEmail.setError(getString(R.string.err_msg_email));
             signupInputEmail.setError(getString(R.string.err_msg_required));
             requestFocus(signupInputEmail);
             return false;
+        }else{
+            signupInputLayoutEmail.setErrorEnabled(false);
+            return true;
         }
-        signupInputLayoutEmail.setErrorEnabled(false);
-        return true;
     }
 
     private boolean checkPassword() {
-
         String password = signupInputPassword.getText().toString().trim();
         if (password.isEmpty() || !isPasswordValid(password)) {
-
             signupInputLayoutPassword.setError(getString(R.string.err_msg_password));
             signupInputPassword.setError(getString(R.string.err_msg_required));
             requestFocus(signupInputPassword);
             return false;
+        }else{
+            signupInputLayoutPassword.setErrorEnabled(false);
+            return true;
         }
-        signupInputLayoutPassword.setErrorEnabled(false);
-        return true;
     }
 
     private static boolean isEmailValid(String email) {
@@ -197,6 +190,8 @@ public class SignupActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
+
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -213,6 +208,7 @@ public class SignupActivity extends AppCompatActivity {
                 .build();
     }
 
+    /*
     @Override
     public void onStart() {
         super.onStart();// ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -236,6 +232,7 @@ public class SignupActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.disconnect();
     }
+    */
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
