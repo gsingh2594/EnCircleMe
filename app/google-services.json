@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "431150188033-c6j3d7iogla9cpc18i8gs5gb368rsslu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gurpreetsingh.encircleme",
+            "certificate_hash": "51F30316A24B7A14DD4A78116F287E48374DBFDF"
+          }
+        },
+        {
           "client_id": "431150188033-rl2tv2ihpo72odfpch311vsp5fs6j26b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,7 +37,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4fFXinYZtYYrfjxJS5HCDKW8sjb0BPlo"
+          "current_key": "AIzaSyDkRLHhZuwrDP9G51GBEmvBi61HQ_5oxs4"
         }
       ],
       "services": {

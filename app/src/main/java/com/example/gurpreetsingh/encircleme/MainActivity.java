@@ -82,13 +82,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button btnLogin = (Button) findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
+
+
 
         btnLinkToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
                         }else{
                             Toast.makeText(MainActivity.this, "You are logged in!",
                                     Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                            startActivity(intent);
                         }
 
                         // ...
