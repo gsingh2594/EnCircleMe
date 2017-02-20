@@ -135,6 +135,8 @@ public class SignupActivity extends AppCompatActivity {
                         }else{
                             Toast.makeText(getApplicationContext(), "You are successfully registered!",
                                     Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                            startActivity(intent);
                         }
                         // ...
                     }

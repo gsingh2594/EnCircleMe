@@ -1,8 +1,10 @@
 package com.example.gurpreetsingh.encircleme;
 
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -10,6 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -17,6 +21,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,11 +30,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        ActivityCompat.OnRequestPermissionsResultCallback,
+        GoogleMap.OnPoiClickListener
+{
+
 
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
@@ -37,6 +48,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
+    ImageButton btnAlerts;
+    ImageButton btnMaps;
+    ImageButton btnProfile;
+    ImageButton friends;
+    ImageButton btnSetting;
+
+    //Button
+    public void Profile() {
+        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent time = new Intent(MapsActivity.this, UserActivity.class);
+                startActivity(time);
+            }
+        });
+    }
+
+    public void Alerts(){
+        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent alerts = new Intent(MapsActivity.this, UserActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+    public void Maps(){
+        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent alerts = new Intent(MapsActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+    public void Friends(){
+        friends = (ImageButton) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(MapsActivity.this, UserActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+    public void Settings(){
+        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent setting = new Intent(MapsActivity.this, UserActivity.class);
+                startActivity(setting);
+            }
+        });
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,6 +117,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
+
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+
+
+        //access different activity in ImageButton
+        Alerts();
+        Maps();
+        Friends();
+        Profile();
+        Settings();
     }
 
 
@@ -66,6 +151,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mGoogleMap.setOnPoiClickListener(this);
+
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -84,6 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -127,7 +215,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
         //move map camera
@@ -210,7 +298,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // other 'case' lines to check for other
             // permissions this app might request
         }
+
+
+    }
+
+    @Override
+    public void onPoiClick(PointOfInterest poi) {
+        Toast.makeText(getApplicationContext(), "Clicked: " +
+                        poi.name + "\nPlace ID:" + poi.placeId +
+                        "\nLatitude:" + poi.latLng.latitude +
+                        " Longitude:" + poi.latLng.longitude,
+                Toast.LENGTH_SHORT).show();
     }
 
 
 }
+

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +18,64 @@ public class UserActivity extends AppCompatActivity {
     private TextView helloUserText;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+    ImageButton btnAlerts;
+    ImageButton btnMaps;
+    ImageButton btnProfile;
+    ImageButton friends;
+    ImageButton btnSetting;
+
+    //Button
+    public void Profile() {
+        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent time = new Intent(UserActivity.this, UserActivity.class);
+                startActivity(time);
+            }
+        });
+    }
+
+    public void Alerts(){
+        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent alerts = new Intent(UserActivity.this, UserActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+    public void Maps(){
+        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent alerts = new Intent(UserActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+    public void Friends(){
+        friends = (ImageButton) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(UserActivity.this, UserActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+    public void Settings(){
+        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent setting = new Intent(UserActivity.this, UserActivity.class);
+                startActivity(setting);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +108,11 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
+        Alerts();
+        Maps();
+        Friends();
+        Profile();
+        Settings();
     }
 
     //sign out method
@@ -74,4 +138,6 @@ public class UserActivity extends AppCompatActivity {
             auth.removeAuthStateListener(authListener);
         }
     }
+
+
 }
