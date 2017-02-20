@@ -152,6 +152,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.setOnPoiClickListener(this);
+        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+
 
 
         //Initialize Google Play Services
@@ -162,6 +164,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Location Permission already granted
                 buildGoogleApiClient();
                 mGoogleMap.setMyLocationEnabled(true);
+                mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+                mGoogleMap.getUiSettings().setCompassEnabled(true);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
@@ -170,7 +174,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else {
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
+            mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+            mGoogleMap.getUiSettings().setCompassEnabled(true);
+
         }
+
 
     }
 
