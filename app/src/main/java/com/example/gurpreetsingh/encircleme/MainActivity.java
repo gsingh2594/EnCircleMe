@@ -21,9 +21,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
-
 
     private static final String TAG = "MainActivity";
     private Button btnLogin, btnLinkToSignUp;
@@ -32,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText loginInputEmail, loginInputPassword;
     private TextInputLayout loginInputLayoutEmail, loginInputLayoutPassword;
     private FirebaseAuth.AuthStateListener authListener;
+
+    private FirebaseDatabase database;
+    private DatabaseReference dbRef;
+    private String uid;
+    private User user;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -44,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
-
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -60,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         };
-
-
-
 
         loginInputLayoutEmail = (TextInputLayout) findViewById(R.id.login_input_layout_email);
         loginInputLayoutPassword = (TextInputLayout) findViewById(R.id.login_input_layout_password);
@@ -84,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         Button btnLogin = (Button) findViewById(R.id.btn_login);
 
 
-
         btnLinkToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -142,20 +145,54 @@ public class MainActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithEmail", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             Toast.makeText(MainActivity.this, "You are logged in!",
                                     Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                            startActivity(intent);
+                            // Check if user has already created a profile
+                            loadUserFromDB();
                         }
-
                         // ...
-
                     }
                 });
-
     }
 
+
+    // Obtains the user profile in the DB and load the correct activity
+    private void loadUserFromDB(){
+        database = database.getInstance();
+        uid = auth.getCurrentUser().getUid();
+        Log.d("MainActivity", "loading user from DB\nuid: " + uid);
+        dbRef = database.getReference();
+        dbRef = dbRef.child("users").child(uid);
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                Log.d("MainActivity", "onDataChange\nuser: " + user);
+
+                if(profileIsCreated())
+                {   // user profile is already made
+                    Intent nextActivity = new Intent(MainActivity.this, MapsActivity.class);
+                    startActivity(nextActivity);
+                }else{
+                    // user profile not created yet
+                    Intent createProfile = new Intent(MainActivity.this, CreateUserProfileActivity.class);
+                    startActivity(createProfile);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("MainActivity", "Database Error");
+            }
+
+            private boolean profileIsCreated(){
+                if(user == null) return false;
+                else return true;
+            }
+        });
+    }
 
 
     private boolean checkEmail() {
@@ -173,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkPassword() {
-
         String password = loginInputPassword.getText().toString().trim();
         if (password.isEmpty() || !isPasswordValid(password)) {
 

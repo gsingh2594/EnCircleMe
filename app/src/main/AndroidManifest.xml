@@ -48,7 +48,9 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".CreateUserProfileActivity" />
+        <activity android:name=".UserProfileActivity"></activity>
     </application>
 
 </manifest>

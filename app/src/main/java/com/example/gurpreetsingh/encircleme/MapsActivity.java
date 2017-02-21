@@ -60,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent time = new Intent(MapsActivity.this, UserActivity.class);
+                Intent time = new Intent(MapsActivity.this, UserProfileActivity.class);
                 startActivity(time);
             }
         });
