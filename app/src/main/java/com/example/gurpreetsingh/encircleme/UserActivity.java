@@ -30,7 +30,7 @@ public class UserActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent time = new Intent(UserActivity.this, UserActivity.class);
+                Intent time = new Intent(UserActivity.this, UserProfileActivity.class);
                 startActivity(time);
             }
         });
