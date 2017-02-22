@@ -29,28 +29,21 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDB4vIWp1h9eL1-zh2u8NzNxn1ye3PuWGI" />
+            android:value="AIzaSyCpwovh2iZtqfD07jMsJYFTdX5H-ktMNj8" />
 
         <activity android:name=".MapsActivity" />
         <activity android:name=".UserActivity" />
+        <activity android:name=".CreateUserProfileActivity" />
+        <activity android:name=".UserProfileActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".SignupActivity">
+        //<activity android:name=".SignupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".NavDrawer"
-            android:label="@string/title_activity_nav_drawer"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".CreateUserProfileActivity" />
-        <activity android:name=".UserProfileActivity"></activity>
+
     </application>
 
 </manifest>

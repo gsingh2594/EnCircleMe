@@ -242,10 +242,6 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    public void sendMessage(View view)
-    {
-        Intent intent = new Intent(MainActivity.this, UserActivity.class);
-        startActivity(intent);
-    }
+
 
 }

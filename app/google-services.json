@@ -15,11 +15,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "431150188033-4dqicos058dm264cj7mnspgbob8asm2t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gurpreetsingh.encircleme",
+            "certificate_hash": "b09e9f967f0b38c55e5aa1f430c2b0e1c4913ebe"
+          }
+        },
+        {
+          "client_id": "431150188033-gcsqlfd85hkm2uffi28b3jrm8egjkjbm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gurpreetsingh.encircleme",
+            "certificate_hash": "936793a0a957240d55608438d3a7b2f777aa06e9"
+          }
+        },
+        {
           "client_id": "431150188033-c6j3d7iogla9cpc18i8gs5gb368rsslu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.gurpreetsingh.encircleme",
-            "certificate_hash": "51F30316A24B7A14DD4A78116F287E48374DBFDF"
+            "certificate_hash": "51f30316a24b7a14dd4a78116f287e48374dbfdf"
           }
         },
         {
@@ -27,7 +43,7 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.gurpreetsingh.encircleme",
-            "certificate_hash": "AB83DC5BAAF364CCC203BE0679225B2749E6D957"
+            "certificate_hash": "ab83dc5baaf364ccc203be0679225b2749e6d957"
           }
         },
         {
@@ -37,7 +53,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDkRLHhZuwrDP9G51GBEmvBi61HQ_5oxs4"
+          "current_key": "AIzaSyAAzkBMIh2nZoC6xIAOCJK7zO1Q8LDwGFc"
         }
       ],
       "services": {
