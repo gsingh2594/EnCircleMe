@@ -1,6 +1,5 @@
 package com.example.gurpreetsingh.encircleme;
 
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,7 +20,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,17 +28,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PointOfInterest;
-
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
-        ActivityCompat.OnRequestPermissionsResultCallback,
-        GoogleMap.OnPoiClickListener
-{
-
+        LocationListener {
 
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
@@ -107,7 +99,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -118,15 +109,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, this)
-                .build();
-
-
-        //access different activity in ImageButton
         Alerts();
         Maps();
         Friends();
@@ -151,10 +133,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mGoogleMap=googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mGoogleMap.setOnPoiClickListener(this);
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
-
-
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -164,8 +142,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Location Permission already granted
                 buildGoogleApiClient();
                 mGoogleMap.setMyLocationEnabled(true);
-                mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
-                mGoogleMap.getUiSettings().setCompassEnabled(true);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
@@ -174,12 +150,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else {
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
-            mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
-            mGoogleMap.getUiSettings().setCompassEnabled(true);
-
         }
-
-
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -223,7 +194,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
         //move map camera
@@ -306,19 +277,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // other 'case' lines to check for other
             // permissions this app might request
         }
-
-
-    }
-
-    @Override
-    public void onPoiClick(PointOfInterest poi) {
-        Toast.makeText(getApplicationContext(), "Clicked: " +
-                        poi.name + "\nPlace ID:" + poi.placeId +
-                        "\nLatitude:" + poi.latLng.latitude +
-                        " Longitude:" + poi.latLng.longitude,
-                Toast.LENGTH_SHORT).show();
     }
 
 
 }
-

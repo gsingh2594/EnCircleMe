@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(profileIsCreated())
                 {   // user profile is already made
-                    Intent nextActivity = new Intent(MainActivity.this, MapsActivity.class);
+                    Intent nextActivity = new Intent(MainActivity.this, UserProfileActivity.class);
                     startActivity(nextActivity);
                 }else{
                     // user profile not created yet
