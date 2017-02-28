@@ -1,5 +1,6 @@
 package com.example.gurpreetsingh.encircleme;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Button btnLogin, btnLinkToSignUp;
     private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     private FirebaseAuth auth;
     private EditText loginInputEmail, loginInputPassword;
     private TextInputLayout loginInputLayoutEmail, loginInputLayoutPassword;
@@ -129,14 +131,19 @@ public class MainActivity extends AppCompatActivity {
         loginInputLayoutEmail.setErrorEnabled(false);
         loginInputLayoutPassword.setErrorEnabled(false);
 
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("One moment please...");
+        progressDialog.show();
+        // progressBar.setVisibility(View.VISIBLE);
+
         //authenticate user
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                        progressBar.setVisibility(View.GONE);
+                        // progressBar.setVisibility(View.GONE);
+                        progressDialog.hide();
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
@@ -173,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(profileIsCreated())
                 {   // user profile is already made
-                    Intent nextActivity = new Intent(MainActivity.this, UserProfileActivity.class);
+                    Intent nextActivity = new Intent(MainActivity.this, MapsActivity.class);
                     startActivity(nextActivity);
                 }else{
                     // user profile not created yet
@@ -239,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        progressBar.setVisibility(View.GONE);
     }
 
 

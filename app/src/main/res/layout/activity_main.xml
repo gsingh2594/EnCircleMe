@@ -13,7 +13,6 @@
         android:id="@+id/login_input_layout_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp">
         <EditText
             android:id="@+id/login_input_email"
@@ -30,7 +29,6 @@
         android:id="@+id/login_input_layout_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp">
         <EditText
             android:id="@+id/login_input_password"
@@ -47,25 +45,20 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_login"
-        android:background="?android:attr/statusBarColor"
+        android:background="@color/colorPrimary"
         android:layout_marginTop="40dp"
         android:textColor="@android:color/white"
         android:outlineProvider="bounds"
-        android:textSize="20sp"
-        android:onClick="Signout"/>
+        android:textSize="@dimen/text_large"
+        android:elevation="0dp" />
     <Button android:id="@+id/btn_link_signup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="SIGNUP"
-        android:background="?android:attr/statusBarColor"
+        android:text="NO ACCOUNT? SIGNUP"
+        android:background="@color/colorPrimary"
         android:layout_marginTop="10dp"
         android:textColor="@android:color/white"
         android:textColorLink="@android:color/black"
-        android:textSize="20sp" />
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        style="@style/Widget.AppCompat.ProgressBar" />
+        android:textSize="@dimen/text_large" />
 
 </LinearLayout>
