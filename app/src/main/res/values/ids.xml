@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="edit_bio_text" type="id"></item>
+    <item name="txt_location" type="id" />
+    <item name="txt_attributions" type="id" />
 </resources>

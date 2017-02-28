@@ -22,5 +22,27 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="action_search">Search</string>
+    <string name="attributions">Attributions</string>
+    <string name="formatted_place_data">
+        Name: %1$s\nAddress: %2$s\nPhone: %3$s\nWebsite: %4$s\nRating: %5$s\nId: %6$s\n
+    </string>
+    <string name="open_activity">Open Autocomplete Activity</string>
+    <string name="selected_place">Last Selected Place:</string>
+    <string name="place_details">
+    <![CDATA[
+        <b>%1$s</b>
+        <br/>
+        <i>Place Id: %2$s</i>
+        <br/>
+        Address: %3$s
+        <br/>
+        Phone: %4$s
+        <br/>
+        Website: %5$s
+        <br/>
+        LatLong: %6$s
+    ]]>
+    </string>
 
 </resources>
