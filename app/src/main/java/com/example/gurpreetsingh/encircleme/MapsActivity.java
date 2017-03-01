@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +55,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ImageButton btnProfile;
     ImageButton friends;
     ImageButton btnSetting;
-    Button open_button;
 
 
     //Button

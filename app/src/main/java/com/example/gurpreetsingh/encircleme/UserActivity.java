@@ -47,7 +47,7 @@ public class UserActivity extends AppCompatActivity {
         btnAlerts.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent alerts = new Intent(UserActivity.this, UserActivity.class);
+                Intent alerts = new Intent(UserActivity.this, PlacePickerActivity.class);
                 startActivity(alerts);
             }
         });
@@ -67,7 +67,7 @@ public class UserActivity extends AppCompatActivity {
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent offMaps = new Intent(UserActivity.this, UserActivity.class);
+                Intent offMaps = new Intent(UserActivity.this, SearchActivity.class);
                 startActivity(offMaps);
             }
         });

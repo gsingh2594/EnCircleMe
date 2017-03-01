@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,69 @@ public class SearchActivity extends SampleActivityBase {
     private TextView mPlaceDetailsText;
 
     private TextView mPlaceAttribution;
+
+    ImageButton btnAlerts;
+    ImageButton btnMaps;
+    ImageButton btnProfile;
+    ImageButton friends;
+    ImageButton btnSetting;
+
+
+    //Button
+    public void Profile() {
+        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent time = new Intent(SearchActivity.this, UserProfileActivity.class);
+                startActivity(time);
+            }
+        });
+    }
+
+    public void Alerts() {
+        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(SearchActivity.this, PlacePickerActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Maps() {
+        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(SearchActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Friends() {
+        friends = (ImageButton) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(SearchActivity.this, SearchActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+
+    public void Settings() {
+        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent setting = new Intent(SearchActivity.this, UserActivity.class);
+                startActivity(setting);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

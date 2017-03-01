@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -14,6 +15,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+
 
 
 public class PlacePickerActivity extends AppCompatActivity {
@@ -25,6 +27,68 @@ public class PlacePickerActivity extends AppCompatActivity {
             new LatLng(40.758879, -73.985110),
             new LatLng(40.758879, -73.985110));
 
+    ImageButton btnAlerts;
+    ImageButton btnMaps;
+    ImageButton btnProfile;
+    ImageButton friends;
+    ImageButton btnSetting;
+
+
+    //Button
+    public void Profile() {
+        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent time = new Intent(PlacePickerActivity.this, UserProfileActivity.class);
+                startActivity(time);
+            }
+        });
+    }
+
+    public void Alerts() {
+        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(PlacePickerActivity.this, PlacePickerActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Maps() {
+        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(PlacePickerActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Friends() {
+        friends = (ImageButton) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(PlacePickerActivity.this, SearchActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+
+    public void Settings() {
+        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent setting = new Intent(PlacePickerActivity.this, UserActivity.class);
+                startActivity(setting);
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
