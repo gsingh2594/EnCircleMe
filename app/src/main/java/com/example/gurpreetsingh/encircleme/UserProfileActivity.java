@@ -174,4 +174,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             showEditDialog();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 }

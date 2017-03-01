@@ -144,6 +144,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
+
+
         Alerts();
         Maps();
         Friends();
@@ -375,6 +377,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         "\nLatitude:" + poi.latLng.latitude +
                         " Longitude:" + poi.latLng.longitude,
                 Toast.LENGTH_LONG).show();
+    }
+
+    public void onBackPressed() {
+        //put the AlertDialog code here
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Would you like to logout?")
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        startActivity(new Intent(MapsActivity.this, MainActivity.class));
+                        finish();
+                    }
+                }).create().show();
     }
 
 }
