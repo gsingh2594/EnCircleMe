@@ -4,17 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -36,7 +30,7 @@ public class UserActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent time = new Intent(UserActivity.this, UserProfileActivity.class);
+                Intent time = new Intent(UserActivity.this, UserActivity.class);
                 startActivity(time);
             }
         });
@@ -87,8 +81,6 @@ public class UserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -122,29 +114,7 @@ public class UserActivity extends AppCompatActivity {
         Profile();
         Settings();
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_searchoverlay, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_search) {
-            // Method #3
-            try {
-                Intent intent = new PlaceAutocomplete.IntentBuilder
-                        (PlaceAutocomplete.MODE_OVERLAY)
-                        .build(UserActivity.this);
-            } catch (GooglePlayServicesRepairableException |
-                    GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
     //sign out method
     public void signOutButton() {
         auth.signOut();
