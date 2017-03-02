@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private Button btnLogin, btnLinkToSignUp;
+    private Button btnLogin, btnLinkToSignUp, btnResetPassword;
     private ProgressBar progressBar;
     private ProgressDialog progressDialog;
     private FirebaseAuth auth;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnLinkToSignUp = (Button) findViewById(R.id.btn_link_signup);
-
+        btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btnLogin = (Button) findViewById(R.id.btn_login);
 
 
         btnLinkToSignUp.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +97,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ResetPasswordActivity.class));
+            }
+        });
+
     }
 
     @Override

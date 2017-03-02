@@ -30,6 +30,7 @@
             android:value="AIzaSyCpwovh2iZtqfD07jMsJYFTdX5H-ktMNj8" />
 
         <activity android:name=".MapsActivity" />
+        <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".UserActivity" />
         <activity android:name=".CreateUserProfileActivity" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".UserProfileActivity" />
