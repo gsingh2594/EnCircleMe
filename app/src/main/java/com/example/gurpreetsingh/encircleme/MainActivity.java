@@ -248,6 +248,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 
 }

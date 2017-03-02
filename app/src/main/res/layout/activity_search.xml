@@ -25,26 +25,30 @@
         android:paddingTop="@dimen/fab_margin">
 
         <TextView
-            android:text="intro message"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Search for places"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:textSize="24sp"
+            android:textColor="@color/colorPrimaryDark" />
 
         <Button
             android:id="@+id/open_button"
-            android:text="@string/open_activity"
+            android:text="Search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fab_margin"
             android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary" />
 
         <TextView
             android:text="@string/selected_place"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textStyle="normal|bold" />
 
         <TextView
             android:id="@+id/place_details"
