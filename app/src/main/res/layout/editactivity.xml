@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="0dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Create a circle" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="396dp"
+        android:layout_weight="1.01">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+
+            <EditText
+                android:id="@+id/eventname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Event Name"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="@+id/textView3"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/about"
+                android:background="@color/colorPrimaryDark"
+                android:onClick="setDate"
+                android:text="Select Date"
+                android:textColor="@android:color/white" />
+
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:onClick="setTime"
+                android:text="Select Time"
+                android:textColor="@android:color/white"
+                android:layout_below="@+id/timePicker1"
+                android:layout_alignParentEnd="@+id/textView4"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="6dp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button1"
+                android:layout_alignBottom="@+id/button1"
+                android:layout_alignParentEnd="true"
+                android:text="Date selected"
+                android:textAlignment="textStart"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button2"
+                android:layout_alignBottom="@+id/button2"
+                android:layout_alignParentEnd="true"
+                android:text="Time selected"
+                android:textAlignment="textStart"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/duration"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:hint="Duration"
+                android:layout_below="@+id/eventname"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:id="@+id/about"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_weight="1.49"
+                android:ems="10"
+                android:hint="About"
+                android:inputType="textMultiLine"
+                android:textAlignment="viewStart"
+                android:layout_below="@+id/duration"
+                android:layout_alignParentStart="true" />
+
+
+            <TimePicker
+                android:id="@+id/timePicker1"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/button1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:headerBackground="@color/colorPrimaryDark"
+                android:numbersSelectorColor="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date Selected:"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:layout_alignBaseline="@+id/button1"
+                android:layout_alignBottom="@+id/button1"
+                android:layout_alignEnd="@+id/duration" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time Selected:"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:layout_alignBaseline="@+id/button2"
+                android:layout_alignBottom="@+id/button2"
+                android:layout_alignEnd="@+id/textView6" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/about"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimary"
+        android:text="Create" />
+
+</LinearLayout>

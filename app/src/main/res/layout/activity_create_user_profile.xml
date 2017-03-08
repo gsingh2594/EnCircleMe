@@ -50,6 +50,18 @@
             android:layout_height="wrap_content"
             android:inputType="text"/>
 
+        <CheckBox android:id="@+id/checkbox_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Music"
+            android:onClick="onCheckboxClicked"/>
+
+        <CheckBox android:id="@+id/checkbox_arts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Arts and crafts"
+            android:onClick="onCheckboxClicked"/>
+
         <Button
             android:id="@+id/saveNameAndPhone"
             android:text="Save"

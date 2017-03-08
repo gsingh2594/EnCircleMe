@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private TextInputLayout loginInputLayoutEmail, loginInputLayoutPassword;
     private FirebaseAuth.AuthStateListener authListener;
 
+
+
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
     private String uid;
@@ -165,10 +167,15 @@ public class MainActivity extends AppCompatActivity {
                             // Check if user has already created a profile
                             loadUserFromDB();
                         }
+
                         // ...
                     }
                 });
+
     }
+
+
+
 
 
     // Obtains the user profile in the DB and load the correct activity

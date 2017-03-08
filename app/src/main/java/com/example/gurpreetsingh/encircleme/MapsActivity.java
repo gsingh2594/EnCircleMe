@@ -1,6 +1,7 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -18,12 +21,15 @@ import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,6 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationListener, GoogleMap.OnPoiClickListener {
 
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = null;
+    private static final int EDIT_REQUEST = 1;
     private static final int REQUEST_SELECT_PLACE = 1000;
     private PlaceAutocompleteFragment mAutoCompleteFragment;
     public static final String TAG = "SampleActivityBase";
@@ -60,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ImageButton btnProfile;
     ImageButton friends;
     ImageButton btnSetting;
-
+    ImageButton btnSearch;
 
     //Button
     public void Profile() {
@@ -117,45 +124,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-/**
-    public void Search() {
-        open_button = (Button) findViewById(R.id.open_button);
-        open_button.setOnClickListener(new View.OnClickListener() {
+
+   /* public void Search() {
+        btnSearch = (ImageButton) findViewById(R.id.search);
+        btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent alerts = new Intent(MapsActivity.this, UserActivity.class);
+                Intent alerts = new Intent(MapsActivity.this, mAutoCompleteFragment);
                 startActivity(alerts);
             }
         });
-    }
-*/
+    }*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        /**
-         * Button openButton = (Button) findViewById(R.id.button3);
-        openButton.setOnClickListener(new View.OnClickListener() {
+        /*btnSearch = (ImageButton) findViewById(R.id.search);
+        btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openAutocompleteActivity();
             }
-        });
+        });*/
 
-         */
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
-
-
 
         Alerts();
         Maps();
         Friends();
         Profile();
         Settings();
+        //Search();
+
+
         mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         mAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -174,7 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng latLng = place.getLatLng();
                 mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
 
             @Override
@@ -185,9 +191,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    /*private void openAutocompleteActivity() {
+        try {
+            // The autocomplete activity requires Google Play Services to be available. The intent
+            // builder checks this and throws an exception if it is not the case.
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                    .build(this);
+            startActivityForResult(intent, 1);
+        } catch (GooglePlayServicesRepairableException e) {
+            // Indicates that Google Play Services is either not installed or not up to date. Prompt
+            // the user to correct the issue.
+            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
+                    0 *//* requestCode *//*).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // Indicates that Google Play Services is not available and the problem is not easily
+            // resolvable.
+            String message = "Google Play Services is not available: " +
+                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                // Get the user's selected place from the Intent.
+                Place place = PlaceAutocomplete.getPlace(this, data);
+
+                *//*String placeDetailsStr = place.getName() + "\n"
+                        + place.getId() + "\n"
+                        + place.getLatLng().toString() + "\n"
+                        + place.getAddress() + "\n"
+                        + place.getAttributions();
+                //mAutoCompleteFragment.setText(placeDetailsStr);*//*
+                String placeName = (String) place.getName();
+                String placeAddress = (String) place.getAddress();
+                LatLng latLng = place.getLatLng();
+                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeAddress));
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+            }
+        }
+        else switch(requestCode) {
+                case (EDIT_REQUEST) :
+                    if (resultCode == Activity.RESULT_OK) {
+                MarkerOptions markerOptions = data.getParcelableExtra("marker");
+                mGoogleMap.addMarker(markerOptions);
+
+            }
+        }
+    }
+*/
 
 
-/**
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_searchoverlay, menu);
@@ -213,7 +275,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return super.onOptionsItemSelected(item);
     }
-*/
+
     @Override
     public void onPause() {
         super.onPause();
@@ -229,8 +291,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+        mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.setOnPoiClickListener(this);
-        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
+        mGoogleMap.setOnPoiClickListener(this);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -248,6 +312,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
+
+        mGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(final LatLng latLng) {
+                Intent edit = new Intent(MapsActivity.this, EditActivity.class);
+                edit.putExtra("location", latLng);
+                MapsActivity.this.startActivityForResult(edit, EDIT_REQUEST);
+
+/*                Circle circle = mGoogleMap.addCircle(new CircleOptions()
+                        .center(latLng)
+                        .radius(300)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(Color.TRANSPARENT));*/
+
+            }
+        });
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -286,7 +366,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 /**
@@ -304,8 +383,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
-
-
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -335,7 +412,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         })
                         .create()
                         .show();
-
 
             } else {
                 // No explanation needed, we can request the permission.
@@ -381,19 +457,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
     @Override
     public void onPoiClick(PointOfInterest poi) {
-        Toast.makeText(getApplicationContext(), "Clicked: " +
-                        poi.name + //"\nPlace ID:" + poi.placeId +
+        Toast.makeText(getApplicationContext(), poi.name + //"\nPlace ID:" + poi.placeId +
                         "\nLatitude:" + poi.latLng.latitude +
                         " Longitude:" + poi.latLng.longitude,
                 Toast.LENGTH_LONG).show();
     }
 
     public void onBackPressed() {
+        startActivity(new Intent(this, MapsActivity.class));
+
         //put the AlertDialog code here
-        new AlertDialog.Builder(this)
+        /*new AlertDialog.Builder(this)
                 .setTitle("Logout")
                 .setMessage("Would you like to logout?")
                 .setNegativeButton("No", null)
@@ -402,7 +478,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(new Intent(MapsActivity.this, MainActivity.class));
                        //finish();
                     }
-                }).create().show();
+                }).create().show();*/
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (EDIT_REQUEST) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    MarkerOptions markerOptions = data.getParcelableExtra("marker");
+                    mGoogleMap.addMarker(markerOptions);
+                }
+                break;
+            }
+        }
     }
 
 }
