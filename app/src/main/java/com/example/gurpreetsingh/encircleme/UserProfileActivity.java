@@ -75,7 +75,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent offMaps = new Intent(UserProfileActivity.this, SearchActivity.class);
+                Intent offMaps = new Intent(UserProfileActivity.this, FriendsActivity.class);
                 startActivity(offMaps);
             }
         });
@@ -103,7 +103,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
-        dbRef = database.getReference();
+        dbRef = database.getReference();        // root directory of the DB
         dbUserRef = dbRef.child("users").child(uid);
 
         profileName = (TextView) findViewById(R.id.user_profile_name);

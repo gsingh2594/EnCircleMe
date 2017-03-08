@@ -101,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent offMaps = new Intent(MapsActivity.this, SearchActivity.class);
+                Intent offMaps = new Intent(MapsActivity.this, FriendsActivity.class);
                 startActivity(offMaps);
             }
         });

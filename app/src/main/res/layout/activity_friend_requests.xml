@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar_relative_layout">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/friend_requests_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/friends_requests_listview_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_relative_layout"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+        <ListView
+            android:id="@+id/friend_requests_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+
+        <ImageView
+            android:id="@+id/neutral_face_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/neutral_face_icon"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/no_users_found_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/neutral_face_icon"
+            android:text="@string/no_friend_requests_found"
+            android:textSize="@dimen/text_large"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:paddingTop="150dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+</RelativeLayout>

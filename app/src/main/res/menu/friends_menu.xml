@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search_for_friends"
+        android:icon="@drawable/add_user_icon"
+        android:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:title="search for friends"/>
+    <item
+        android:id="@+id/friend_requests_icon"
+        android:icon="@drawable/add_alert_icon"
+        android:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:title="friend requests icon"/>
+
+</menu>

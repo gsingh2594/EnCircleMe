@@ -32,19 +32,38 @@
         <activity android:name=".MapsActivity" />
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".UserActivity" />
-        <activity android:name=".CreateUserProfileActivity" android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".CreateUserProfileActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".MainActivity" android:windowSoftInputMode="adjustPan">
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignupActivity"  android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".SignupActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".PlacePickerActivity" />
+        <activity
+            android:name=".AddFriendSearchActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
 
-        <activity android:name=".PlacePickerActivity"></activity>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/add_friend_searchable" />
+        </activity>
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".ViewOtherUserProfileActivity" />
+        <activity android:name=".FriendRequestsActivity"></activity>
     </application>
 
 </manifest>
