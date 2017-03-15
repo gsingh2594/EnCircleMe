@@ -47,6 +47,9 @@
 
     <string name="add_friend_search_hint">Enter a username</string>
     <string name="no_users_found">Sorry. No users were found!</string>
-    <string name="no_friend_requests_found">No new friend requests... How about adding a friend instead?</string>
+    <string name="no_friend_requests_found">No friend requests found</string>
+    <string name="find_friends_instead">How about adding a friend instead?</string>
+    <string name="no_friends">Hmm... no friends yet!</string>
+    <string name="find_friends">Find some friends</string>
 
 </resources>

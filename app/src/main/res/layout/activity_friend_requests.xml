@@ -19,7 +19,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/friends_requests_listview_parent"
+        android:id="@+id/friend_requests_listview_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar_relative_layout"
@@ -32,26 +32,52 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </ListView>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/neutral_face_icon"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:src="@drawable/neutral_face_icon"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/no_users_found_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/neutral_face_icon"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             android:text="@string/no_friend_requests_found"
             android:textSize="@dimen/text_large"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:paddingTop="150dp"
-            android:visibility="gone" />
-    </RelativeLayout>
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/find_friends_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:text="@string/find_friends_instead"
+            android:textSize="@dimen/text_large"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/find_friends_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/find_friends"
+            android:textSize="@dimen/text_large"
+            android:textColor="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:visibility="gone"/>
+    </LinearLayout>
 </RelativeLayout>

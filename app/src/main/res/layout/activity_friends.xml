@@ -29,11 +29,47 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
         <ListView
-            android:id="@+id/friends_list"
+            android:id="@+id/friends_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </ListView>
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/neutral_face_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/neutral_face_icon"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/no_friends_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_friends"
+            android:textSize="@dimen/text_large"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/find_friends_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/find_friends"
+            android:textSize="@dimen/text_large"
+            android:textColor="@android:color/white"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:visibility="gone"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +138,6 @@
             android:layout_weight="0.2"
             android:layout_width="78dp"
             android:layout_height="60dp" />
-
     </LinearLayout>
 
 </RelativeLayout>

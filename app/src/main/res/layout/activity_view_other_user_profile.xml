@@ -65,7 +65,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="16dp"
                         android:layout_marginTop="16dp"
-                        android:src="@drawable/add_user_icon"/>
+                        android:src="@drawable/add_user_icon"
+                        android:visibility="gone"/>
 
                     <!-- views to show if already friends -->
                     <ImageView

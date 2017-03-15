@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -137,6 +138,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                     }
                     textViewNoResults.setVisibility(View.GONE);
                     sadFaceIcon.setVisibility(View.GONE);
+
                     SimpleAdapter simpleAdapter = new SimpleAdapter(AddFriendSearchActivity.this, resultsList,
                             R.layout.friends_search_list_items, new String[]{"username"}, new int[]{R.id.friends_search_text_view} );
                     listView.setAdapter(simpleAdapter);
@@ -180,9 +182,9 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                     Log.d("creating text view", "textView id has been set");
                     listView.addFooterView(textView);
                     */
+                    listView.setVisibility(View.GONE);
                     textViewNoResults.setVisibility(View.VISIBLE);
                     sadFaceIcon.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.GONE);
                 }
             }
 

@@ -18,18 +18,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class ViewOtherUserProfileActivity extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseAuth auth;
     DatabaseReference dbRef;
     DatabaseReference dbUserRef;
-
-    private TextView profileName;
-    private TextView profileBio;
-    private ImageView addFriendIcon;
+    DatabaseReference friendsRef;
 
     String userID;
     String currentUserID;
+
+    private TextView profileName;
+    private TextView profileBio;
+    private ImageView addFriendIcon, alreadyFriendsIcon;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +49,55 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
 
         profileName = (TextView) findViewById(R.id.user_profile_name);
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
-        addFriendIcon = (ImageView) findViewById(R.id.add_friend_icon);
 
+        addFriendIcon = (ImageView) findViewById(R.id.add_friend_icon);
+        alreadyFriendsIcon = (ImageView) findViewById(R.id.already_friends_icon);
+
+
+
+        // Load user profile from DB
+        dbUserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                profileName.setText(user.getName());
+                if(user.getBio()!=null)
+                    profileBio.setText(user.getBio());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(ViewOtherUserProfileActivity.this, "Data could not be retrieved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Check if current user is already friends with this user
+        friendsRef = database.getReference("friends");
+        friendsRef.child(currentUserID).orderByKey().equalTo(userID)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists())
+                        // Current user is already friends with this user
+                        showAsFriend();
+                    else
+                        // Current user is not friends with this user -> Show as addable friend
+                        showAsAddableFriend();
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(ViewOtherUserProfileActivity.this, "Database error"
+                            + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+    }
+
+
+
+    // Method to display the user profile with an addFriendIcon
+    private void showAsAddableFriend(){
+        addFriendIcon.setVisibility(View.VISIBLE);
+        // add friend option when clicked
         addFriendIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,24 +124,54 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                 sendRequestDialogBuilder.show();
             }
         });
+    }
 
-        dbUserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                profileName.setText(user.getName());
-                if(user.getBio()!=null)
-                    profileBio.setText(user.getBio());
-            }
 
+
+    // Method to display user profile as a current friend, and option to remove friend
+    private void showAsFriend(){
+        alreadyFriendsIcon.setVisibility(View.VISIBLE);
+        // remove friend option when clicked
+        alreadyFriendsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(ViewOtherUserProfileActivity.this, "Data could not be retrieved", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                final AlertDialog.Builder deleteFriendDialog = new AlertDialog.Builder(ViewOtherUserProfileActivity.this);
+                deleteFriendDialog.setMessage("Do you want to remove this friend?");
+                deleteFriendDialog.setNegativeButton("Keep", new AlertDialog.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // User keeps friend -> do nothing
+                    }
+                });
+                deleteFriendDialog.setPositiveButton("Remove", new AlertDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // User removes friend
+                        // multipath update to delete the user from both user's friends locations in DB
+                        HashMap<String, Object>deleteFriendUpdates = new HashMap<String, Object>();
+                        deleteFriendUpdates.put(currentUserID + "/" + userID, null);
+                        deleteFriendUpdates.put(userID + "/" + currentUserID, null);
+
+                        friendsRef.updateChildren(deleteFriendUpdates, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                Toast.makeText(ViewOtherUserProfileActivity.this, "Friend removed!", Toast.LENGTH_LONG).show();
+
+                                // Change the icon to show that the user is no longer a friend
+                                alreadyFriendsIcon.setVisibility(View.GONE);
+                                addFriendIcon.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+                });
+                deleteFriendDialog.show();
             }
         });
     }
 
 
+
+    // Method to update the friend_requests in the DB
     private void sendFriendRequest(){
         final DatabaseReference friendRequestsRef = database.getReference("friend_requests");
         Log.d("onDataChange", "about to check if friend request exists");
@@ -101,22 +182,17 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     // Request already exists -> Inform user with an alert dialog
-                    TextView textView = new TextView(ViewOtherUserProfileActivity.this);
-                    textView.setText("You have already sent this user a friend request!");
-                    textView.setTextSize(R.dimen.text_large);
-                    //textView.setPadding(65,10,0,0);
-
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(ViewOtherUserProfileActivity.this);
                     alertBuilder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     });
-                    alertBuilder.setView(textView);
+                    alertBuilder.setMessage("You have already sent this user a friend request!");
                     alertBuilder.show();
                 }
-                else{ // No request exists -> Save request in DB
-
+                else{
+                    // No request exists -> Save request in DB
                     // Retrieve current user's username
                     DatabaseReference usernamesRef = database.getReference("usernames");
                     Log.d("usernamesRef.toString()", usernamesRef.toString());
