@@ -7,48 +7,32 @@
     android:weightSum="1">
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:background="?attr/colorPrimary"
-        android:elevation="0dp"
-        android:minHeight="0dp"
-        android:padding="0dp"
-        android:paddingBottom="0dp"
-        android:paddingEnd="0dp"
-        android:paddingTop="0dp"
-        android:theme="?attr/actionBarTheme" />
-
     <fragment
         android:id="@+id/autocomplete_fragment"
         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_above="@+id/map"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="0dp" />
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toStartOf="@+id/search" />
 
-    <!--<ImageButton
+    <ImageButton
         android:id="@+id/search"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_alignBottom="@+id/toolbar3"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
         android:elevation="0dp"
         android:minHeight="0dp"
         android:padding="15dp"
         android:scaleType="centerCrop"
-        android:src="?android:attr/actionModeWebSearchDrawable" />-->
+        android:src="?android:attr/actionModeWebSearchDrawable"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
 
     <fragment
         android:layout_width="match_parent"
@@ -71,61 +55,65 @@
         android:baselineAligned="false"
         android:weightSum="1">
 
-        <ImageButton
+        <Button
             android:id="@+id/btnProfile"
-            android:src="@drawable/profile"
-            android:scaleType="centerCrop"
+            android:layout_width="20dp"
+            android:layout_height="60dp"
+            android:layout_weight="1.31"
             android:background="@color/colorPrimary"
-            android:padding="20dp"
-            android:minHeight="0dp"
-            android:elevation="0dp"
-            android:layout_width="78dp"
-            android:layout_height="60dp" />
+            android:drawableTop="@drawable/profile"
+            android:padding="10dp"
+            android:text="Profile"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/friends"
-            android:background="@color/colorPrimary"
-            android:src="@drawable/friends"
-            android:scaleType="centerCrop"
-            android:padding="15dp"
-            android:elevation="0dp"
-            android:minHeight="0dp"
-            android:layout_weight="0.55"
             android:layout_width="78dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            android:layout_weight="0"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/friends"
+            android:padding="10dp"
+            android:text="Friends"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btnMaps"
-            android:background="@color/colorPrimary"
-            android:src="@drawable/map"
-            android:scaleType="centerCrop"
-            android:padding="20dp"
-            android:elevation="0dp"
-            android:minHeight="0dp"
             android:layout_width="78dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_map_black_24dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:text="Maps"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btnAlerts"
-            android:src="@drawable/alerts"
-            android:scaleType="centerCrop"
-            android:background="@color/colorPrimary"
-            android:padding="20dp"
-            android:elevation="0dp"
-            android:minHeight="0dp"
             android:layout_width="78dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/alerts"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:text="Alerts"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/setting"
-            android:src="@drawable/settings"
-            android:scaleType="centerCrop"
-            android:background="@color/colorPrimary"
-            android:padding="20dp"
-            android:elevation="0dp"
-            android:minHeight="0dp"
             android:layout_width="78dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_settings_black_24dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:text="Settings"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

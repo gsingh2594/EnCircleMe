@@ -22,6 +22,7 @@ public class PlacePickerActivity extends AppCompatActivity {
     private static final int PLACE_PICKER_REQUEST = 1;
     private TextView mName;
     private TextView mAddress;
+    private TextView mLatLng;
     private TextView mAttributions;
     private static final LatLngBounds newyork = new LatLngBounds(
             new LatLng(40.758879, -73.985110),
@@ -95,6 +96,7 @@ public class PlacePickerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_place_picker);
         mName = (TextView) findViewById(R.id.textView);
         mAddress = (TextView) findViewById(R.id.textView2);
+        mLatLng = (TextView) findViewById(R.id.textView8);
         mAttributions = (TextView) findViewById(R.id.textView3);
         Button pickerButton = (Button) findViewById(R.id.pickerButton);
         pickerButton.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +126,7 @@ public class PlacePickerActivity extends AppCompatActivity {
             final Place place = PlacePicker.getPlace(this, data);
             final CharSequence name = place.getName();
             final CharSequence address = place.getAddress();
+            final String latlng = place.getLatLng().toString();
             String attributions = (String) place.getAttributions();
             if (attributions == null) {
                 attributions = "";
@@ -131,7 +134,9 @@ public class PlacePickerActivity extends AppCompatActivity {
 
             mName.setText(name);
             mAddress.setText(address);
+            mLatLng.setText(latlng);
             mAttributions.setText(Html.fromHtml(attributions));
+
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -1,9 +1,9 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -29,11 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FriendsActivity extends AppCompatActivity {
-    ImageButton btnAlerts;
-    ImageButton btnMaps;
-    ImageButton btnProfile;
-    ImageButton friends;
-    ImageButton btnSetting;
+    Button btnAlerts;
+    Button btnMaps;
+    Button btnProfile;
+    Button friends;
+    Button btnSetting;
 
     ImageView neutralFace;
     TextView noFriendsTextView;
@@ -174,7 +173,7 @@ public class FriendsActivity extends AppCompatActivity {
 
 
     public void Profile() {
-        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -185,7 +184,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public void Alerts() {
-        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
         btnAlerts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,7 +195,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public void Maps() {
-        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps = (Button) findViewById(R.id.btnMaps);
         btnMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,7 +206,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public void Friends() {
-        friends = (ImageButton) findViewById(R.id.friends);
+        friends = (Button) findViewById(R.id.friends);
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,7 +217,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public void Settings() {
-        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting = (Button) findViewById(R.id.setting);
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,5 +1,7 @@
 package com.example.gurpreetsingh.encircleme;
 
+import java.util.ArrayList;
+
 /**
  * Created by Brayden on 2/18/2017.
  */
@@ -9,14 +11,16 @@ public class User {
     private String phone;
     private String username;
     private String bio;
+    private ArrayList<String> interests;
 
     // default constructor required for firebase database
     public User(){}
 
-    public User(String name, String phone, String username){
+    public User(String name, String phone, String username, ArrayList<String> interestsList){
         this.name = name;
         this.phone = phone;
         this.username = username;
+        this.interests = interestsList;
     }
 
     public void setName(String name){
@@ -47,5 +51,13 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public ArrayList<String> getInterests(){
+        return interests;
+    }
+
+    public void setInterests(ArrayList<String> interestsList){
+        this.interests = interestsList;
     }
 }

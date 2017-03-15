@@ -2,12 +2,17 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +30,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private DatabaseReference dbRef;
     private DatabaseReference dbUserRef;
     private User user;
+    private ImageView imageView;
 
     private TextView profileName;
     private TextView profileBio;
@@ -32,15 +38,15 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     private AlertDialog editBioDialog;
 
-    ImageButton btnAlerts;
-    ImageButton btnMaps;
-    ImageButton btnProfile;
-    ImageButton friends;
-    ImageButton btnSetting;
+    Button btnAlerts;
+    Button btnMaps;
+    Button btnProfile;
+    Button friends;
+    Button btnSetting;
 
     //Button
     public void Profile() {
-        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +57,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void Alerts(){
-        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
         btnAlerts.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -61,7 +67,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         });
     }
     public void Maps(){
-        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps = (Button) findViewById(R.id.btnMaps);
         btnMaps.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -71,7 +77,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         });
     }
     public void Friends(){
-        friends = (ImageButton) findViewById(R.id.friends);
+        friends = (Button) findViewById(R.id.friends);
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +87,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         });
     }
     public void Settings(){
-        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting = (Button) findViewById(R.id.setting);
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,14 +97,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        imageView = (ImageView) findViewById(android.R.id.icon);
 
         auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
@@ -109,6 +112,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         profileName = (TextView) findViewById(R.id.user_profile_name);
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
         editIcon = (ImageView) findViewById(R.id.edit_bio_icon);
+
         editIcon.setOnClickListener(this);
 
         dbUserRef.addValueEventListener(new ValueEventListener() {
@@ -132,6 +136,30 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Friends();
         Profile();
         Settings();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Bitmap bitmap = getPath(data.getData());
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
+    private Bitmap getPath(Uri uri) {
+
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(column_index);
+        // cursor.close();
+        // Convert file path into bitmap image using below line.
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+        return bitmap;
     }
 
     public void showEditDialog(){
@@ -173,6 +201,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         if(v == editIcon){
             showEditDialog();
         }
+    }
+
+    public void selectImage(View view) {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
     }
 
     /*

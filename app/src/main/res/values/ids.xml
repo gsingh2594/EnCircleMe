@@ -3,4 +3,8 @@
     <item name="edit_bio_text" type="id"></item>
     <item name="txt_location" type="id" />
     <item name="txt_attributions" type="id" />
+    <item name="text_profile" type="id" />
+    <item name="text_friends" type="id" />
+    <item name="text_map" type="id" />
+    <item name="text_alerts" type="id" />
 </resources>

@@ -12,15 +12,16 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
+import com.firebase.geofire.GeoFire;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,6 +42,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -62,16 +65,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    ImageButton btnAlerts;
-    ImageButton btnMaps;
-    ImageButton btnProfile;
-    ImageButton friends;
-    ImageButton btnSetting;
+    Button btnAlerts;
+    Button btnMaps;
+    Button btnProfile;
+    Button friends;
+    Button btnSetting;
     ImageButton btnSearch;
+
+    private TextView textFavorites;
+    private TextView textSchedules;
+    private TextView textMusic;
+
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
+    GeoFire geoFire = new GeoFire(ref);
+
 
     //Button
     public void Profile() {
-        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void Alerts() {
-        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
         btnAlerts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void Maps() {
-        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps = (Button) findViewById(R.id.btnMaps);
         btnMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void Friends() {
-        friends = (ImageButton) findViewById(R.id.friends);
+        friends = (Button) findViewById(R.id.friends);
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void Settings() {
-        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting = (Button) findViewById(R.id.setting);
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,13 +152,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        /*btnSearch = (ImageButton) findViewById(R.id.search);
+
+        btnSearch = (ImageButton) findViewById(R.id.search);
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openAutocompleteActivity();
             }
-        });*/
+        });
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
@@ -173,12 +185,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         + place.getId() + "\n"
                         + place.getLatLng().toString() + "\n"
                         + place.getAddress() + "\n"
-                        + place.getAttributions();
+                        + place.getAttributions() + "\n"
+                        + place.getPhoneNumber() + "\n"
+                        + place.getWebsiteUri() + "\n"
+                        + place.getRating();
                 mAutoCompleteFragment.setText(placeDetailsStr);
 
                 String placeName = (String) place.getName();
+                String placeAddress = (String) place.getAddress();
+                String placeNumber = (String) place.getPhoneNumber();
+                String placeUri = place.getWebsiteUri().toString();
+                String placeRating = Float.toString(place.getRating());
                 LatLng latLng = place.getLatLng();
-                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName));
+                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeRating + " " + placeUri/*placeAddress + " Phone:" + placeNumber*/));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
@@ -191,18 +210,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    /*private void openAutocompleteActivity() {
+    private void openAutocompleteActivity() {
         try {
             // The autocomplete activity requires Google Play Services to be available. The intent
             // builder checks this and throws an exception if it is not the case.
             Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                     .build(this);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
         } catch (GooglePlayServicesRepairableException e) {
             // Indicates that Google Play Services is either not installed or not up to date. Prompt
             // the user to correct the issue.
             GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
-                    0 *//* requestCode *//*).show();
+                    0 /* requestCode */).show();
         } catch (GooglePlayServicesNotAvailableException e) {
             // Indicates that Google Play Services is not available and the problem is not easily
             // resolvable.
@@ -224,7 +243,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Get the user's selected place from the Intent.
                 Place place = PlaceAutocomplete.getPlace(this, data);
 
-                *//*String placeDetailsStr = place.getName() + "\n"
+                String placeDetailsStr = place.getName() + "\n"
                         + place.getId() + "\n"
                         + place.getLatLng().toString() + "\n"
                         + place.getAddress() + "\n"
@@ -237,20 +256,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
-        }
-        else switch(requestCode) {
-                case (EDIT_REQUEST) :
-                    if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 MarkerOptions markerOptions = data.getParcelableExtra("marker");
                 mGoogleMap.addMarker(markerOptions);
 
             }
+        /*else switch(requestCode) {
+                case (EDIT_REQUEST) :*/
+
         }
     }
-*/
 
 
-    @Override
+
+
+
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_searchoverlay, menu);
         return true;
@@ -274,7 +295,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public void onPause() {
@@ -481,7 +502,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }).create().show();*/
     }
 
-    @Override
+   /* @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
@@ -494,7 +515,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
+*/
 }
 
 

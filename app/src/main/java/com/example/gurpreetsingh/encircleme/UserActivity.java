@@ -3,10 +3,11 @@ package com.example.gurpreetsingh.encircleme;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,56 +19,65 @@ public class UserActivity extends AppCompatActivity {
     private TextView helloUserText;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
-    ImageButton btnAlerts;
-    ImageButton btnMaps;
-    ImageButton btnProfile;
-    ImageButton friends;
-    ImageButton btnSetting;
+    Button btnAlerts;
+    Button btnMaps;
+    Button btnProfile;
+    Button friends;
+    Button btnSetting;
+
+    private TextView textProfile;
+    private TextView textFriends;
+    private TextView textMap;
+    private TextView textAlerts;
+
 
     //Button
     public void Profile() {
-        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent time = new Intent(UserActivity.this, UserActivity.class);
+                Intent time = new Intent(UserActivity.this, UserProfileActivity.class);
                 startActivity(time);
             }
         });
     }
 
-    public void Alerts(){
-        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener(){
+    public void Alerts() {
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Intent alerts = new Intent(UserActivity.this, PlacePickerActivity.class);
                 startActivity(alerts);
             }
         });
     }
-    public void Maps(){
-        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener(){
+
+    public void Maps() {
+        btnMaps = (Button) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Intent alerts = new Intent(UserActivity.this, MapsActivity.class);
                 startActivity(alerts);
             }
         });
     }
-    public void Friends(){
-        friends = (ImageButton) findViewById(R.id.friends);
+
+    public void Friends() {
+        friends = (Button) findViewById(R.id.friends);
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent offMaps = new Intent(UserActivity.this, SearchActivity.class);
+                Intent offMaps = new Intent(UserActivity.this, FriendsActivity.class);
                 startActivity(offMaps);
             }
         });
     }
-    public void Settings(){
-        btnSetting = (ImageButton) findViewById(R.id.setting);
+
+    public void Settings() {
+        btnSetting = (Button) findViewById(R.id.setting);
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,10 +87,56 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+
+
+        textProfile = (TextView) findViewById(R.id.text_profile);
+        textFriends = (TextView) findViewById(R.id.text_friends);
+        textMap = (TextView) findViewById(R.id.text_map);
+        textAlerts = (TextView) findViewById(R.id.text_alerts);
+
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+                findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_profile:
+                                textProfile.setVisibility(View.VISIBLE);
+                                textFriends.setVisibility(View.GONE);
+                                textMap.setVisibility(View.GONE);
+                                textAlerts.setVisibility(View.GONE);
+                                break;
+                            case R.id.action_friends:
+                                textProfile.setVisibility(View.GONE);
+                                textFriends.setVisibility(View.VISIBLE);
+                                textMap.setVisibility(View.GONE);
+                                textAlerts.setVisibility(View.GONE);
+                                break;
+                            case R.id.action_map:
+                                textProfile.setVisibility(View.GONE);
+                                textFriends.setVisibility(View.GONE);
+                                textMap.setVisibility(View.VISIBLE);
+                                textAlerts.setVisibility(View.GONE);
+                                break;
+                            case R.id.action_alerts:
+                                textProfile.setVisibility(View.GONE);
+                                textFriends.setVisibility(View.GONE);
+                                textMap.setVisibility(View.GONE);
+                                textAlerts.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                        return false;
+                    }
+                });
+
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -141,7 +197,7 @@ public class UserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        moveTaskToBack(false);
     }
 
 

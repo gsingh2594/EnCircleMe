@@ -87,6 +87,15 @@
                         android:text="About me"
                         android:textColor="#FFFFFF"
                         android:textSize="@dimen/text_normal" />
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignTop="@+id/edit_bio_icon"
+                        android:layout_weight="1"
+                        android:onClick="selectImage" />
                 </RelativeLayout>
 
 
@@ -95,25 +104,14 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/profile_layout"
                     android:layout_marginTop="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/relativeLayout">
 
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-
-                        <CheckBox android:id="@+id/checkbox_music"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Music"
-                            android:onClick="onCheckboxClicked"/>
-
-                        <CheckBox android:id="@+id/checkbox_arts"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Arts and crafts"
-                            android:onClick="onCheckboxClicked"/>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -145,7 +143,8 @@
                             android:clickable="true"
                             android:elevation="4dp"
                             android:padding="20dp"
-                            android:text="Interest3" />
+                            android:text="Interest3"
+                            android:textAlignment="textStart" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -174,10 +173,11 @@
         </LinearLayout>
     </ScrollView>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -188,63 +188,75 @@
             android:baselineAligned="false"
             android:weightSum="1">
 
-            <ImageButton
+            <Button
                 android:id="@+id/btnProfile"
-                android:src="@drawable/profile"
-                android:scaleType="centerCrop"
+                android:layout_width="20dp"
+                android:layout_height="60dp"
+                android:layout_weight="1.31"
                 android:background="@color/colorPrimary"
-                android:padding="20dp"
-                android:minHeight="0dp"
-                android:elevation="0dp"
-                android:layout_width="78dp"
-                android:layout_height="60dp" />
+                android:drawableTop="@drawable/profile"
+                android:padding="10dp"
+                android:text="Profile"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/friends"
-                android:background="@color/colorPrimary"
-                android:src="@drawable/friends"
-                android:scaleType="centerCrop"
-                android:padding="15dp"
-                android:elevation="0dp"
-                android:minHeight="0dp"
-                android:layout_weight="0.55"
                 android:layout_width="78dp"
-                android:layout_height="60dp" />
+                android:layout_height="60dp"
+                android:layout_margin="0dp"
+                android:layout_weight="0"
+                android:background="@color/colorPrimary"
+                android:drawableTop="@drawable/friends"
+                android:padding="10dp"
+                android:text="Friends"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/btnMaps"
-                android:background="@color/colorPrimary"
-                android:src="@drawable/map"
-                android:scaleType="centerCrop"
-                android:padding="20dp"
-                android:elevation="0dp"
-                android:minHeight="0dp"
                 android:layout_width="78dp"
-                android:layout_height="60dp" />
+                android:layout_height="60dp"
+                android:layout_margin="0dp"
+                android:background="@color/colorPrimary"
+                android:drawableTop="@drawable/ic_map_black_24dp"
+                android:padding="10dp"
+                android:scaleType="centerCrop"
+                android:text="Maps"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/btnAlerts"
-                android:src="@drawable/alerts"
-                android:scaleType="centerCrop"
-                android:background="@color/colorPrimary"
-                android:padding="20dp"
-                android:elevation="0dp"
-                android:minHeight="0dp"
                 android:layout_width="78dp"
-                android:layout_height="60dp" />
+                android:layout_height="60dp"
+                android:layout_margin="0dp"
+                android:background="@color/colorPrimary"
+                android:drawableTop="@drawable/alerts"
+                android:padding="10dp"
+                android:scaleType="centerCrop"
+                android:text="Alerts"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/setting"
-                android:src="@drawable/settings"
-                android:scaleType="centerCrop"
-                android:background="@color/colorPrimary"
-                android:padding="20dp"
-                android:elevation="0dp"
-                android:minHeight="0dp"
                 android:layout_width="78dp"
-                android:layout_height="60dp" />
+                android:layout_height="60dp"
+                android:layout_margin="0dp"
+                android:background="@color/colorPrimary"
+                android:drawableTop="@drawable/ic_settings_black_24dp"
+                android:padding="10dp"
+                android:scaleType="centerCrop"
+                android:text="Settings"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

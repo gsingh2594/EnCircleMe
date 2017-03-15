@@ -29,6 +29,15 @@
         android:textColor="@android:color/black"
         android:layout_alignStart="@+id/textView5" />
 
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView5"
+        android:layout_below="@+id/textView2"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

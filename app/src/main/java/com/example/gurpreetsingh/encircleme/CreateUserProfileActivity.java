@@ -6,11 +6,12 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
     private ProgressDialog progressDialog;
     private String uid;
     private String username;
+    private ArrayList<String> interestsList = new ArrayList<String>();
 
 
     @Override
@@ -55,6 +58,66 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
         saveButton.setOnClickListener(this);
     }
 
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.checkbox_music:
+                if (checked){
+                    interestsList.add("music");
+                }
+                else{
+                    interestsList.remove("music");
+                }
+                break;
+
+            case R.id.checkbox_arts:
+                if (checked){
+                    interestsList.add("Arts & Crafts");
+                }
+                else{
+                    interestsList.remove("Arts & Crafts");
+                }
+                break;
+
+            case R.id.checkbox_cafe:
+                if (checked){
+                    interestsList.add("cafe");
+                }
+                else{
+                    interestsList.remove("cafe");
+                }
+                break;
+            case R.id.checkbox_nightclub:
+                if (checked){
+                    interestsList.add("nightclub");
+                }
+                else{
+                    interestsList.remove("nightclub");
+                }
+                break;
+            case R.id.checkbox_restaurants:
+                if (checked){
+                    interestsList.add("restaurants");
+                }
+                else{
+                    interestsList.remove("restaurants");
+                }
+                break;
+            case R.id.checkbox_shoppingmalls:
+                if (checked){
+                    interestsList.add("shoppingmalls");
+                }
+                else{
+                    interestsList.remove("shoppingmalls");
+                }
+                break;
+
+        }
+    }
+
     public void saveUserProfile(){
         final String name = signUpName.getText().toString().trim();
         final String phone = signUpPhone.getText().toString().trim();
@@ -73,6 +136,9 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
 
             // check if username already exists in DB
             try {
+
+
+
                 DatabaseReference usernameRef = dbRef.child("usernames").child(username);
                 Log.d("usernameExists", usernameRef.toString());
 
@@ -89,12 +155,13 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
                         } else {
                             // username is available -> save user profile in DB
                             // create a User Java object to save all user attributes in the same directory at once
-                            User newUser = new User(name, phone, username);
+                            User newUser = new User(name, phone, username, interestsList);
 
                             // use a Map for multiple path updates in one trip to database
                             Map<String, Object> userProfileUpdates = new HashMap<String, Object>();
                             userProfileUpdates.put("users/" + uid, newUser);
                             userProfileUpdates.put("usernames/" + username, uid);
+
 
                             // use updateChildren instead of setValue! setValue causes an error for pathway to the key
                             dbRef.updateChildren(userProfileUpdates, new DatabaseReference.CompletionListener() {
