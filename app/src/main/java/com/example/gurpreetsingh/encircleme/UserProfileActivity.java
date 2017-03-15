@@ -138,7 +138,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Settings();
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
@@ -146,6 +146,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             imageView.setImageBitmap(bitmap);
         }
     }
+
+
+    public void selectImage(View view) {
+        Intent intent = new Intent();
+        intent.setType("image*//*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+    }*/
 
     private Bitmap getPath(Uri uri) {
 
@@ -203,12 +211,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    public void selectImage(View view) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
-    }
 
     /*
     @Override
