@@ -3,9 +3,7 @@ package com.example.gurpreetsingh.encircleme;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -94,7 +92,7 @@ public class UserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user);
 
 
-        textProfile = (TextView) findViewById(R.id.text_profile);
+        /*textProfile = (TextView) findViewById(R.id.text_profile);
         textFriends = (TextView) findViewById(R.id.text_friends);
         textMap = (TextView) findViewById(R.id.text_map);
         textAlerts = (TextView) findViewById(R.id.text_alerts);
@@ -136,8 +134,7 @@ public class UserActivity extends AppCompatActivity {
                         return false;
                     }
                 });
-
-
+*/
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
         signOutButton = (Button) findViewById(R.id.sign_out);

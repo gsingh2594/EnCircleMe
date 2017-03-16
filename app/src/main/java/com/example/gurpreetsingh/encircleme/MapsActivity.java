@@ -1,7 +1,6 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,29 +9,29 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.common.logger.Log;
 import com.firebase.geofire.GeoFire;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,7 +44,7 @@ import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, GoogleMap.OnPoiClickListener {
@@ -136,30 +135,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-   /* public void Search() {
-        btnSearch = (ImageButton) findViewById(R.id.search);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(MapsActivity.this, mAutoCompleteFragment);
-                startActivity(alerts);
-            }
-        });
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
 
-        btnSearch = (ImageButton) findViewById(R.id.search);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openAutocompleteActivity();
-            }
-        });
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
@@ -174,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Search();
 
 
-        mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         mAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -197,7 +182,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String placeUri = place.getWebsiteUri().toString();
                 String placeRating = Float.toString(place.getRating());
                 LatLng latLng = place.getLatLng();
-                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeRating + " " + placeUri/*placeAddress + " Phone:" + placeNumber*/));
+                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeRating + " " + placeUri*//*placeAddress + " Phone:" + placeNumber*//*));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
@@ -207,10 +192,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
             }
-        });
+        });*/
     }
 
-    private void openAutocompleteActivity() {
+    /*private void openAutocompleteActivity() {
         try {
             // The autocomplete activity requires Google Play Services to be available. The intent
             // builder checks this and throws an exception if it is not the case.
@@ -221,7 +206,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Indicates that Google Play Services is either not installed or not up to date. Prompt
             // the user to correct the issue.
             GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
-                    0 /* requestCode */).show();
+                    0 *//* requestCode *//*).show();
         } catch (GooglePlayServicesNotAvailableException e) {
             // Indicates that Google Play Services is not available and the problem is not easily
             // resolvable.
@@ -231,14 +216,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG, message);
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check that the result was from the autocomplete widget.
-        if (requestCode == 1) {
+        if (requestCode == REQUEST_SELECT_PLACE) {
             if (resultCode == RESULT_OK) {
                 // Get the user's selected place from the Intent.
                 Place place = PlaceAutocomplete.getPlace(this, data);
@@ -256,22 +241,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
-            if (resultCode == Activity.RESULT_OK) {
+            /*if (resultCode == Activity.RESULT_OK) {
                 MarkerOptions markerOptions = data.getParcelableExtra("marker");
                 mGoogleMap.addMarker(markerOptions);
 
-            }
+            }*/
         /*else switch(requestCode) {
                 case (EDIT_REQUEST) :*/
 
         }
     }
 
-
-
-
-
-    /*@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_searchoverlay, menu);
         return true;
@@ -294,8 +275,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return true;
         }
+        /*if (id == R.id.settings){
+            Intent modifySettings=new Intent(MapsActivity.this,SettingsActivity.class);
+            startActivity(modifySettings);
+        }*/
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     @Override
     public void onPause() {
@@ -487,10 +472,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onBackPressed() {
-        startActivity(new Intent(this, MapsActivity.class));
+
 
         //put the AlertDialog code here
-        /*new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Logout")
                 .setMessage("Would you like to logout?")
                 .setNegativeButton("No", null)
@@ -499,7 +484,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         startActivity(new Intent(MapsActivity.this, MainActivity.class));
                        //finish();
                     }
-                }).create().show();*/
+                }).create().show();
     }
 
    /* @Override
