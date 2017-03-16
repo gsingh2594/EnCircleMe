@@ -1,28 +1,37 @@
 package com.example.gurpreetsingh.encircleme;
 
+import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.plus.model.people.Person;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth auth;
@@ -102,6 +111,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         imageView = (ImageView) findViewById(android.R.id.icon);
+        final LinearLayout interestsLinearLayout = (LinearLayout) findViewById(R.id.interests_linearlayout);
 
         auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
@@ -115,13 +125,35 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
         editIcon.setOnClickListener(this);
 
+        // load user profile from DB
         dbUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 profileName.setText(user.getName());
+                // display bio if it has been set
                 if(user.getBio()!=null)
                     profileBio.setText(user.getBio());
+                // load and display interests if they exist
+                if(user.getInterests()!= null){
+                    ArrayList<String>userInterests = user.getInterests();
+                    for(int i = 0; i < userInterests.size(); i++){
+                        // Create and add a new TextView to the LinearLayout
+                        TextView interestTextView = new TextView(UserProfileActivity.this);
+                        int marginSize = convertDPtoPX(5);
+                        LinearLayout.LayoutParams layoutParams =
+                                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                        layoutParams.setMargins(marginSize,marginSize,marginSize,marginSize);
+                        interestTextView.setLayoutParams(layoutParams);
+                        interestTextView.setTextSize(16);
+                        interestTextView.setText(userInterests.get(i));
+                        interestTextView.setElevation((float)convertDPtoPX(4));
+                        int paddingSize = convertDPtoPX(20);
+                        interestTextView.setPadding(paddingSize,paddingSize,paddingSize,paddingSize);
+                        interestTextView.setBackgroundColor(Color.WHITE);
+                        interestsLinearLayout.addView(interestTextView);
+                    }
+                }
             }
 
             @Override
@@ -130,7 +162,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        //access different activity in ImageButton
         Alerts();
         Maps();
         Friends();
@@ -204,6 +235,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         dbUserRef.child("bio").setValue(bio);
     }
 
+
     @Override
     public void onClick(View v) {
         if(v == editIcon){
@@ -211,6 +243,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+
+    // used to set sizes in dp units programmatically. (Some views set sizes programmtically in px, not dp)
+    // We should use this method to make certain views display consistently on different screen densities
+    private int convertDPtoPX(int sizeInDP){
+        float scale = getResources().getDisplayMetrics().density;       // note that 1dp = 1px on a 160dpi screen
+        int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
+        return dpAsPixels;  // return the size in pixels
+    }
 
     /*
     @Override

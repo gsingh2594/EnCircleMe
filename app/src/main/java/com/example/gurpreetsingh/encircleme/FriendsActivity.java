@@ -134,6 +134,7 @@ public class FriendsActivity extends AppCompatActivity {
                     simpleAdapter = new SimpleAdapter(FriendsActivity.this, friendsList,    // friendsList empty in this case
                             R.layout.friend_requests_list_items, new String[]{"username"}, new int[]{R.id.friend_requests_text_view} );
                     listView.setAdapter(simpleAdapter);
+                    // listView.setAdapter(null);
                 }
             }
 

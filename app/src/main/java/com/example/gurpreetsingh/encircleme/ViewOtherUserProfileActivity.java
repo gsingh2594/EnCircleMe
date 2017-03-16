@@ -2,11 +2,13 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ViewOtherUserProfileActivity extends AppCompatActivity {
@@ -49,10 +52,9 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
 
         profileName = (TextView) findViewById(R.id.user_profile_name);
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
-
         addFriendIcon = (ImageView) findViewById(R.id.add_friend_icon);
         alreadyFriendsIcon = (ImageView) findViewById(R.id.already_friends_icon);
-
+        final LinearLayout interestsLinearLayout = (LinearLayout) findViewById(R.id.interests_linearlayout);
 
 
         // Load user profile from DB
@@ -63,6 +65,25 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                 profileName.setText(user.getName());
                 if(user.getBio()!=null)
                     profileBio.setText(user.getBio());
+                if(user.getInterests()!= null) {
+                    ArrayList<String> userInterests = user.getInterests();
+                    for (int i = 0; i < userInterests.size(); i++) {
+                        // Create and add a new TextView to the LinearLayout
+                        TextView interestTextView = new TextView(ViewOtherUserProfileActivity.this);
+                        int marginSize = convertDPtoPX(5);
+                        LinearLayout.LayoutParams layoutParams =
+                                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                        layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
+                        interestTextView.setLayoutParams(layoutParams);
+                        interestTextView.setTextSize(16);
+                        interestTextView.setText(userInterests.get(i));
+                        interestTextView.setElevation((float) convertDPtoPX(4));
+                        int paddingSize = convertDPtoPX(20);
+                        interestTextView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+                        interestTextView.setBackgroundColor(Color.WHITE);
+                        interestsLinearLayout.addView(interestTextView);
+                    }
+                }
             }
 
             @Override
@@ -237,5 +258,14 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                 Toast.makeText(ViewOtherUserProfileActivity.this, "Friend request sent!", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+
+    // used to set sizes in dp units programmatically. (Some views set sizes programmtically in px, not dp)
+    // We should use this method to make certain views display consistently on different screen densities
+    private int convertDPtoPX(int sizeInDP){
+        float scale = getResources().getDisplayMetrics().density;       // note that 1dp = 1px on a 160dpi screen
+        int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
+        return dpAsPixels;  // return the size in pixels
     }
 }
