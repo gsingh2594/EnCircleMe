@@ -121,6 +121,7 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
     public void saveUserProfile(){
         final String name = signUpName.getText().toString().trim();
         final String phone = signUpPhone.getText().toString().trim();
+        final String email = auth.getCurrentUser().getEmail();
         username = signUpUsername.getText().toString().trim();
 
         if(name.length() < 3)
@@ -136,9 +137,6 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
 
             // check if username already exists in DB
             try {
-
-
-
                 DatabaseReference usernameRef = dbRef.child("usernames").child(username);
                 Log.d("usernameExists", usernameRef.toString());
 
@@ -154,8 +152,8 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
                             progressDialog.hide();
                         } else {
                             // username is available -> save user profile in DB
-                            // create a User Java object to save all user attributes in the same directory at once
-                            User newUser = new User(name, phone, username, interestsList);
+                            // create a User Java object to save all user attributes in the same DB directory at once
+                            User newUser = new User(name, phone, email, username, interestsList);
 
                             // use a Map for multiple path updates in one trip to database
                             Map<String, Object> userProfileUpdates = new HashMap<String, Object>();
