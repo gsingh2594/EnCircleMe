@@ -1,6 +1,7 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -145,7 +146,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
-
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
@@ -158,7 +158,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Settings();
         //Search();
 
-
+    }
         /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         mAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -193,7 +193,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.i(TAG, "An error occurred: " + status);
             }
         });*/
-    }
+
+
+
 
     /*private void openAutocompleteActivity() {
         try {
@@ -241,15 +243,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
-            /*if (resultCode == Activity.RESULT_OK) {
-                MarkerOptions markerOptions = data.getParcelableExtra("marker");
-                mGoogleMap.addMarker(markerOptions);
-
-            }*/
+        }
+        else if (resultCode == Activity.RESULT_OK) {
+            MarkerOptions markerOptions = data.getParcelableExtra("marker");
+            mGoogleMap.addMarker(markerOptions);
+        }
         /*else switch(requestCode) {
                 case (EDIT_REQUEST) :*/
-
-        }
     }
 
     @Override
@@ -275,10 +275,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             return true;
         }
-        /*if (id == R.id.settings){
-            Intent modifySettings=new Intent(MapsActivity.this,SettingsActivity.class);
+        if (id == R.id.settings){
+            Intent modifySettings=new Intent(MapsActivity.this,UserActivity.class);
             startActivity(modifySettings);
-        }*/
+        }
+        if (id == R.id.logout) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage("Would you like to logout?")
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            startActivity(new Intent(MapsActivity.this, MainActivity.class));
+                            //finish();
+                        }
+                    }).create().show();
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -472,9 +485,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void onBackPressed() {
+        moveTaskToBack(true);
 
-
-        //put the AlertDialog code here
+    /*//put the AlertDialog code here
         new AlertDialog.Builder(this)
                 .setTitle("Logout")
                 .setMessage("Would you like to logout?")
@@ -484,7 +497,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         startActivity(new Intent(MapsActivity.this, MainActivity.class));
                        //finish();
                     }
-                }).create().show();
+                }).create().show();*/
     }
 
    /* @Override

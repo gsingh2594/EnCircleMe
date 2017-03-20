@@ -14,4 +14,10 @@
         android:title="Settings"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/logout"
+        android:orderInCategory="100"
+        android:title="Log Out"
+        app:showAsAction="never" />
+
 </menu>
