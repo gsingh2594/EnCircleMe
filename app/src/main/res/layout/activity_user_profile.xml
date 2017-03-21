@@ -2,7 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/profile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,10 +31,13 @@
                     android:id="@+id/header_cover_image"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="55dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/default_cover_photo" />
 
-                <ImageView
+                <!--<ImageView
                     android:id="@+id/ivImage"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
@@ -36,7 +48,7 @@
                     android:elevation="5dp"
                     android:padding="20dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/default_profile_photo" />
+                    android:src="@drawable/default_profile_photo" />-->
 
                 <RelativeLayout
                     android:id="@+id/profile_layout"
@@ -44,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/header_cover_image"
                     android:background="@color/colorPrimary"
-                    android:elevation="4dp"
+                    android:elevation="9dp"
                     android:paddingBottom="24dp">
                     <!--
                     <ImageView
@@ -56,6 +68,26 @@
                         android:layout_marginTop="16dp"
                         android:src="@drawable/ic_add_user"/>
                     -->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/view2"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:elevation="12dp"
+                        android:innerRadius="0dp"
+                        android:shape="ring"
+                        android:thicknessRatio="1.9"
+                        app:cardCornerRadius="40dp">
+
+                        <ImageView
+                            android:id="@+id/ivImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/default_profile_photo" />
+                    </android.support.v7.widget.CardView>
 
                     <ImageView
                         android:id="@+id/edit_bio_icon"
@@ -64,16 +96,17 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="16dp"
                         android:layout_marginTop="16dp"
-                        android:src="@drawable/edit_icon"/>
+                        android:src="@drawable/edit_icon" />
+
 
                     <TextView
                         android:id="@+id/user_profile_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/view2"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="76dp"
                         android:text="Name"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@android:color/black"
                         android:textSize="@dimen/text_large"
                         android:textStyle="bold" />
 
@@ -85,19 +118,11 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="12dp"
                         android:text="About me"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@android:color/black"
                         android:textSize="@dimen/text_normal" />
 
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignTop="@+id/edit_bio_icon"
-                        android:layout_weight="1"
-                        android:onClick="selectImage" />
-                </RelativeLayout>
 
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

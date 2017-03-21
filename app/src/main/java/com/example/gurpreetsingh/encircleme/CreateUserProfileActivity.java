@@ -66,10 +66,10 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
         switch(view.getId()) {
             case R.id.checkbox_music:
                 if (checked){
-                    interestsList.add("music");
+                    interestsList.add("Music");
                 }
                 else{
-                    interestsList.remove("music");
+                    interestsList.remove("Music");
                 }
                 break;
 
@@ -84,34 +84,34 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
 
             case R.id.checkbox_cafe:
                 if (checked){
-                    interestsList.add("cafe");
+                    interestsList.add("Cafe");
                 }
                 else{
-                    interestsList.remove("cafe");
+                    interestsList.remove("Cafe");
                 }
                 break;
             case R.id.checkbox_nightclub:
                 if (checked){
-                    interestsList.add("nightclub");
+                    interestsList.add("Night Club");
                 }
                 else{
-                    interestsList.remove("nightclub");
+                    interestsList.remove("Night Club");
                 }
                 break;
             case R.id.checkbox_restaurants:
                 if (checked){
-                    interestsList.add("restaurants");
+                    interestsList.add("Restaurants");
                 }
                 else{
-                    interestsList.remove("restaurants");
+                    interestsList.remove("Restaurants");
                 }
                 break;
             case R.id.checkbox_shoppingmalls:
                 if (checked){
-                    interestsList.add("shoppingmalls");
+                    interestsList.add("Shopping Malls");
                 }
                 else{
-                    interestsList.remove("shoppingmalls");
+                    interestsList.remove("Shopping Malls");
                 }
                 break;
 

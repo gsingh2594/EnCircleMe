@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MapsActivity">
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_editprofile"
+        android:icon="@drawable/edit"
         android:orderInCategory="100"
-        android:icon="@drawable/search_icon"
-        android:title="@string/action_search"
-        app:showAsAction="always"/>
+        android:title="Edit Profile"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/settings"

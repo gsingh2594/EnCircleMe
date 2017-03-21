@@ -12,8 +12,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,8 +51,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private ImageView imageView;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private ImageView btnSelect;
+    private ImageView btnSelectProfile;
+    private ImageView btnSelectCover;
     private ImageView ivImage;
+    private ImageView coverImage;
     private String userChoosenTask;
 
     private TextView profileName;
@@ -123,6 +129,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         imageView = (ImageView) findViewById(android.R.id.icon);
         final LinearLayout interestsLinearLayout = (LinearLayout) findViewById(R.id.interests_linearlayout);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+
         auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
@@ -133,15 +143,25 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
         editIcon = (ImageView) findViewById(R.id.edit_bio_icon);
 
-        btnSelect = (ImageView) findViewById(R.id.ivImage);
-        btnSelect.setOnClickListener(new View.OnClickListener() {
+        btnSelectProfile = (ImageView) findViewById(R.id.ivImage);
+        btnSelectProfile.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v ) {
+                selectImage();
+            }
+        });
+        ivImage = (ImageView) findViewById(R.id.ivImage);
+
+        /*btnSelectCover = (ImageView) findViewById(R.id.header_cover_image);
+        btnSelectCover.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 selectImage();
             }
         });
-        ivImage = (ImageView) findViewById(R.id.ivImage);
+        coverImage = (ImageView) findViewById(R.id.header_cover_image);*/
 
         editIcon.setOnClickListener(this);
 
@@ -189,6 +209,38 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Settings();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_editprofile) {
+            Intent modifySettings=new Intent(UserProfileActivity.this,CreateUserProfileActivity.class);
+            startActivity(modifySettings);
+        }
+        if (id == R.id.settings){
+            Intent modifySettings=new Intent(UserProfileActivity.this,UserActivity.class);
+            startActivity(modifySettings);
+        }
+        if (id == R.id.logout) {
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage("Would you like to logout?")
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            startActivity(new Intent(UserProfileActivity.this, MainActivity.class));
+                            //finish();
+                        }
+                    }).create().show();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
     /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -243,6 +295,12 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     if(result)
                         galleryIntent();
 
+                } else if (items[item].equals("Remove")) {
+/*                    userChoosenTask ="Remove";
+                    if(result)
+                        galleryIntent();*/
+                    dialog.dismiss();
+
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -278,13 +336,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 1000, bytes);
-
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
-
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
         FileOutputStream fo;
         try {
             destination.createNewFile();
@@ -296,9 +351,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        ivImage.setImageBitmap(thumbnail);
+        ivImage.setImageBitmap(bitmap);
     }
+
 
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
@@ -381,10 +436,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         return dpAsPixels;  // return the size in pixels
     }
 
-    /*
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
     }
-    */
+
 }
