@@ -34,67 +34,67 @@
                 android:layout_height="wrap_content"
                 android:hint="Event Name"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
-
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="@+id/textView3"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/about"
-                android:background="@color/colorPrimaryDark"
-                android:onClick="setDate"
-                android:text="Select Date"
-                android:textColor="@android:color/white" />
-
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
-                android:onClick="setTime"
-                android:text="Select Time"
-                android:textColor="@android:color/white"
-                android:layout_below="@+id/timePicker1"
-                android:layout_alignParentEnd="@+id/textView4"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="6dp" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/button1"
-                android:layout_alignBottom="@+id/button1"
-                android:layout_alignParentEnd="true"
-                android:text="Date selected"
-                android:textAlignment="textStart"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/button2"
-                android:layout_alignBottom="@+id/button2"
-                android:layout_alignParentEnd="true"
-                android:text="Time selected"
-                android:textAlignment="textStart"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
+                android:layout_marginTop="12dp" />
 
             <EditText
-                android:id="@+id/duration"
-                android:layout_width="250dp"
+                android:id="@+id/in_date"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:hint="Duration"
-                android:layout_below="@+id/eventname"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/about"
+                android:hint="Date" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SELECT DATE"
+                android:id="@+id/btn_date"
+                android:layout_below="@+id/about"
+                android:layout_alignBottom="@+id/in_date"
+                android:layout_toRightOf="@+id/in_date"
+                android:layout_toEndOf="@+id/in_date"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="@android:color/white"/>
+
+            <EditText
+                android:id="@+id/in_time"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btn_time"
+                android:layout_alignBottom="@+id/btn_time"
+                android:layout_toStartOf="@+id/btn_time"
+                android:hint="Start Time" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SELECT TIME"
+                android:id="@+id/btn_time"
+                android:background="@color/colorPrimaryDark"
+                android:layout_below="@+id/btn_date"
+                android:layout_alignEnd="@+id/btn_date"
+                android:layout_marginTop="15dp"
+                android:textColor="@android:color/white"/>
+
+            <EditText
+                android:id="@+id/end_time"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:hint="End Time"
+                android:layout_alignTop="@+id/btn_endtime"
+                android:layout_toStartOf="@+id/btn_endtime" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SELECT TIME"
+                android:id="@+id/btn_endtime"
+                android:background="@color/colorPrimaryDark"
+                android:layout_below="@+id/btn_time"
+                android:layout_alignEnd="@+id/btn_time"
+                android:layout_marginTop="15dp"
+                android:textColor="@android:color/white"/>
 
             <EditText
                 android:id="@+id/about"
@@ -105,41 +105,8 @@
                 android:hint="About"
                 android:inputType="textMultiLine"
                 android:textAlignment="viewStart"
-                android:layout_below="@+id/duration"
+                android:layout_below="@+id/eventname"
                 android:layout_alignParentStart="true" />
-
-
-            <TimePicker
-                android:id="@+id/timePicker1"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/button1"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:headerBackground="@color/colorPrimaryDark"
-                android:numbersSelectorColor="@color/colorPrimaryDark" />
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date Selected:"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:layout_alignBaseline="@+id/button1"
-                android:layout_alignBottom="@+id/button1"
-                android:layout_alignEnd="@+id/duration" />
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time Selected:"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:layout_alignBaseline="@+id/button2"
-                android:layout_alignBottom="@+id/button2"
-                android:layout_alignEnd="@+id/textView6" />
 
         </RelativeLayout>
     </ScrollView>
@@ -152,6 +119,7 @@
         android:layout_below="@+id/about"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
+        android:drawableTop="?android:attr/textCheckMarkInverse"
         android:text="Create" />
 
 </LinearLayout>

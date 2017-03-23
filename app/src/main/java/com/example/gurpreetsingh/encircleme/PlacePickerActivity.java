@@ -1,43 +1,45 @@
 package com.example.gurpreetsingh.encircleme;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 
 
 public class PlacePickerActivity extends AppCompatActivity {
-    private static final int PLACE_PICKER_REQUEST = 1;
+    //private static final int PLACE_PICKER_REQUEST = 1;
     private TextView mName;
     private TextView mAddress;
     private TextView mLatLng;
-    private TextView mAttributions;
-    private static final LatLngBounds newyork = new LatLngBounds(
+    //private TextView mAttributions;
+    /*private static final LatLngBounds newyork = new LatLngBounds(
             new LatLng(40.758879, -73.985110),
-            new LatLng(40.758879, -73.985110));
+            new LatLng(40.758879, -73.985110));*/
 
-    ImageButton btnAlerts;
-    ImageButton btnMaps;
-    ImageButton btnProfile;
-    ImageButton friends;
-    ImageButton btnSetting;
+    private static final int PLACE_PICKER_REQUEST = 1000;
+    private GoogleApiClient mClient;
+
+    Button btnAlerts;
+    Button btnMaps;
+    Button btnProfile;
+    Button friends;
+    Button btnSetting;
 
 
     //Button
     public void Profile() {
-        btnProfile = (ImageButton) findViewById(R.id.btnProfile);
+        btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,7 +50,7 @@ public class PlacePickerActivity extends AppCompatActivity {
     }
 
     public void Alerts() {
-        btnAlerts = (ImageButton) findViewById(R.id.btnAlerts);
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
         btnAlerts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +61,7 @@ public class PlacePickerActivity extends AppCompatActivity {
     }
 
     public void Maps() {
-        btnMaps = (ImageButton) findViewById(R.id.btnMaps);
+        btnMaps = (Button) findViewById(R.id.btnMaps);
         btnMaps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,18 +72,18 @@ public class PlacePickerActivity extends AppCompatActivity {
     }
 
     public void Friends() {
-        friends = (ImageButton) findViewById(R.id.friends);
+        friends = (Button) findViewById(R.id.friends);
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent offMaps = new Intent(PlacePickerActivity.this, SearchActivity.class);
+                Intent offMaps = new Intent(PlacePickerActivity.this, FriendsActivity.class);
                 startActivity(offMaps);
             }
         });
     }
 
     public void Settings() {
-        btnSetting = (ImageButton) findViewById(R.id.setting);
+        btnSetting = (Button) findViewById(R.id.setting);
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +92,7 @@ public class PlacePickerActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,12 +100,25 @@ public class PlacePickerActivity extends AppCompatActivity {
         mName = (TextView) findViewById(R.id.textView);
         mAddress = (TextView) findViewById(R.id.textView2);
         mLatLng = (TextView) findViewById(R.id.textView8);
-        mAttributions = (TextView) findViewById(R.id.textView3);
+
+        mClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+
+        //mAttributions = (TextView) findViewById(R.id.textView3);
         Button pickerButton = (Button) findViewById(R.id.pickerButton);
         pickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try {
+                    startActivityForResult(builder.build(PlacePickerActivity.this), PLACE_PICKER_REQUEST);
+                } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+                /*{
                     PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
                     intentBuilder.setLatLngBounds(newyork);
                     Intent intent = intentBuilder.build(PlacePickerActivity.this);
@@ -111,9 +127,15 @@ public class PlacePickerActivity extends AppCompatActivity {
                 } catch (GooglePlayServicesRepairableException
                         | GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
+
+        Alerts();
+        Maps();
+        Friends();
+        Profile();
+        Settings();
     }
 
     @Override
@@ -135,7 +157,7 @@ public class PlacePickerActivity extends AppCompatActivity {
             mName.setText(name);
             mAddress.setText(address);
             mLatLng.setText(latlng);
-            mAttributions.setText(Html.fromHtml(attributions));
+            //mAttributions.setText(Html.fromHtml(attributions));
 
 
         } else {
@@ -143,4 +165,14 @@ public class PlacePickerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mClient.connect();
+    }
+    @Override
+    protected void onStop() {
+        mClient.disconnect();
+        super.onStop();
+    }
 }

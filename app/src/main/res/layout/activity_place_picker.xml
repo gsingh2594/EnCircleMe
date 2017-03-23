@@ -2,10 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".PlacePickerActivity">
 
     <TextView
@@ -49,38 +45,80 @@
         android:background="@color/colorPrimary" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView3"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textView3"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/poweredBy"
-        android:src="@drawable/powered_by_google_light"/>
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/truiton_image"
-        android:src="@drawable/common_google_signin_btn_icon_dark"
-        android:layout_above="@+id/poweredBy"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="15dp" />
-
-    <TextView
         android:text="Selected Place:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView5"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorPrimaryDark"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/poweredBy" />
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/menubar"
+        android:layout_alignParentBottom="true"
+        android:background="#75B095"
+        android:baselineAligned="false">
+
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/profile"
+            android:padding="10dp"
+            android:text="Profile"
+            android:textSize="12sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/friends"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/friends"
+            android:padding="10dp"
+            android:text="Friends"
+            android:textSize="12sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnMaps"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_map_black_24dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:text="Maps"
+            android:textSize="12sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnAlerts"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/alerts"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:text="Alerts"
+            android:textSize="12sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/setting"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_settings_black_24dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:text="Settings"
+            android:textSize="12sp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

@@ -246,7 +246,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         else if (resultCode == Activity.RESULT_OK) {
             MarkerOptions markerOptions = data.getParcelableExtra("marker");
-            mGoogleMap.addMarker(markerOptions);
+            mGoogleMap.addMarker((markerOptions));
         }
         /*else switch(requestCode) {
                 case (EDIT_REQUEST) :*/
@@ -313,7 +313,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.setOnPoiClickListener(this);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
-        mGoogleMap.setOnPoiClickListener(this);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
