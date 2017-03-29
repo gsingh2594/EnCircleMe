@@ -178,8 +178,9 @@ public class FriendsActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent time = new Intent(FriendsActivity.this, UserProfileActivity.class);
-                startActivity(time);
+                Intent profile = new Intent(FriendsActivity.this, UserProfileActivity.class);
+                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(profile);
             }
         });
     }

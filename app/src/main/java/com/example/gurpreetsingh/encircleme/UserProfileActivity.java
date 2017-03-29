@@ -88,6 +88,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        Log.d("onCreate()", "UserProfileActivity created");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
@@ -138,6 +139,16 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Settings();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d("onDestroy()", "UserProfileActivity destroyed");
+        super.onDestroy();
+    }
 
     // load user profile from DB
     private void loadUserProfile() {
@@ -587,7 +598,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     public void onBackPressed() {
         moveTaskToBack(true);
     }
-
 
     //Button
     public void Profile() {

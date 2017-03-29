@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar2"
@@ -18,14 +17,13 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="396dp"
-        android:layout_weight="1.01">
+        android:layout_height="396dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:weightSum="1">
+            android:layout_margin="@dimen/activity_horizontal_margin">
 
 
             <EditText
@@ -37,76 +35,84 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="12dp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/in_date"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/btn_date"
+                android:layout_alignParentBottom="false"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/about"
+                android:gravity="center_vertical"
                 android:hint="Date" />
 
             <Button
+                android:id="@+id/btn_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SELECT DATE"
-                android:id="@+id/btn_date"
                 android:layout_below="@+id/about"
-                android:layout_alignBottom="@+id/in_date"
-                android:layout_toRightOf="@+id/in_date"
                 android:layout_toEndOf="@+id/in_date"
+                android:layout_toRightOf="@+id/in_date"
                 android:background="@color/colorPrimaryDark"
-                android:textColor="@android:color/white"/>
+                android:padding="16dp"
+                android:text="SELECT DATE"
+                android:textColor="@android:color/white" />
 
-            <EditText
+            <TextView
                 android:id="@+id/in_time"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_time"
-                android:layout_alignBottom="@+id/btn_time"
+                android:layout_alignTop="@+id/btn_time"
+                android:layout_alignBottom="@id/btn_time"
+                android:gravity="center_vertical"
                 android:layout_toStartOf="@+id/btn_time"
                 android:hint="Start Time" />
 
             <Button
+                android:id="@+id/btn_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SELECT TIME"
-                android:id="@+id/btn_time"
-                android:background="@color/colorPrimaryDark"
-                android:layout_below="@+id/btn_date"
                 android:layout_alignEnd="@+id/btn_date"
+                android:layout_below="@+id/btn_date"
                 android:layout_marginTop="15dp"
-                android:textColor="@android:color/white"/>
+                android:background="@color/colorPrimaryDark"
+                android:padding="16dp"
+                android:text="SELECT TIME"
+                android:textColor="@android:color/white" />
 
-            <EditText
+            <TextView
                 android:id="@+id/end_time"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:hint="End Time"
                 android:layout_alignTop="@+id/btn_endtime"
-                android:layout_toStartOf="@+id/btn_endtime" />
+                android:layout_toStartOf="@+id/btn_endtime"
+                android:layout_alignBottom="@id/btn_endtime"
+                android:gravity="center_vertical" />
 
             <Button
+                android:id="@+id/btn_endtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SELECT TIME"
-                android:id="@+id/btn_endtime"
-                android:background="@color/colorPrimaryDark"
-                android:layout_below="@+id/btn_time"
                 android:layout_alignEnd="@+id/btn_time"
+                android:layout_below="@+id/btn_time"
                 android:layout_marginTop="15dp"
-                android:textColor="@android:color/white"/>
+                android:background="@color/colorPrimaryDark"
+                android:padding="16dp"
+                android:text="SELECT TIME"
+                android:textColor="@android:color/white" />
 
             <EditText
                 android:id="@+id/about"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_weight="1.49"
-                android:ems="10"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/eventname"
+                android:layout_marginBottom="16dp"
                 android:hint="About"
                 android:inputType="textMultiLine"
-                android:textAlignment="viewStart"
-                android:layout_below="@+id/eventname"
-                android:layout_alignParentStart="true" />
+                android:lines="4"
+                android:textAlignment="viewStart" />
 
         </RelativeLayout>
     </ScrollView>
