@@ -3,18 +3,25 @@ package com.example.gurpreetsingh.encircleme;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.common.logger.Log;
 import com.firebase.geofire.GeoFire;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -38,8 +46,10 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -222,7 +232,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String placeNumber = (String) place.getPhoneNumber();
                 String placeUri = place.getWebsiteUri().toString();
                 String placeRating = Float.toString(place.getRating());
-                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeAddress));
+                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeAddress).icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.pin))));
+                        // .icon(BitmapDescriptorFactory.fromResource((person_pin))));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
@@ -307,6 +318,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.setOnPoiClickListener(this);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
         mGoogleMap.setInfoWindowAdapter(this);
+        MapsInitializer.initialize(this);
+        addCustomMarker();
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -333,6 +346,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MapsActivity.this.startActivityForResult(edit, EDIT_REQUEST);
             }
         });
+    }
+
+    private void addCustomMarker() {
+        Log.d(TAG, "addCustomMarker()");
+        if (mGoogleMap == null) {
+            return;
+        }
+
+        /*// adding a marker on map with image from  drawable
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(40.758879, -73.985110))
+                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.neutral_face_icon))));*/
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -487,6 +512,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public View getInfoContents(Marker marker) {
         //return null;
         return prepareInfoView(marker);
+    }
+
+    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
+
+        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.search_marker, null);
+        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.pin_image);
+        markerImageView.setImageResource(resId);
+        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+        customMarkerView.buildDrawingCache();
+        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        Drawable drawable = customMarkerView.getBackground();
+        if (drawable != null)
+            drawable.draw(canvas);
+        customMarkerView.draw(canvas);
+        return returnedBitmap;
     }
 
     private View prepareInfoView(Marker marker){

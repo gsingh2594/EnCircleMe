@@ -3,21 +3,30 @@ package com.example.gurpreetsingh.encircleme;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -31,10 +40,14 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,6 +69,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private int year, month, day;
     private int startHour, startMinute, endHour, endMinute;
     private String format = "";
+    private ImageView profileImage;
+
 
     private TextView mPlaceAttribution;
     private Button btnDatePicker, btnTimePicker, btnEndTimePicker, btnSave, btnPlacePicker;
@@ -78,6 +93,12 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private String eventKey;
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
+
+
+    private FirebaseStorage fbStorage;
+    private StorageReference fbStorageRef;
+    private static final long ONE_MEGABYTE = 1024 * 1024;
+    private byte[] profileImageBytes;
 
     private ArrayList<Event>usersCreatedEventsList;
     private ArrayList<String>usersCreatedEventsKeysList;
@@ -103,6 +124,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
         btnTimePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
         btnPlacePicker.setOnClickListener(this);
+        btnSave.setOnClickListener(this);
         //Place Picker result textview
         mName = (TextView) findViewById(R.id.textView1);
 
@@ -265,7 +287,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                             Toast.makeText(getBaseContext(), "Event created!", Toast.LENGTH_LONG).show();
 
                             // Create marker for map
-                            MarkerOptions marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                            MarkerOptions marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.neutral_face_icon)));
                             if (eventName.getText() != null) {
                                 marker.title("Event: " + eventName.getText().toString() + ", " +
                                         (about.getText().toString()));
@@ -284,6 +306,25 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 });
             }
         }
+    }
+
+    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
+
+        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);
+        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.profile_image);
+        markerImageView.setImageResource(resId);
+        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+        customMarkerView.buildDrawingCache();
+        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        Drawable drawable = customMarkerView.getBackground();
+        if (drawable != null)
+            drawable.draw(canvas);
+        customMarkerView.draw(canvas);
+        return returnedBitmap;
     }
 
     @Override
@@ -435,6 +476,29 @@ public class EditActivity extends Activity implements View.OnClickListener{
         }
     }
 
+    // load user profile image from Firebase Storage
+    private void loadUserProfileImage() {
+        Log.d("load profile pic", "about to load from storage");
+        StorageReference profilePicStorageRef = fbStorage.getReference("profile_images/" + userID);
+        profilePicStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // user has profile pic --> display it
+                Log.d("loadUserProfileImage()", "getBytes successful");
+                profileImageBytes = bytes;
+                Log.d("loadUserProfileImage()", "convert bytes to bitmap");
+                Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
+                profileImage.setImageBitmap(profileImageBitmap);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
+                Toast.makeText(EditActivity.this, "Failed to load profile image", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
    /* @SuppressWarnings("deprecation")
     public void setDate(View view) {
