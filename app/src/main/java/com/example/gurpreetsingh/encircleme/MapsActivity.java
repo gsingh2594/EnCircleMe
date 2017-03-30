@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +51,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnPoiClickListener {
+        LocationListener, GoogleMap.OnPoiClickListener, GoogleMap.InfoWindowAdapter {
 
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = null;
     private static final int EDIT_REQUEST = 1;
@@ -79,7 +82,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
     GeoFire geoFire = new GeoFire(ref);
 
-
     //Button
     public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
@@ -98,7 +100,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnAlerts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent alerts = new Intent(MapsActivity.this, PlacePickerActivity.class);
+                Intent alerts = new Intent(MapsActivity.this, SearchActivity.class);
                 startActivity(alerts);
             }
         });
@@ -195,32 +197,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });*/
 
-
-
-
-    /*private void openAutocompleteActivity() {
-        try {
-            // The autocomplete activity requires Google Play Services to be available. The intent
-            // builder checks this and throws an exception if it is not the case.
-            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                    .build(this);
-            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // Indicates that Google Play Services is either not installed or not up to date. Prompt
-            // the user to correct the issue.
-            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
-                    0 *//* requestCode *//*).show();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // Indicates that Google Play Services is not available and the problem is not easily
-            // resolvable.
-            String message = "Google Play Services is not available: " +
-                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
-
-            Log.e(TAG, message);
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
-    }*/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -235,23 +211,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         + place.getId() + "\n"
                         + place.getLatLng().toString() + "\n"
                         + place.getAddress() + "\n"
-                        + place.getAttributions();
+                        + place.getAttributions() + "\n"
+                        + place.getPhoneNumber() + "\n"
+                        + place.getWebsiteUri() + "\n"
+                        + place.getRating();
                 //mAutoCompleteFragment.setText(placeDetailsStr);*//*
                 String placeName = (String) place.getName();
                 String placeAddress = (String) place.getAddress();
                 LatLng latLng = place.getLatLng();
+                String placeNumber = (String) place.getPhoneNumber();
+                String placeUri = place.getWebsiteUri().toString();
+                String placeRating = Float.toString(place.getRating());
                 mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeAddress));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             }
-        }
-        else if (resultCode == Activity.RESULT_OK) {
+        } else if (resultCode == Activity.RESULT_OK) {
             MarkerOptions markerOptions = data.getParcelableExtra("marker");
             mGoogleMap.addMarker((markerOptions));
         }
-        /*else switch(requestCode) {
+            /*else switch(requestCode) {
                 case (EDIT_REQUEST) :*/
     }
+
+
+    /*private void drawCircle( LatLng location ) {
+        CircleOptions options = new CircleOptions();
+        options.center( location );
+        //Radius in meters
+        options.radius( 50 );
+        options.strokeWidth( 10 );
+        options.strokeColor(Color.BLUE);
+        options.fillColor(Color.TRANSPARENT);
+        mGoogleMap.addCircle(options);
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -299,7 +292,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onPause() {
         super.onPause();
-
         //stop location updates when Activity is no longer active
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -314,6 +306,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.setOnPoiClickListener(this);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
+        mGoogleMap.setInfoWindowAdapter(this);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -338,13 +331,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent edit = new Intent(MapsActivity.this, EditActivity.class);
                 edit.putExtra("location", latLng);
                 MapsActivity.this.startActivityForResult(edit, EDIT_REQUEST);
-
-/*                Circle circle = mGoogleMap.addCircle(new CircleOptions()
-                        .center(latLng)
-                        .radius(300)
-                        .strokeColor(Color.BLUE)
-                        .fillColor(Color.TRANSPARENT));*/
-
             }
         });
     }
@@ -387,13 +373,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-/**
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-*/
+
         //move map camera
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -405,7 +385,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -470,7 +449,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 return;
             }
-
             // other 'case' lines to check for other
             // permissions this app might request
         }
@@ -500,20 +478,52 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }).create().show();*/
     }
 
-   /* @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case (EDIT_REQUEST) : {
-                if (resultCode == Activity.RESULT_OK) {
-                    MarkerOptions markerOptions = data.getParcelableExtra("marker");
-                    mGoogleMap.addMarker(markerOptions);
-                }
-                break;
-            }
-        }
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
     }
-*/
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        //return null;
+        return prepareInfoView(marker);
+    }
+
+    private View prepareInfoView(Marker marker){
+        //prepare InfoView programmatically
+        LinearLayout infoView = new LinearLayout(MapsActivity.this);
+        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        infoView.setOrientation(LinearLayout.HORIZONTAL);
+        infoView.setLayoutParams(infoViewParams);
+
+        ImageView infoImageView = new ImageView(MapsActivity.this);
+        //Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+        Drawable drawable = getResources().getDrawable(android.R.drawable.ic_dialog_map);
+        infoImageView.setImageDrawable(drawable);
+        infoView.addView(infoImageView);
+
+        LinearLayout subInfoView = new LinearLayout(MapsActivity.this);
+        LinearLayout.LayoutParams subInfoViewParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        subInfoView.setOrientation(LinearLayout.VERTICAL);
+        subInfoView.setLayoutParams(subInfoViewParams);
+
+        TextView subInfoLat = new TextView(MapsActivity.this);
+        subInfoLat.setText("Lat: " + marker.getPosition().latitude);
+        TextView subInfoLnt = new TextView(MapsActivity.this);
+        subInfoLnt.setText("Lnt: " + marker.getPosition().longitude);
+        subInfoView.addView(subInfoLat);
+        subInfoView.addView(subInfoLnt);
+        infoView.addView(subInfoView);
+
+        return infoView;
+    }
+
+    /*@Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }*/
 }
 
 

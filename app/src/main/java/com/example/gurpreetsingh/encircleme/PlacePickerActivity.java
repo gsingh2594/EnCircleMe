@@ -108,7 +108,7 @@ public class PlacePickerActivity extends AppCompatActivity {
                 .build();
 
         //mAttributions = (TextView) findViewById(R.id.textView3);
-        Button pickerButton = (Button) findViewById(R.id.pickerButton);
+        Button pickerButton = (Button) findViewById(R.id.pickerButton1);
         pickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

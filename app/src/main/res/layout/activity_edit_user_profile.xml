@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_create_user_profile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.gurpreetsingh.encircleme.CreateUserProfileActivity"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="0dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Edit Profile" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_layout"
+        android:layout_below="@id/toolbar2">
+        <EditText
+            android:id="@+id/signUpName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:hint="Name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/signUpPhone"
+            android:hint="Phone number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/signUpName"
+            android:maxLength="10"
+            android:inputType="phone"/>
+
+        <EditText
+            android:id="@+id/signUpUsername"
+            android:hint="Username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/signUpPhone"
+            android:inputType="text"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onCheckboxClicked"
+            android:layout_below="@id/signUpUsername"
+            android:text="Music" />
+
+        <CheckBox
+            android:id="@+id/checkbox_arts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkbox_music"
+            android:onClick="onCheckboxClicked"
+            android:text="Arts and crafts" />
+
+        <CheckBox
+            android:id="@+id/checkbox_cafe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkbox_arts"
+            android:onClick="onCheckboxClicked"
+            android:text="Cafe" />
+
+        <CheckBox
+            android:id="@+id/checkbox_nightclub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkbox_cafe"
+            android:onClick="onCheckboxClicked"
+            android:text="Night Clubs" />
+
+        <CheckBox
+            android:id="@+id/checkbox_restaurants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkbox_nightclub"
+            android:onClick="onCheckboxClicked"
+            android:text="Restaurants" />
+
+        <CheckBox
+            android:id="@+id/checkbox_shoppingmalls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkbox_restaurants"
+            android:onClick="onCheckboxClicked"
+            android:text="Shopping Malls" />
+    </RelativeLayout>
+
+<!--
+
+<HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:orientation="horizontal"
+        android:id="@+id/scrollView2"
+        android:layout_below="@id/info_layout">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/signUpUsername"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+
+            <ImageView
+                android:id="@+id/profile_image1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_profile_photo" />
+
+            <ImageView
+                android:id="@+id/profile_image2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_profile_photo" />
+
+            <ImageView
+                android:id="@+id/profile_image3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_profile_photo" />
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:layout_gravity="center"
+                card_view:cardCornerRadius="4dp"
+                android:layout_alignParentStart="true">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Hello Card" />
+
+            </android.support.v7.widget.CardView>
+        </RelativeLayout>
+</HorizontalScrollView>
+-->
+    <Button
+        android:id="@+id/saveNameAndPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="Apply Changes"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+
+</RelativeLayout>

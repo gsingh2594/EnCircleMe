@@ -41,6 +41,7 @@
             android:name=".UserProfileActivity"
             android:launchMode="singleTop"/>
         <activity android:name=".SearchActivity" />
+        <activity android:name=".EditUserProfileActivity" />
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan">

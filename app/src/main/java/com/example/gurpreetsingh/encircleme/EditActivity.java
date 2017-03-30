@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-//import android.icu.util.Calendar;     <-- not supported with our minSDK
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,10 +22,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +40,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.ContentValues.TAG;
+
+//import android.icu.util.Calendar;     <-- not supported with our minSDK
 
 
 public class EditActivity extends Activity implements View.OnClickListener{
@@ -45,13 +57,21 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private int startHour, startMinute, endHour, endMinute;
     private String format = "";
 
-    private Button btnDatePicker, btnTimePicker, btnEndTimePicker, btnSave;
+    private TextView mPlaceAttribution;
+    private Button btnDatePicker, btnTimePicker, btnEndTimePicker, btnSave, btnPlacePicker;
     private LatLng latLng;
     private EditText eventName, about;
     private TextView txtDate, txtTime, txtEndTime;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog startTimePickerDialog, endTimePickerDialog;
+
+
+    private static final int PLACE_PICKER_REQUEST = 1000;
+    private GoogleApiClient mClient;
+    private TextView mName;
+    private TextView mAddress;
+    private TextView mLatLng;
 
     private FirebaseAuth auth;
     private String userID;
@@ -77,10 +97,20 @@ public class EditActivity extends Activity implements View.OnClickListener{
         txtTime=(TextView)findViewById(R.id.in_time);
         txtEndTime=(TextView)findViewById(R.id.end_time);
 
+        mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
+        btnPlacePicker=(Button)findViewById(R.id.pickerButton);
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
+        btnPlacePicker.setOnClickListener(this);
+        //Place Picker result textview
+        mName = (TextView) findViewById(R.id.textView1);
+
+        mClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
 
         latLng = (LatLng) getIntent().getParcelableExtra("location");
 
@@ -90,6 +120,9 @@ public class EditActivity extends Activity implements View.OnClickListener{
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
+
+        //Button button1 = (Button) findViewById(R.id.pickerButton);
+
         /*
         final TextView Date = (TextView) findViewById(R.id.textView3);
         final TextView Time = (TextView) findViewById(R.id.textView4);*/
@@ -182,6 +215,19 @@ public class EditActivity extends Activity implements View.OnClickListener{
             endTimePickerDialog.show();
         }
 
+        if (v == btnPlacePicker) {
+
+            mAddress = (TextView) findViewById(R.id.textView2);
+            btnPlacePicker=(Button)findViewById(R.id.pickerButton1);
+
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            try {
+                startActivityForResult(builder.build(EditActivity.this), PLACE_PICKER_REQUEST);
+            } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
+        }
+
         if(v == btnSave){
             resetErrorMessages();
             if(inputsAreNotEmpty() && datesAndTimesAreValid()){
@@ -240,6 +286,46 @@ public class EditActivity extends Activity implements View.OnClickListener{
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode,
+                                    int resultCode, Intent data) {
+
+        if (requestCode == PLACE_PICKER_REQUEST
+                && resultCode == Activity.RESULT_OK) {
+
+            final Place place = PlacePicker.getPlace(this, data);
+
+            /*final CharSequence name = place.getName();
+            final CharSequence address = place.getAddress();
+            final String latlng = place.getLatLng().toString();
+*/
+            mName.setText(formatPlaceDetails(getResources(), place.getName(), place.getRating(),
+                    place.getId(), place.getAddress(), place.getPhoneNumber(),
+                    place.getWebsiteUri(), place.getLatLng()));
+            //mAddress.setText(address);
+            //mLatLng.setText(latlng);
+            //mAttributions.setText(Html.fromHtml(attributions));
+
+// Display attributions if required.
+           /* CharSequence attributions = place.getAttributions();
+            if (!TextUtils.isEmpty(attributions)) {
+                mPlaceAttribution.setText(Html.fromHtml(attributions.toString()));
+            } else {
+                mPlaceAttribution.setText("");
+            }*/
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private static Spanned formatPlaceDetails(Resources res, CharSequence name, float rating, String id,
+                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri, LatLng latLng) {
+        Log.e(TAG, res.getString(R.string.place_details, name, rating, id, address, phoneNumber,
+                websiteUri, latLng));
+        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber, rating,
+                websiteUri, latLng));
+
+    }
 
     // removes any previously set errors on TextViews
     private void resetErrorMessages(){

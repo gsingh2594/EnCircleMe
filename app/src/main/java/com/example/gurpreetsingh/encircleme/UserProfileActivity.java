@@ -251,7 +251,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_editprofile) {
-            Intent modifySettings=new Intent(UserProfileActivity.this,CreateUserProfileActivity.class);
+            Intent modifySettings=new Intent(UserProfileActivity.this,EditUserProfileActivity.class);
             startActivity(modifySettings);
         }
         if (id == R.id.settings){
