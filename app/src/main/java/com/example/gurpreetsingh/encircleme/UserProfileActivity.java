@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -132,11 +133,37 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         loadUserProfileImage();
         loadUserCoverImage();
 
-        Alerts();
+/*        Alerts();
         Maps();
         Friends();
         Profile();
-        Settings();
+        Settings();*/
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_profile:
+                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.action_friends:
+                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.action_map:
+                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                        startActivity(map);
+                        break;
+/*                            case R.id.action_alerts:
+                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
+                                startActivity(events);
+                                break;
+                        */}
+                return false;
+            }
+        });
     }
 
     @Override
@@ -599,7 +626,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         moveTaskToBack(true);
     }
 
-    //Button
+/*    //Button
     public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
@@ -649,5 +676,5 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 startActivity(setting);
             }
         });
-    }
+    }*/
 }

@@ -15,6 +15,8 @@
         android:theme="?attr/actionBarTheme"
         app:title="Create a circle" />
 
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="396dp"
@@ -155,6 +157,17 @@
                 android:layout_below="@+id/textView1"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/placemap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/btn_endtime"
+                android:layout_below="@+id/textView2"
+                android:layout_marginTop="5dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Pick Place"
+                android:textColor="@android:color/white" />
 
         </RelativeLayout>
     </ScrollView>

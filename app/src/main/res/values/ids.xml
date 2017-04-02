@@ -7,4 +7,9 @@
     <item name="text_friends" type="id" />
     <item name="text_map" type="id" />
     <item name="text_alerts" type="id" />
+    <item name="tab_profile" type="id" />
+    <item name="tab_friends" type="id" />
+    <item name="tab_map" type="id" />
+    <item name="tab_circles" type="id" />
+    <item name="bottom_navigation_view" type="id" />
 </resources>

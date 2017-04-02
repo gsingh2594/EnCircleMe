@@ -1,5 +1,6 @@
 package com.example.gurpreetsingh.encircleme;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +17,8 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -92,7 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
     GeoFire geoFire = new GeoFire(ref);
 
-    //Button
+    /*//Button
     public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +150,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(setting);
             }
         });
-    }
+    }*/
 
 
     @Override
@@ -164,14 +167,41 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
-        Alerts();
+        /*Alerts();
         Maps();
         Friends();
         Profile();
         Settings();
-        //Search();
+        //Search();*/
 
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                            case R.id.action_profile:
+                                Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                                startActivity(profile);
+                                break;
+                            case R.id.action_friends:
+                                Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                                startActivity(friends);
+                                break;
+                            case R.id.action_map:
+                                Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                                startActivity(map);
+                                break;
+/*                            case R.id.action_alerts:
+                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
+                                startActivity(events);
+                                break;
+                        */}
+                        return false;
+                    }
+                });
     }
+
+
         /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         mAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override

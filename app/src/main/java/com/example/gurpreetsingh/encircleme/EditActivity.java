@@ -58,8 +58,7 @@ import static android.content.ContentValues.TAG;
 
 //import android.icu.util.Calendar;     <-- not supported with our minSDK
 
-
-public class EditActivity extends Activity implements View.OnClickListener{
+public class EditActivity extends Activity implements View.OnClickListener {
     private TimePicker timePicker1;
     private TimePicker timePicker2;
     private TextView time;
@@ -71,16 +70,14 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private String format = "";
     private ImageView profileImage;
 
-
     private TextView mPlaceAttribution;
-    private Button btnDatePicker, btnTimePicker, btnEndTimePicker, btnSave, btnPlacePicker;
+    private Button btnDatePicker, btnTimePicker, btnEndTimePicker, btnSave, btnPlacePicker, btnPlacemap;
     private LatLng latLng;
     private EditText eventName, about;
     private TextView txtDate, txtTime, txtEndTime;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog startTimePickerDialog, endTimePickerDialog;
-
 
     private static final int PLACE_PICKER_REQUEST = 1000;
     private GoogleApiClient mClient;
@@ -100,9 +97,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private static final long ONE_MEGABYTE = 1024 * 1024;
     private byte[] profileImageBytes;
 
-    private ArrayList<Event>usersCreatedEventsList;
-    private ArrayList<String>usersCreatedEventsKeysList;
-
+    private ArrayList<Event> usersCreatedEventsList;
+    private ArrayList<String> usersCreatedEventsKeysList;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -110,21 +106,24 @@ public class EditActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editactivity);
 
-        btnDatePicker=(Button)findViewById(R.id.btn_date);
-        btnTimePicker=(Button)findViewById(R.id.btn_time);
-        btnEndTimePicker=(Button)findViewById(R.id.btn_endtime);
+        btnDatePicker = (Button) findViewById(R.id.btn_date);
+        btnTimePicker = (Button) findViewById(R.id.btn_time);
+        btnEndTimePicker = (Button) findViewById(R.id.btn_endtime);
         btnSave = (Button) findViewById(R.id.save);
-        txtDate=(TextView)findViewById(R.id.in_date);
-        txtTime=(TextView)findViewById(R.id.in_time);
-        txtEndTime=(TextView)findViewById(R.id.end_time);
+        txtDate = (TextView) findViewById(R.id.in_date);
+        txtTime = (TextView) findViewById(R.id.in_time);
+        txtEndTime = (TextView) findViewById(R.id.end_time);
 
+        btnPlacemap = (Button) findViewById(R.id.placemap);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
-        btnPlacePicker=(Button)findViewById(R.id.pickerButton);
+        btnPlacePicker = (Button) findViewById(R.id.pickerButton);
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
         btnPlacePicker.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        btnPlacemap.setOnClickListener(this);
+
         //Place Picker result textview
         mName = (TextView) findViewById(R.id.textView1);
 
@@ -165,8 +164,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
         showEndTime(hour, min);*/
     }
 
-    public Bitmap resizeMapIcons(String iconName,int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+    public Bitmap resizeMapIcons(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
     }
@@ -240,7 +239,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
         if (v == btnPlacePicker) {
 
             mAddress = (TextView) findViewById(R.id.textView2);
-            btnPlacePicker=(Button)findViewById(R.id.pickerButton1);
+            btnPlacePicker = (Button) findViewById(R.id.pickerButton1);
 
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             try {
@@ -248,6 +247,10 @@ public class EditActivity extends Activity implements View.OnClickListener{
             } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (v == btnPlacemap) {
+            startActivity(new Intent(EditActivity.this, PlaceActivity.class));
         }
 
         if(v == btnSave){
@@ -309,7 +312,6 @@ public class EditActivity extends Activity implements View.OnClickListener{
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
-
         View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);
         ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.profile_image);
         markerImageView.setImageResource(resId);

@@ -2,6 +2,8 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -54,11 +56,13 @@ public class FriendsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("My Friends");
 
+/*
         Profile();
         Friends();
         Alerts();
         Maps();
         Settings();
+*/
 
         neutralFace = (ImageView) findViewById(R.id.neutral_face_icon);
         noFriendsTextView = (TextView) findViewById(R.id.no_friends_textview);
@@ -66,6 +70,32 @@ public class FriendsActivity extends AppCompatActivity {
 
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_profile:
+                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.action_friends:
+                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.action_map:
+                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                        startActivity(map);
+                        break;
+/*                            case R.id.action_alerts:
+                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
+                                startActivity(events);
+                                break;
+                        */}
+                return false;
+            }
+        });
     }
 
 
@@ -173,7 +203,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
 
-    public void Profile() {
+/*    public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,5 +257,5 @@ public class FriendsActivity extends AppCompatActivity {
                 startActivity(setting);
             }
         });
-    }
+    }*/
 }

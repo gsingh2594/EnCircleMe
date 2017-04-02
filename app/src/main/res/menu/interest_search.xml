@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/music"
+        android:orderInCategory="101"
+        android:title="Music"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/arts"
+        android:orderInCategory="101"
+        android:title="Arts and Crafts"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/cafe"
+        android:orderInCategory="101"
+        android:title="Cafe"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/nightclubs"
+        android:orderInCategory="101"
+        android:title="Night Clubs"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/restaurants"
+        android:orderInCategory="101"
+        android:title="Restaurants"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/shoppingmalls"
+        android:orderInCategory="101"
+        android:title="Shopping Malls"
+        app:showAsAction="ifRoom" />
+
+</menu>
