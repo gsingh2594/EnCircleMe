@@ -84,20 +84,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    Button btnAlerts;
+    private LatLng userLocation;
+
+    /*Button btnAlerts;
     Button btnMaps;
     Button btnProfile;
     Button friends;
-    Button btnSetting;
+    Button btnSetting;*/
     ImageButton btnSearch;
 
     private TextView textFavorites;
     private TextView textSchedules;
     private TextView textMusic;
 
+    /*
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
     GeoFire geoFire = new GeoFire(ref);
-    private LatLng userLocation;
+    */
 
     /*//Button
     public void Profile() {

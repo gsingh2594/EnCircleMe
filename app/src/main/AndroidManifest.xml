@@ -61,7 +61,8 @@
         <activity android:name=".PlacePickerActivity" />
         <activity
             android:name=".AddFriendSearchActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

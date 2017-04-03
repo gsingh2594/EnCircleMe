@@ -2,10 +2,15 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,12 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import android.util.Log;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,16 +36,24 @@ import java.util.HashMap;
 public class ViewOtherUserProfileActivity extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseAuth auth;
+    String userID;
+    String currentUserID;
+
     DatabaseReference dbRef;
     DatabaseReference dbUserRef;
     DatabaseReference friendsRef;
 
-    String userID;
-    String currentUserID;
+    private FirebaseStorage fbStorage;
+    private StorageReference fbStorageRef;
+    private static final long ONE_MEGABYTE = 1024 * 1024;
 
     private TextView profileName;
     private TextView profileBio;
     private ImageView addFriendIcon, alreadyFriendsIcon;
+    private byte[] profileImageBytes;
+    private byte[] coverImageBytes;
+    private ImageView profileImage;
+    private ImageView coverImage;
 
 
     @Override
@@ -49,15 +67,69 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();                             // root directory of DB
         dbUserRef = database.getReference("users/" + userID);
+        fbStorage = FirebaseStorage.getInstance();
 
         profileName = (TextView) findViewById(R.id.user_profile_name);
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
         addFriendIcon = (ImageView) findViewById(R.id.add_friend_icon);
         alreadyFriendsIcon = (ImageView) findViewById(R.id.already_friends_icon);
+        profileImage = (ImageView) findViewById(R.id.profile_image);
+        coverImage = (ImageView) findViewById(R.id.cover_image);
+
+        loadUserProfile();
+        loadUserProfileImage();
+        loadUserCoverImage();
+
+        // Check if current user is already friends with this user
+        friendsRef = database.getReference("friends");
+        friendsRef.child(currentUserID).orderByKey().equalTo(userID)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists())
+                        // Current user is already friends with this user
+                        showAsFriend();
+                    else
+                        // Current user is not friends with this user -> Show as addable friend
+                        showAsAddableFriend();
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(ViewOtherUserProfileActivity.this, "Database error"
+                            + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_profile:
+                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.action_friends:
+                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.action_map:
+                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                        startActivity(map);
+                        break;
+/*                            case R.id.action_alerts:
+                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
+                                startActivity(events);
+                                break;
+                        */}
+                return false;
+            }
+        });
+    }
+
+    // Load user profile from DB
+    private void loadUserProfile(){
         final LinearLayout interestsLinearLayout = (LinearLayout) findViewById(R.id.interests_linearlayout);
-
-
-        // Load user profile from DB
         dbUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -91,28 +163,57 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                 Toast.makeText(ViewOtherUserProfileActivity.this, "Data could not be retrieved", Toast.LENGTH_SHORT).show();
             }
         });
-
-        // Check if current user is already friends with this user
-        friendsRef = database.getReference("friends");
-        friendsRef.child(currentUserID).orderByKey().equalTo(userID)
-            .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists())
-                        // Current user is already friends with this user
-                        showAsFriend();
-                    else
-                        // Current user is not friends with this user -> Show as addable friend
-                        showAsAddableFriend();
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(ViewOtherUserProfileActivity.this, "Database error"
-                            + databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
     }
 
+
+    // load user profile image from Firebase Storage
+    private void loadUserProfileImage() {
+        Log.d("load profile pic", "about to load from storage");
+        StorageReference profilePicStorageRef = fbStorage.getReference("profile_images/" + userID);
+        profilePicStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // user has profile pic --> display it
+                Log.d("loadUserProfileImage()", "getBytes successful");
+                profileImageBytes = bytes;
+                Log.d("loadUserProfileImage()", "convert bytes to bitmap");
+                Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
+                profileImage.setImageBitmap(profileImageBitmap);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // User has not set profile image
+                Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
+                Toast.makeText(ViewOtherUserProfileActivity.this, "No profile image", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    // load user cover image from Firebase Storage
+    private void loadUserCoverImage() {
+        Log.d("load profile pic", "about to load from storage");
+        StorageReference profilePicStorageRef = fbStorage.getReference("cover_images/" + userID);
+        profilePicStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // user has profile pic --> display it
+                Log.d("loadUserCoverImage()", "getBytes successful");
+                coverImageBytes = bytes;
+                Log.d("loadUserCoverImage()", "convert bytes to bitmap");
+                Bitmap coverImageBitmap = BitmapFactory.decodeByteArray(coverImageBytes, 0, coverImageBytes.length);
+                coverImage.setImageBitmap(coverImageBitmap);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // User has not set cover image
+                Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
+                Toast.makeText(ViewOtherUserProfileActivity.this, "No cover image", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
 
     // Method to display the user profile with an addFriendIcon

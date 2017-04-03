@@ -78,11 +78,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private ImageView editIcon;
     private AlertDialog editBioDialog;
 
-    Button btnAlerts;
+    /*Button btnAlerts;
     Button btnMaps;
     Button btnProfile;
     Button friends;
-    Button btnSetting;
+    Button btnSetting;*/
 
 
     @Override
@@ -235,9 +235,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
+                // User has not set profile image
                 Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                Toast.makeText(UserProfileActivity.this, "Failed to load profile image", Toast.LENGTH_LONG).show();
+                Toast.makeText(UserProfileActivity.this, "No profile image", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -260,9 +260,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Log.d("loadUserCoverImage()", "Firebase storage exception " + exception.getMessage());
-                Toast.makeText(UserProfileActivity.this, "Failed to load cover image", Toast.LENGTH_LONG).show();
+                // User has not set cover image
+                Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
+                Toast.makeText(UserProfileActivity.this, "No cover image", Toast.LENGTH_LONG).show();
             }
         });
     }
