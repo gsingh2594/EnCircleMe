@@ -48,7 +48,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/about"
                 android:gravity="center_vertical"
-                android:hint="Date" />
+                android:hint="Date"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"/>
 
             <Button
                 android:id="@+id/btn_date"
@@ -70,7 +73,10 @@
                 android:layout_alignTop="@+id/btn_time"
                 android:layout_toStartOf="@+id/btn_time"
                 android:gravity="center_vertical"
-                android:hint="Start Time" />
+                android:hint="Start Time"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"/>
 
             <Button
                 android:id="@+id/btn_time"
@@ -92,7 +98,10 @@
                 android:layout_alignTop="@+id/btn_endtime"
                 android:layout_toStartOf="@+id/btn_endtime"
                 android:gravity="center_vertical"
-                android:hint="End Time" />
+                android:hint="End Time"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"/>
 
             <Button
                 android:id="@+id/btn_endtime"
