@@ -1,6 +1,5 @@
 package com.example.gurpreetsingh.encircleme;
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,8 +35,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.common.logger.Log;
 import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -58,6 +60,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -94,6 +97,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
     GeoFire geoFire = new GeoFire(ref);
+    private LatLng userLocation;
 
     /*//Button
     public void Profile() {
@@ -179,29 +183,67 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                            case R.id.action_profile:
-                                Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                                startActivity(profile);
-                                break;
-                            case R.id.action_friends:
-                                Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
-                                startActivity(friends);
-                                break;
-                            case R.id.action_map:
-                                Intent map = new Intent(getApplicationContext(), MapsActivity.class);
-                                startActivity(map);
-                                break;
+                    case R.id.action_profile:
+                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.action_friends:
+                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.action_map:
+                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                        startActivity(map);
+                        break;
 /*                            case R.id.action_alerts:
                                 Intent events = new Intent(getApplicationContext(), SearchActivity.class);
                                 startActivity(events);
                                 break;
                         */}
-                        return false;
-                    }
-                });
+                return false;
+            }
+        });
     }
 
+    private void loadEventsFromDB(){
+        DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events/geofire_locations");
+        GeoFire eventsGeoFireRef = new GeoFire(eventLocationsRef);
+        Log.d("loadEventsFromDB()", "creating GeoQuery");
+        GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 2.2);
+        Log.d("loadEventsFromDB()", "starting GeoQuery");
+        eventsGeoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                // Create location marker
+                Log.d("onKeyEntered", "event found");
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(new LatLng(location.latitude, location.longitude));
+                markerOptions.title("Event Title");
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+            }
 
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
+    }
         /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         mAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -351,12 +393,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MapsInitializer.initialize(this);
         addCustomMarker();
 
+        Log.d("onMapReady()","checking location permissions");
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
+                Log.d("Location permissions", "already granted");
                 buildGoogleApiClient();
                 mGoogleMap.setMyLocationEnabled(true);
             } else {
@@ -397,13 +441,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+        Log.d("buildGoogleApiClient()", "connecting to google services");
     }
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.d("onConnected()", "Connected to Google services");
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -422,21 +468,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("onLocationChanged()", "new location");
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-        //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        userLocation = latLng;
 
         //move map camera
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
+        loadEventsFromDB();
+        /*
         //optionally, stop location updates if only current location is needed
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+        */
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
