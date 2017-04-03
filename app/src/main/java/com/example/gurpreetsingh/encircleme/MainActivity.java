@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private TextInputLayout loginInputLayoutEmail, loginInputLayoutPassword;
     private FirebaseAuth.AuthStateListener authListener;
 
-
-
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
     private String uid;
@@ -63,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
+                    // User is already signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    startActivity(new Intent(MainActivity.this, MapsActivity.class));
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
