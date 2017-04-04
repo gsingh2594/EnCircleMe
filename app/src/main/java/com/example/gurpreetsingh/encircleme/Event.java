@@ -12,16 +12,20 @@ class Event {
     private String date;
     private String startTime;
     private String endTime;
-    private LatLng latLng;
+    private double latitude;
+    private double longitude;
 
 
-    public Event(String name, String about, String date, String startTime, String endTime, LatLng latLng){
+    public Event(){}
+
+    public Event(String name, String about, String date, String startTime, String endTime, double latitude, double longitude){
         this.name = name;
         this.about = about;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.latLng = latLng;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getName() {
@@ -64,11 +68,13 @@ class Event {
         this.endTime = endTime;
     }
 
-    public LatLng getLatLng() {
-        return latLng;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
-    }
+    public void setLatitude(double latitude) {this.latitude = latitude;}
+
+    public double getLongitude(){ return longitude; }
+
+    public void setLongitude(double longitude){ this.longitude = longitude;}
 }

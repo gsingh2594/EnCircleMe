@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -60,9 +61,18 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -86,6 +96,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Marker mCurrLocationMarker;
     private LatLng userLocation;
 
+    private HashMap<String, Event> eventsInfoMap;
+    private HashMap<String, Bitmap> creatorProfileImagesMap;
+    private static final long ONE_MEGABYTE = 1024*1024;
     /*Button btnAlerts;
     Button btnMaps;
     Button btnProfile;
@@ -174,6 +187,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
+        buildGoogleApiClient();
         /*Alerts();
         Maps();
         Friends();
@@ -206,29 +220,55 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return false;
             }
         });
+        eventsInfoMap = new HashMap<String, Event>();
+        creatorProfileImagesMap= new HashMap<String, Bitmap>();
     }
 
     private void loadEventsFromDB(){
         DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events/geofire_locations");
         GeoFire eventsGeoFireRef = new GeoFire(eventLocationsRef);
-        Log.d("loadEventsFromDB()", "creating GeoQuery");
+
+        // GeoQuery to retrieve events within a specified distance of the user's current location
         GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 2.2);
         Log.d("loadEventsFromDB()", "starting GeoQuery");
         eventsGeoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                // Create location marker
+                final String eventKey = key;
                 Log.d("onKeyEntered", "event found");
+                // Create location marker
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(new LatLng(location.latitude, location.longitude));
-                markerOptions.title("Event Title");
+                markerOptions.title(key);   // For retrieving later
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+
+                // Load event info from DB
+                DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events/all_events/" + eventKey);
+                eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get Event object for event info
+                        Event event = dataSnapshot.getValue(Event.class);
+                        // Store event info in HashMap for later access
+                        eventsInfoMap.put(eventKey, event);
+                        // Load the event creator's profile image
+                        loadCreatorProfileImage(eventKey);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(MapsActivity.this, "Error loading event info", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
             @Override
             public void onKeyExited(String key) {
-
+                // Remove event from HashMap
+                eventsInfoMap.remove(key);
+                // Remove creator's profile image from HashMap
+                creatorProfileImagesMap.remove(key);
             }
 
             @Override
@@ -366,6 +406,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .setNegativeButton("No", null)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
+                            FirebaseAuth.getInstance().signOut();
                             startActivity(new Intent(MapsActivity.this, MainActivity.class));
                             //finish();
                         }
@@ -379,8 +420,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onPause() {
         super.onPause();
         //stop location updates when Activity is no longer active
-        if (mGoogleApiClient != null) {
+        if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        // Resume location updates when user returns to the MapsActivity
+        if(mGoogleApiClient.isConnected()){
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            }
         }
     }
 
@@ -404,14 +458,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
                 Log.d("Location permissions", "already granted");
-                buildGoogleApiClient();
+                //buildGoogleApiClient();
                 mGoogleMap.setMyLocationEnabled(true);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
             }
         } else {
-            buildGoogleApiClient();
+            //buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
 
@@ -598,7 +652,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
-
         View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.search_marker, null);
         ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.pin_image);
         markerImageView.setImageResource(resId);
@@ -617,6 +670,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private View prepareInfoView(Marker marker){
+        // Get event info from HashMap
+        String eventKey = marker.getTitle();
+        Event event = eventsInfoMap.get(eventKey);
+
         //prepare InfoView programmatically
         LinearLayout infoView = new LinearLayout(MapsActivity.this);
         LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
@@ -625,9 +682,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         infoView.setLayoutParams(infoViewParams);
 
         ImageView infoImageView = new ImageView(MapsActivity.this);
-        //Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
-        Drawable drawable = getResources().getDrawable(android.R.drawable.ic_dialog_map);
-        infoImageView.setImageDrawable(drawable);
+        Bitmap profileImage = creatorProfileImagesMap.get(eventKey);
+        if(profileImage != null){
+            // Event creator has profile image
+            infoImageView.setImageBitmap(creatorProfileImagesMap.get(eventKey));
+        }
+        else {
+            // Event creator does not have profile image
+            //Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+            Drawable drawable = getResources().getDrawable(android.R.drawable.ic_dialog_map);
+            infoImageView.setImageDrawable(drawable);
+        }
         infoView.addView(infoImageView);
 
         LinearLayout subInfoView = new LinearLayout(MapsActivity.this);
@@ -636,21 +701,75 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         subInfoView.setOrientation(LinearLayout.VERTICAL);
         subInfoView.setLayoutParams(subInfoViewParams);
 
+        /*
         TextView subInfoLat = new TextView(MapsActivity.this);
         subInfoLat.setText("Lat: " + marker.getPosition().latitude);
         TextView subInfoLnt = new TextView(MapsActivity.this);
         subInfoLnt.setText("Lnt: " + marker.getPosition().longitude);
         subInfoView.addView(subInfoLat);
         subInfoView.addView(subInfoLnt);
-        infoView.addView(subInfoView);
+        */
+        TextView eventNameText = new TextView(MapsActivity.this);
+        TextView eventDescriptionText = new TextView(MapsActivity.this);
+        eventNameText.setText(event.getName());
+        eventNameText.setPadding(15, 0, 0, 0);
+        eventDescriptionText.setText(event.getAbout());
+        eventDescriptionText.setPadding(15, 0, 0, 0);
 
+        subInfoView.addView(eventNameText);
+        subInfoView.addView(eventDescriptionText);
+        infoView.addView(subInfoView);
         return infoView;
     }
 
     /*@Override
     public boolean onMarkerClick(Marker marker) {
         return false;
-    }*/
+    }
+    */
+
+    private void loadCreatorProfileImage(String key){
+        final String eventKey = key;
+        // Load event creator's userID from DB
+        DatabaseReference eventKeyCreatorsRef = FirebaseDatabase.getInstance()
+                .getReference("events/event_key_creators/" + eventKey);
+        eventKeyCreatorsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    String creatorID =dataSnapshot.getValue().toString();
+                    Log.d("creatorID", creatorID);
+
+                    // Load creator's profile image
+                    final StorageReference creatorProfileImageRef = FirebaseStorage.getInstance()
+                            .getReference("profile_images/" + creatorID);
+                    creatorProfileImageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            // Profile image returned
+                            Log.d("Creator's profile image", "image returned from storage");
+                            Bitmap profileImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            // Scale profile image
+                            Bitmap scaledProfileImage = profileImage.createScaledBitmap(profileImage, 150, 150, false);
+                            creatorProfileImagesMap.put(eventKey, scaledProfileImage);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Error or no profile image
+                            Log.d("Creator's profile image", "no image found");
+                            creatorProfileImagesMap.put(eventKey, null);    // null to indicate no profile image
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
 
 

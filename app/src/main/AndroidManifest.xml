@@ -33,7 +33,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCpwovh2iZtqfD07jMsJYFTdX5H-ktMNj8" />
 
-        <activity android:name=".MapsActivity" />
+        <activity android:name=".MapsActivity"
+            android:launchMode="singleTop"/> <!-- singleTop to prevent fetching from DB every time activity is started -->
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".EditActivity" />
         <activity android:name=".UserActivity" />
@@ -42,7 +43,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".UserProfileActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop" /> <!-- singleTop to prevent fetching from DB every time activity is started-->
         <activity android:name=".SearchActivity" />
         <activity android:name=".PlaceActivity" />
         <activity android:name=".EditUserProfileActivity" />

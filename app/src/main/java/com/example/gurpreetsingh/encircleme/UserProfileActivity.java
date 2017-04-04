@@ -292,6 +292,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     .setNegativeButton("No", null)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
+                            FirebaseAuth.getInstance().signOut();
                             startActivity(new Intent(UserProfileActivity.this, MainActivity.class));
                             //finish();
                         }

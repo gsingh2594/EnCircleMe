@@ -1,6 +1,7 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -103,7 +104,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
 
     private ArrayList<Event>usersCreatedEventsList;
     private ArrayList<String>usersCreatedEventsKeysList;
-    private int nextUserCreatedEventIndex;
+    private int nextUserCreatedEventIndex = -1; // -1 indicates error until database user's events load
 
     private StorageReference profileImageStorageRef;
     private byte[] profileImageBytes;
@@ -308,12 +309,16 @@ public class EditActivity extends Activity implements View.OnClickListener{
             if(inputsAreNotEmpty() && datesAndTimesAreValid()){
                 Log.d("inputsAreNotEmpty = ", Boolean.toString(inputsAreNotEmpty()));
                 Log.d("datesAndTimes= ", Boolean.toString(datesAndTimesAreValid()));
-                // Save event in DB
-                eventsRef = database.getReference("events");
-                eventKey = eventsRef.push().getKey();
-                Event event = new Event(eventName.getText().toString(), about.getText().toString(),
-                        txtDate.getText().toString(), txtTime.getText().toString(),
-                        txtEndTime.getText().toString(), latLng);
+
+                // Check if user's pasts events ArrayList has already loaded
+                if(nextUserCreatedEventIndex != -1) {
+                    // Previous events ArrayList already loaded
+                    // Save event in DB at nextUserCreatedEventIndex
+                    eventsRef = database.getReference("events");
+                    eventKey = eventsRef.push().getKey();
+                    Event event = new Event(eventName.getText().toString(), about.getText().toString(),
+                            txtDate.getText().toString(), txtTime.getText().toString(),
+                            txtEndTime.getText().toString(), latLng.latitude, latLng.longitude);
 
                 /*
                 // TODO: load user's events ArrayList or store in alternative way
@@ -333,94 +338,100 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 eventUpdates.put("geofire_locations/" + eventKey, new GeoLocation(latLng.latitude, latLng.longitude));
                 */
 
-                // HashMap for multipath updates
-                Map<String, Object>eventUpdates = new HashMap<>();
-                eventUpdates.put("all_events/" + eventKey, event);
-                eventUpdates.put("user_created_events/" + userID + "/" + nextUserCreatedEventIndex, event);
-                eventUpdates.put("user_created_events_keys/" + userID + "/" + nextUserCreatedEventIndex, eventKey);
-                //eventUpdates.put("geofire_locations/" + eventKey, new GeoLocation(latLng.latitude, latLng.longitude));
+                    // HashMap for multipath updates
+                    Map<String, Object> eventUpdates = new HashMap<>();
+                    eventUpdates.put("all_events/" + eventKey, event);
+                    eventUpdates.put("user_created_events/" + userID + "/" + nextUserCreatedEventIndex, event);
+                    eventUpdates.put("event_key_creators/" + eventKey, userID);
+                    //eventUpdates.put("geofire_locations/" + eventKey, new GeoLocation(latLng.latitude, latLng.longitude));
 
-                // Update DB at multiple locations
-                eventsRef.updateChildren(eventUpdates, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if(databaseError != null){
-                            // DB update failed
-                            Log.d("btnSave", "Failed to save in database: \n" + databaseError.getMessage());
-                            Toast.makeText(getBaseContext(), "Failed to create event", Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                            // DB update successful
-                            Log.d("btnSave", "Database updated successfully");
-                            Toast.makeText(getBaseContext(), "Event created!", Toast.LENGTH_LONG).show();
+                    // Update DB at multiple locations
+                    eventsRef.updateChildren(eventUpdates, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                // DB update failed
+                                Log.d("btnSave", "Failed to save in database: \n" + databaseError.getMessage());
+                                Toast.makeText(getBaseContext(), "Failed to create event", Toast.LENGTH_LONG).show();
+                            } else {
+                                // DB update successful
+                                Log.d("btnSave", "Database updated successfully");
+                                Toast.makeText(getBaseContext(), "Event created!", Toast.LENGTH_LONG).show();
 
-                            // Save location with GeoFire
-                            DatabaseReference geoFireLocationsRef = eventsRef.child("geofire_locations");
-                            GeoFire geoFireEvents = new GeoFire(geoFireLocationsRef);
-                            geoFireEvents.setLocation(eventKey, new GeoLocation(latLng.latitude, latLng.longitude),
-                                    new GeoFire.CompletionListener() {
-                                        @Override
-                                        public void onComplete(String key, DatabaseError error) {
-                                            Log.d("GeoFire.setLocation()", "GeoLocation saved");
-                                            Toast.makeText(EditActivity.this, "Location saved", Toast.LENGTH_LONG).show();
+                                // Save location with GeoFire
+                                DatabaseReference geoFireLocationsRef = eventsRef.child("geofire_locations");
+                                GeoFire geoFireEvents = new GeoFire(geoFireLocationsRef);
+                                geoFireEvents.setLocation(eventKey, new GeoLocation(latLng.latitude, latLng.longitude),
+                                        new GeoFire.CompletionListener() {
+                                            @Override
+                                            public void onComplete(String key, DatabaseError error) {
+                                                Log.d("GeoFire.setLocation()", "GeoLocation saved");
+                                                Toast.makeText(EditActivity.this, "Location saved", Toast.LENGTH_LONG).show();
 
-                                            // Load profile image from storage
-                                            profileImageStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
-                                            profileImageStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                @Override
-                                                public void onSuccess(byte[] bytes) {
-                                                    // user has profile pic --> display it
-                                                    Log.d("loadUserProfileImage()", "getBytes successful");
-                                                    profileImageBytes = bytes;
-                                                    Log.d("loadUserProfileImage()", "convert bytes to bitmap");
-                                                    Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
+                                                // Load profile image from storage
+                                                profileImageStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
+                                                profileImageStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                    @Override
+                                                    public void onSuccess(byte[] bytes) {
+                                                        // user has profile pic --> display it
+                                                        Log.d("loadUserProfileImage()", "getBytes successful");
+                                                        profileImageBytes = bytes;
+                                                        Log.d("loadUserProfileImage()", "convert bytes to bitmap");
+                                                        Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
 
-                                                    // Create marker with user profile image for map
-                                                    createMarkerForMap(profileImageBitmap);
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception exception) {
-                                                    // Handle any errors
-                                                    Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                                                    Toast.makeText(EditActivity.this, "Failed to load profile image", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                        }
-                                    });
-                        }
-                    }
-
-                    private void createMarkerForMap(Bitmap profileImage){
-                        // Create marker for map
-                        MarkerOptions marker;
-                        if(profileImage != null) {
-                            // User has profile image --> display it in the marker
-                            Bitmap scaledProfileImage = Bitmap.createScaledBitmap(profileImage, 200, 200, false);
-                            marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
-                                    .fromBitmap(getMarkerBitmapFromView(scaledProfileImage)));
-                        }
-                        else {
-                            // User doesn't have profile image --> show default icon
-                            marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
-                                    .fromBitmap(getMarkerBitmapFromView(R.drawable.neutral_face_icon)));
-                        }
-                        if (eventName.getText() != null) {
-                            marker.title("Event: " + eventName.getText().toString() + ", " +
-                                    (about.getText().toString()));
-                            marker.snippet((txtDate.getText().toString() + " " + (txtTime.getText().toString() +
-                                    " to " + (txtEndTime.getText().toString()))));
-                            marker.draggable(true);
+                                                        // Create marker with user profile image for map
+                                                        createMarkerForMap(profileImageBitmap);
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception exception) {
+                                                        // Handle any errors
+                                                        Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
+                                                        Toast.makeText(EditActivity.this, "Failed to load profile image", Toast.LENGTH_LONG).show();
+                                                        // Create marker without a profile image for map
+                                                        createMarkerForMap(null);
+                                                    }
+                                                });
+                                            }
+                                        });
+                            }
                         }
 
-                        // Return marker as activity result
-                        Intent resultIntent = new Intent();
-                        resultIntent.putExtra("marker", marker);
-                        setResult(Activity.RESULT_OK, resultIntent);
-                        finish();
 
-                    }
-                });
+                        private void createMarkerForMap(Bitmap profileImage) {
+                            // Marker for map
+                            MarkerOptions marker;
+                            // Check if a Bitmap was passed as an argument
+                            if (profileImage != null) {
+                                // User has profile image --> display it in the marker
+                                Bitmap scaledProfileImage = Bitmap.createScaledBitmap(profileImage, 200, 200, false);
+                                marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
+                                        .fromBitmap(getMarkerBitmapFromView(scaledProfileImage)));
+                            } else {
+                                // User doesn't have profile image --> show default icon
+                                marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
+                                        .fromBitmap(getMarkerBitmapFromView(R.drawable.neutral_face_icon)));
+                            }
+                            if (eventName.getText() != null) {
+                                marker.title("Event: " + eventName.getText().toString() + ", " +
+                                        (about.getText().toString()));
+                                marker.snippet((txtDate.getText().toString() + " " + (txtTime.getText().toString() +
+                                        " to " + (txtEndTime.getText().toString()))));
+                                marker.draggable(true);
+                            }
+
+                            // Return marker as activity result
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("marker", marker);
+                            setResult(Activity.RESULT_OK, resultIntent);
+                            finish();
+                        }
+                    });
+                }
+                else{
+                    AlertDialog.Builder databaseErrorAlert = new AlertDialog.Builder(EditActivity.this);
+                    databaseErrorAlert.setMessage("Database error loading previous events");
+                }
             }
         }
     }
