@@ -4,21 +4,22 @@
     android:id="@+id/activity_create_user_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.gurpreetsingh.encircleme.CreateUserProfileActivity">
+    tools:context="com.example.gurpreetsingh.encircleme.CreateUserProfileActivity"
+    android:orientation="horizontal">
 
 
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true">
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
         <TextView
             android:id="@+id/textViewCreateUserProfile"
             android:text="Create Your Profile"
@@ -52,55 +53,61 @@
             android:inputType="text"/>
 
 
-        <CheckBox android:id="@+id/checkbox_music"
+        <CheckBox
+            android:id="@+id/checkbox_music"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/map"
-            android:gravity=""
-            android:text="Music"
-            android:onClick="onCheckboxClicked"/>
+            android:button="@drawable/moviesss"
+            android:onClick="onCheckboxClicked"
+            android:text="Movies" />
 
         <CheckBox android:id="@+id/checkbox_arts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Arts and crafts"
+            android:button="@drawable/artgallery"
+            android:text="Arts Gallery"
             android:onClick="onCheckboxClicked"/>
 
         <CheckBox android:id="@+id/checkbox_cafe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/cafe"
             android:text="Cafe"
             android:onClick="onCheckboxClicked"/>
 
         <CheckBox android:id="@+id/checkbox_nightclub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/barsign"
             android:text="Night Clubs"
             android:onClick="onCheckboxClicked"/>
 
         <CheckBox android:id="@+id/checkbox_restaurants"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/restaurant"
             android:text="Restaurants"
             android:onClick="onCheckboxClicked"/>
 
         <CheckBox android:id="@+id/checkbox_shoppingmalls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/shopping"
             android:text="Shopping Malls"
             android:onClick="onCheckboxClicked"/>
 
-        <Button
-            android:id="@+id/saveNameAndPhone"
-            android:text="Save"
-            android:background="@color/colorPrimary"
-            android:itemBackground="@drawable/ripple_effect"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
-
     </LinearLayout>
+</ScrollView>
+
+    <Button
+        android:id="@+id/saveNameAndPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorPrimary"
+        android:itemBackground="@drawable/ripple_effect"
+        android:text="Save"
+        android:layout_alignParentBottom="true"        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
 
 </RelativeLayout>
