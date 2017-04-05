@@ -160,7 +160,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists())
-                    nextUserCreatedEventIndex = dataSnapshot.getValue(ArrayList.class).size();
+                    nextUserCreatedEventIndex = dataSnapshot.getValue(ArrayList.class).size() + 1;
                 else
                     nextUserCreatedEventIndex = 0;
             }
