@@ -282,7 +282,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                             txtEndTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
                                     minute, hourOfDay < 12 ? "am" : "pm"));
                             resetDateAndTimeErrors();
-                            if(startTimePickerDialog != null)
+                            if(startTimePickerDialog != null && datePickerDialog != null)
                                 datesAndTimesAreValid();
                         }
                     }, mHour, mMinute, false);

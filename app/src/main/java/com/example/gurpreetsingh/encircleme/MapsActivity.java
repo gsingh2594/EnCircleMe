@@ -220,9 +220,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return false;
             }
         });
+
         eventsInfoMap = new HashMap<String, Event>();
         creatorProfileImagesMap= new HashMap<String, Bitmap>();
     }
+
 
     private void loadEventsFromDB(){
         DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events/geofire_locations");
@@ -235,13 +237,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 final String eventKey = key;
+                final GeoLocation eventLocation = location;
                 Log.d("onKeyEntered", "event found");
-                // Create location marker
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(new LatLng(location.latitude, location.longitude));
-                markerOptions.title(key);   // For retrieving later
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 // Load event info from DB
                 DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events/all_events/" + eventKey);
@@ -253,12 +250,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // Store event info in HashMap for later access
                         eventsInfoMap.put(eventKey, event);
                         // Load the event creator's profile image
-                        loadCreatorProfileImage(eventKey);
+                        loadCreatorProfileImage(eventKey, eventLocation);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Toast.makeText(MapsActivity.this, "Error loading event info", Toast.LENGTH_LONG).show();
+                        Log.d("loadEventsFromDB", "Database error" + databaseError.getMessage());
                     }
                 });
             }
@@ -287,6 +285,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
+    private void addLocationMarker(String key, GeoLocation location) {
+        // Create location marker
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(new LatLng(location.latitude, location.longitude));
+        markerOptions.title(key);   // For retrieving later
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+    }
+
         /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         mAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -728,8 +736,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     */
 
-    private void loadCreatorProfileImage(String key){
+    private void loadCreatorProfileImage(String key, GeoLocation location){
         final String eventKey = key;
+        final GeoLocation eventLocation = location;
         // Load event creator's userID from DB
         DatabaseReference eventKeyCreatorsRef = FirebaseDatabase.getInstance()
                 .getReference("events/event_key_creators/" + eventKey);
@@ -752,6 +761,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             // Scale profile image
                             Bitmap scaledProfileImage = profileImage.createScaledBitmap(profileImage, 150, 150, false);
                             creatorProfileImagesMap.put(eventKey, scaledProfileImage);
+                            // Create location marker
+                            addLocationMarker(eventKey, eventLocation);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -759,6 +770,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             // Error or no profile image
                             Log.d("Creator's profile image", "no image found");
                             creatorProfileImagesMap.put(eventKey, null);    // null to indicate no profile image
+                            // Create location marker
+                            addLocationMarker(eventKey, eventLocation);
                         }
                     });
                 }
