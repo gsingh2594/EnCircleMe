@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,12 +19,9 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.method.KeyListener;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -38,8 +34,6 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
@@ -131,7 +125,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
-        btnPlacePicker.setOnClickListener(this);
+        //btnPlacePicker.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnPlacemap.setOnClickListener(this);
 
@@ -289,7 +283,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
             endTimePickerDialog.show();
         }
 
-        if (v == btnPlacePicker) {
+        /*if (v == btnPlacePicker) {
             mAddress = (TextView) findViewById(R.id.textView2);
             btnPlacePicker=(Button)findViewById(R.id.pickerButton1);
 
@@ -299,7 +293,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
             } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         if (v == btnPlacemap) {
             startActivity(new Intent(EditActivity.this, PlaceActivity.class));
