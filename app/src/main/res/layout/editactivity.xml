@@ -15,20 +15,22 @@
         android:theme="?attr/actionBarTheme"
         app:title="Create a circle" />
 
-
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="396dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbar2"
         android:layout_above="@+id/save">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="-2dp"
             android:orientation="vertical">
-
 
             <EditText
                 android:id="@+id/eventname"
@@ -47,11 +49,11 @@
                 android:layout_alignParentBottom="false"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/about"
-                android:gravity="center_vertical"
-                android:hint="Date"
+                android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:clickable="true"/>
+                android:gravity="center_vertical"
+                android:hint="Date" />
 
             <Button
                 android:id="@+id/btn_date"
@@ -61,6 +63,8 @@
                 android:layout_toEndOf="@+id/in_date"
                 android:layout_toRightOf="@+id/in_date"
                 android:background="@color/colorPrimaryDark"
+                android:clickable="true"
+                android:itemBackground="@drawable/ripple_effect"
                 android:padding="16dp"
                 android:text="SELECT DATE"
                 android:textColor="@android:color/white" />
@@ -72,11 +76,11 @@
                 android:layout_alignBottom="@+id/btn_time"
                 android:layout_alignTop="@+id/btn_time"
                 android:layout_toStartOf="@+id/btn_time"
-                android:gravity="center_vertical"
-                android:hint="Start Time"
+                android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:clickable="true"/>
+                android:gravity="center_vertical"
+                android:hint="Start Time" />
 
             <Button
                 android:id="@+id/btn_time"
@@ -86,6 +90,8 @@
                 android:layout_below="@+id/btn_date"
                 android:layout_marginTop="15dp"
                 android:background="@color/colorPrimaryDark"
+                android:clickable="true"
+                android:itemBackground="@drawable/ripple_effect"
                 android:padding="16dp"
                 android:text="SELECT TIME"
                 android:textColor="@android:color/white" />
@@ -97,11 +103,11 @@
                 android:layout_alignBottom="@+id/btn_endtime"
                 android:layout_alignTop="@+id/btn_endtime"
                 android:layout_toStartOf="@+id/btn_endtime"
-                android:gravity="center_vertical"
-                android:hint="End Time"
+                android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:clickable="true"/>
+                android:gravity="center_vertical"
+                android:hint="End Time" />
 
             <Button
                 android:id="@+id/btn_endtime"
@@ -111,6 +117,8 @@
                 android:layout_below="@+id/btn_time"
                 android:layout_marginTop="15dp"
                 android:background="@color/colorPrimaryDark"
+                android:clickable="true"
+                android:itemBackground="@drawable/ripple_effect"
                 android:padding="16dp"
                 android:text="SELECT TIME"
                 android:textColor="@android:color/white" />
@@ -127,7 +135,7 @@
                 android:lines="4"
                 android:textAlignment="viewStart" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/pickerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -135,16 +143,17 @@
                 android:layout_below="@+id/btn_endtime"
                 android:layout_marginTop="5dp"
                 android:background="@color/colorPrimaryDark"
+                android:itemBackground="@drawable/ripple_effect"
                 android:text="Pick Place"
-                android:textColor="@android:color/white" />
-
+                android:clickable="true"
+                android:textColor="@android:color/white" />-->
 
             <TextView
                 android:id="@+id/selected_place1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/textView1"
                 android:layout_alignParentStart="true"
+                android:layout_below="@+id/placemap"
                 android:text="Selected Place:"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorPrimaryDark" />
@@ -154,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/pickerButton"
+                android:layout_below="@+id/selected_place1"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
@@ -172,9 +181,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/btn_endtime"
-                android:layout_below="@+id/textView2"
+                android:layout_below="@+id/btn_endtime"
                 android:layout_marginTop="5dp"
                 android:background="@color/colorPrimaryDark"
+                android:clickable="true"
+                android:itemBackground="@drawable/ripple_effect"
                 android:text="Pick Place"
                 android:textColor="@android:color/white" />
 
@@ -188,5 +199,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="@color/colorPrimary"
-        android:text="Create" />
+        android:itemBackground="@drawable/ripple_effect"
+        android:text="Create"
+        android:clickable="true"/>
 </RelativeLayout>

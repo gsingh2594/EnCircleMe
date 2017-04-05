@@ -7,6 +7,7 @@ package com.example.gurpreetsingh.encircleme;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -54,15 +55,16 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
             String placeName = googlePlace.get("place_name");
+            String placeAddress = googlePlace.get("formatted_address");
             String vicinity = googlePlace.get("vicinity");
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
-            markerOptions.title(placeName + " : " + vicinity);
+            markerOptions.title(placeName).snippet(vicinity);
             mMap.addMarker(markerOptions);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             //move map camera
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            //mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
         }
     }
 }

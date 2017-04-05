@@ -6,22 +6,23 @@
     android:layout_height="match_parent"
     tools:context="com.example.gurpreetsingh.encircleme.PlaceActivity">
 
-    <android.support.v7.widget.Toolbar
+   <!-- <android.support.v7.widget.Toolbar
         android:id="@+id/map_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
+        android:title="Place Picker"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
 
-        <Spinner
+        &lt;!&ndash;<Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/map_toolbar" />
+            android:layout_below="@+id/map_toolbar" />&ndash;&gt;
 
-    </android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>-->
 
 
     <HorizontalScrollView
@@ -39,43 +40,71 @@
                 android:id="@+id/btnMusic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Music" />
+                android:drawableTop="@drawable/moviesss"
+                android:padding="5dp"
+                android:text="Movie Theaters"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnArts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Arts and Crafts" />
+                android:drawableTop="@drawable/artgallery"
+                android:padding="5dp"
+                android:text="Art Gallery"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnCafe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Cafe" />
+                android:drawableTop="@drawable/cafe"
+                android:padding="5dp"
+                android:text="Cafe"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnNightclub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Night Clubs"/>
+                android:drawableTop="@drawable/barsign"
+                android:padding="5dp"
+                android:text="Bars"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Restaurants" />
+                android:drawableTop="@drawable/restaurant"
+                android:padding="5dp"
+                android:text="Restaurants"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnShoppingmalls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Shopping" />
+                android:drawableTop="@drawable/shopping"
+                android:padding="5dp"
+                android:text="Dept Stores"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnOther"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Other" />
+                android:drawableTop="@drawable/map"
+                android:padding="5dp"
+                android:text="Other Places"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
 
         </LinearLayout>
     </HorizontalScrollView>

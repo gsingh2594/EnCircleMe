@@ -3,7 +3,9 @@ package com.example.gurpreetsingh.encircleme;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,7 +31,7 @@ public class UserActivity extends AppCompatActivity {
     private TextView textAlerts;
 
 
-    //Button
+/*    //Button
     public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +85,7 @@ public class UserActivity extends AppCompatActivity {
                 startActivity(setting);
             }
         });
-    }
+    }*/
 
 
     @Override
@@ -161,11 +163,49 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        Alerts();
+/*        Alerts();
         Maps();
         Friends();
         Profile();
-        Settings();
+        Settings();*/
+
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_profile:
+                        /*textProfile.setVisibility(View.VISIBLE);
+                        textFriends.setVisibility(View.GONE);
+                        textMap.setVisibility(View.GONE);*/
+                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                        startActivity(profile);
+                        break;
+                    case R.id.action_friends:
+                        /*textProfile.setVisibility(View.GONE);
+                        textFriends.setVisibility(View.VISIBLE);
+                        textMap.setVisibility(View.GONE);*/
+                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                        startActivity(friends);
+                        break;
+                    case R.id.action_map:
+                        /*textProfile.setVisibility(View.GONE);
+                        textFriends.setVisibility(View.GONE);
+                        textMap.setVisibility(View.VISIBLE);*/
+                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                        startActivity(map);
+                        break;
+/*                            case R.id.action_alerts:
+                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
+                                startActivity(events);
+                                break;
+                        */
+                }
+                return false;
+            }
+        });
     }
 
     //sign out method
