@@ -12,14 +12,15 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
+        android:title="Place Picker"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
 
-        <Spinner
+        <!--<Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/map_toolbar" />
+            android:layout_below="@+id/map_toolbar" />-->
 
     </android.support.v7.widget.Toolbar>
 
@@ -39,43 +40,78 @@
                 android:id="@+id/btnMusic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Music" />
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTint="@android:color/white"
+                android:text="Movie Theaters"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnArts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Arts and Crafts" />
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTint="@android:color/white"
+                android:text="Art Gallery"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnCafe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Cafe" />
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTint="@android:color/white"
+                android:text="Cafe"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnNightclub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Night Clubs"/>
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTint="@android:color/white"
+                android:text="Bars"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnRestaurant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Restaurants" />
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTint="@android:color/white"
+                android:text="Restaurants"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnShoppingmalls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nearby Shopping" />
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTint="@android:color/white"
+                android:text="Dept Stores"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnOther"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Other" />
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTint="@android:color/white"
+                android:text="Other Places"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
         </LinearLayout>
     </HorizontalScrollView>

@@ -10,6 +10,13 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/action_tab"
+        android:orderInCategory="100"
+        android:icon="@drawable/map"
+        android:title="Tab"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/settings"
         android:orderInCategory="100"
         android:title="Settings"

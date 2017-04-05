@@ -12,4 +12,6 @@
     <item name="tab_map" type="id" />
     <item name="tab_circles" type="id" />
     <item name="bottom_navigation_view" type="id" />
+    <item name="tab" type="id" />
+    <item name="tabbar" type="id" />
 </resources>

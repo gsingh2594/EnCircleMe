@@ -56,7 +56,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         ActionBar actionBar = getSupportActionBar();
         btnOther = (Button) findViewById(R.id.btnOther);
         btnOther.setOnClickListener(this);
@@ -123,32 +123,32 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
 
         Button btnMusic = (Button) findViewById(R.id.btnMusic);
         btnMusic.setOnClickListener(new View.OnClickListener() {
-            String Music = "music";
+            String movie_theater = "movie_theater";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mMap.clear();
-                String url = getUrl(latitude, longitude, Music);
+                String url = getUrl(latitude, longitude, movie_theater);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mMap;
                 DataTransfer[1] = url;
                 Log.d("onClick", url);
                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(PlaceActivity.this, "Nearby Music", Toast.LENGTH_LONG).show();
+                Toast.makeText(PlaceActivity.this, "Nearby Movie Theaters", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnRestaurant = (Button) findViewById(R.id.btnRestaurant);
         btnRestaurant.setOnClickListener(new View.OnClickListener() {
-            String Restaurant = "restaurant";
+            String restaurant = "restaurant";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mMap.clear();
-                String url = getUrl(latitude, longitude, Restaurant);
+                String url = getUrl(latitude, longitude, restaurant);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mMap;
                 DataTransfer[1] = url;
@@ -160,33 +160,33 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         });
 
         Button btnArts = (Button) findViewById(R.id.btnArts);
-        btnRestaurant.setOnClickListener(new View.OnClickListener() {
-            String Arts = "art_gallery";
+        btnArts.setOnClickListener(new View.OnClickListener() {
+            String art_gallery = "art_gallery";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mMap.clear();
-                String url = getUrl(latitude, longitude, Arts);
+                String url = getUrl(latitude, longitude, art_gallery);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mMap;
                 DataTransfer[1] = url;
                 Log.d("onClick", url);
                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(PlaceActivity.this, "Nearby Arts and Crafts", Toast.LENGTH_LONG).show();
+                Toast.makeText(PlaceActivity.this, "Nearby Art Gallery", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnCafe = (Button) findViewById(R.id.btnCafe);
         btnCafe.setOnClickListener(new View.OnClickListener() {
-            String Cafe = "cafe";
+            String cafe = "cafe";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mMap.clear();
-                String url = getUrl(latitude, longitude, Cafe);
+                String url = getUrl(latitude, longitude, cafe);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mMap;
                 DataTransfer[1] = url;
@@ -199,39 +199,39 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
 
         Button btnNightclub = (Button) findViewById(R.id.btnNightclub);
         btnNightclub.setOnClickListener(new View.OnClickListener() {
-            String Nightclub = "night_club";
+            String bar = "bar";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mMap.clear();
-                String url = getUrl(latitude, longitude, Nightclub);
+                String url = getUrl(latitude, longitude, bar);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mMap;
                 DataTransfer[1] = url;
                 Log.d("onClick", url);
                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(PlaceActivity.this, "Nearby Night Clubs", Toast.LENGTH_LONG).show();
+                Toast.makeText(PlaceActivity.this, "Nearby Bars", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnShopping = (Button) findViewById(R.id.btnShoppingmalls);
         btnShopping.setOnClickListener(new View.OnClickListener() {
-            String Shoppingmalls = "shoppingmalls";
+            String department_store = "department_store";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mMap.clear();
-                String url = getUrl(latitude, longitude, Shoppingmalls);
+                String url = getUrl(latitude, longitude, department_store);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mMap;
                 DataTransfer[1] = url;
                 Log.d("onClick", url);
                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(PlaceActivity.this, "Nearby Shopping Malls", Toast.LENGTH_LONG).show();
+                Toast.makeText(PlaceActivity.this, "Nearby Department Stores", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -314,7 +314,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
         //move map camera

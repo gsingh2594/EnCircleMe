@@ -52,36 +52,30 @@
         android:layout_weight="1"
         android:layout_below="@+id/map_toolbar" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/menubar"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:baselineAligned="false">
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemBackground="@color/colorPrimary"
+        android:itemBackground="@drawable/ripple_effect"
+        app:elevation="8dp"
         app:itemIconTint="@android:color/black"
         app:menu="@menu/bottom_navigation_main"
         app:itemTextColor="@android:color/black"
         android:layout_alignParentBottom="true"/>
 
-<!--    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:id="@+id/menubar"
-        android:layout_alignParentBottom="true"
-        android:background="#75B095"
-        android:baselineAligned="false">
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnProfile"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/profile"
-            android:padding="10dp"
-            android:text="Profile"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
 
+
+<!--
         <Button
             android:id="@+id/friends"
             android:layout_width="0dp"
@@ -127,9 +121,8 @@
             android:scaleType="centerCrop"
             android:text="Settings"
             android:textSize="12sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"/>-->
 
-    </LinearLayout>-->
 
 
 

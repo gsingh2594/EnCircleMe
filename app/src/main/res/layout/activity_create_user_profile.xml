@@ -55,6 +55,8 @@
         <CheckBox android:id="@+id/checkbox_music"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/map"
+            android:gravity=""
             android:text="Music"
             android:onClick="onCheckboxClicked"/>
 
@@ -92,24 +94,12 @@
             android:id="@+id/saveNameAndPhone"
             android:text="Save"
             android:background="@color/colorPrimary"
+            android:itemBackground="@drawable/ripple_effect"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp" />
-
-        <ImageView
-            android:id="@+id/txtPersonName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/pin" />
-
-        <CheckBox
-            android:id="@+id/chkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/txtPersonName" />
 
     </LinearLayout>
 

@@ -29,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -403,9 +402,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             return true;
         }
+        if (id == R.id.action_tab) {
+            Intent modifyTab = new Intent(MapsActivity.this, MapTabsActivity.class);
+            startActivity(modifyTab);
+        }
         if (id == R.id.settings){
             Intent modifySettings=new Intent(MapsActivity.this,UserActivity.class);
             startActivity(modifySettings);
+
+
         }
         if (id == R.id.logout) {
             new AlertDialog.Builder(this)
