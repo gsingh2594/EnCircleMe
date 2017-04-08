@@ -48,6 +48,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -98,7 +99,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
 
     private ArrayList<Event>usersCreatedEventsList;
     private ArrayList<String>usersCreatedEventsKeysList;
-    private int nextUserCreatedEventIndex = -1; // -1 indicates error until database user's events load
+    private int nextUserCreatedEventIndex = -1; // -1 indicates error until user's events load from DB
 
     private StorageReference profileImageStorageRef;
     private byte[] profileImageBytes;
@@ -147,24 +148,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
+        loadNextUserCreatedEventIndex();
 
-        // Load user created events from DB to determine next index for a new event
-        DatabaseReference userCreatedEventsRef = dbRef.child("user_created_events");
-        userCreatedEventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists())
-                    nextUserCreatedEventIndex = dataSnapshot.getValue(ArrayList.class).size() + 1;
-                else
-                    nextUserCreatedEventIndex = 0;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("onCancelled()", "Error loading from DB " + databaseError.getMessage());
-                Toast.makeText(EditActivity.this, "Error loading events list from DB", Toast.LENGTH_LONG).show();
-            }
-        });
         //Button button1 = (Button) findViewById(R.id.pickerButton);
 
         /*
@@ -185,6 +170,32 @@ public class EditActivity extends Activity implements View.OnClickListener{
         int min = calendar.get(Calendar.MINUTE);
         showStartTime(hour, min);
         showEndTime(hour, min);*/
+    }
+
+    private void loadNextUserCreatedEventIndex(){
+        // Load user created events from DB to determine next index for a new event
+        DatabaseReference userCreatedEventsRef = dbRef.child("events/user_created_events/" + userID);
+        userCreatedEventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    ArrayList<Event> userCreatedEventsList = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<Event>>(){});
+                    nextUserCreatedEventIndex = userCreatedEventsList.size();
+                    Log.d("dataSnapshot exists", userCreatedEventsList.toString());
+                }
+                else{
+                    nextUserCreatedEventIndex = 0;
+                    Log.d("dataSnapshot exists", "Does not exist");
+                }
+                Log.d("nextUserEventIndex", Integer.toString(nextUserCreatedEventIndex));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("onCancelled()", "Error loading from DB " + databaseError.getMessage());
+                Toast.makeText(EditActivity.this, "Error loading events list from DB", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public Bitmap resizeMapIcons(String iconName,int width, int height){
@@ -362,6 +373,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                                                 Log.d("GeoFire.setLocation()", "GeoLocation saved");
                                                 Toast.makeText(EditActivity.this, "Location saved", Toast.LENGTH_LONG).show();
 
+                                                nextUserCreatedEventIndex++;
                                                 // Load profile image from storage
                                                 profileImageStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
                                                 profileImageStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {

@@ -11,7 +11,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
@@ -23,12 +27,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,6 +69,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.text.Line;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -71,6 +79,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -94,6 +103,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Location mLastLocation;
     Marker mCurrLocationMarker;
     private LatLng userLocation;
+    private boolean locationInitialized;
 
     private HashMap<String, Event> eventsInfoMap;
     private HashMap<String, Bitmap> creatorProfileImagesMap;
@@ -186,6 +196,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
+        locationInitialized=false;
         buildGoogleApiClient();
         /*Alerts();
         Maps();
@@ -219,7 +230,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return false;
             }
         });
-
+        //HashMaps for storing info used in marker info window
         eventsInfoMap = new HashMap<String, Event>();
         creatorProfileImagesMap= new HashMap<String, Bitmap>();
     }
@@ -230,7 +241,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         GeoFire eventsGeoFireRef = new GeoFire(eventLocationsRef);
 
         // GeoQuery to retrieve events within a specified distance of the user's current location
-        GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 2.2);
+        GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 3.2); // 3.2 km == 2 miles
         Log.d("loadEventsFromDB()", "starting GeoQuery");
         eventsGeoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -246,10 +257,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get Event object for event info
                         Event event = dataSnapshot.getValue(Event.class);
-                        // Store event info in HashMap for later access
-                        eventsInfoMap.put(eventKey, event);
-                        // Load the event creator's profile image
-                        loadCreatorProfileImage(eventKey, eventLocation);
+
+                        // Check if the event has already happened
+                        if(eventHasNotHappened(event)) {
+                            // Store event info in HashMap for later access if it is not already there
+                            if (eventsInfoMap.get(eventKey) == null) {
+                                eventsInfoMap.put(eventKey, event);
+                                // Load the event creator's profile image
+                                loadCreatorProfileImage(eventKey, eventLocation);
+                            }
+                        }
                     }
 
                     @Override
@@ -284,6 +301,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
+
+    private boolean eventHasNotHappened(Event event){
+        Calendar calendar = Calendar.getInstance();
+        String[] mdy = event.getDate().split("/");
+        int month = Integer.parseInt(mdy[0]) -1;
+        int day = Integer.parseInt(mdy[1]);
+        int year = Integer.parseInt(mdy[2]);
+        Log.d("month", Integer.toString(month));
+        Log.d("day", Integer.toString(day));
+        Log.d("year", Integer.toString(year));
+
+        String[] hourMin = event.getEndTime().split(":");
+        int endHour = Integer.parseInt(hourMin[0]);
+        Log.d("hourMin[0]", hourMin[0]);
+        Log.d("hourMin[1]", hourMin[1]);
+        String[] minuteAMPM = hourMin[1].split(" ");
+        int endMinute = Integer.parseInt(minuteAMPM[0]);
+        Log.d("minuteAMPM[0]", minuteAMPM[0]);
+        Log.d("minuteAMPM[1]", minuteAMPM[1]);
+        Log.d("endHour", Integer.toString(endHour));
+        Log.d("endMinute", Integer.toString(endMinute));
+
+        Calendar eventEndDate = Calendar.getInstance(); // calendar object for event end date & time
+        eventEndDate.clear();      // Remove previous values so the set() method works properly
+        eventEndDate.set(year, month, day, endHour, endMinute);
+
+        // Compare current calendar to event end calendar
+        Log.d("calendar.compareTo", Integer.toString(calendar.compareTo(eventEndDate)));
+        if(calendar.compareTo(eventEndDate) < 0){
+            // current date & time is before event end date & time
+            return true;
+        }
+        else // Event has already ended
+            return false;
+    }
+
 
     private void addLocationMarker(String key, GeoLocation location) {
         // Create location marker
@@ -351,10 +405,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String placeName = (String) place.getName();
                 String placeAddress = (String) place.getAddress();
                 LatLng latLng = place.getLatLng();
-                String placeNumber = (String) place.getPhoneNumber();
-                String placeUri = place.getWebsiteUri().toString();
+                String placeNumber;
+                if(place.getPhoneNumber() !=null)
+                    placeNumber = (String) place.getPhoneNumber();
+                String placeUri;
+                if(place.getWebsiteUri() != null) // Prevent crash if no website URI exists
+                    placeUri = place.getWebsiteUri().toString();
                 String placeRating = Float.toString(place.getRating());
-                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeAddress).icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.pin))));
+                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeAddress)
+                        .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.pin))));
                         // .icon(BitmapDescriptorFactory.fromResource((person_pin))));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
@@ -520,6 +579,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(10000);
+        //mLocationRequest.setSmallestDisplacement(5); // no location updates unless user has moved 5 meters. Default is 0 meters
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -546,10 +606,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
 
-        //move map camera
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
+        //move map camera only the first time location is received
+        if(!locationInitialized) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            locationInitialized = true;
+        }
+        // Reload events from DB based on new location
         loadEventsFromDB();
         /*
         //optionally, stop location updates if only current location is needed
@@ -661,7 +724,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public View getInfoContents(Marker marker) {
         //return null;
-        return prepareInfoView(marker);
+        // Check if marker title is a key to an event
+        if(eventsInfoMap.get(marker.getTitle()) != null)
+            // Marker represents an event
+            return prepareEventInfoView(marker);
+        else
+            // Marker represents a place
+            return preparePlaceInfoView(marker);
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
@@ -682,23 +751,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return returnedBitmap;
     }
 
-    private View prepareInfoView(Marker marker){
+    private View prepareEventInfoView(Marker marker){
         // Get event info from HashMap
         String eventKey = marker.getTitle();
         Event event = eventsInfoMap.get(eventKey);
 
         //prepare InfoView programmatically
         LinearLayout infoView = new LinearLayout(MapsActivity.this);
-        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        infoView.setOrientation(LinearLayout.HORIZONTAL);
-        infoView.setLayoutParams(infoViewParams);
 
+        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        imageParams.gravity=Gravity.CENTER_VERTICAL;
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        int margin = convertDPtoPX(5);  // 5dp
+        params.setMargins(margin, margin, margin, margin);
+
+        infoView.setOrientation(LinearLayout.HORIZONTAL);
+        infoView.setLayoutParams(params);
+
+        // profile image view
         ImageView infoImageView = new ImageView(MapsActivity.this);
         Bitmap profileImage = creatorProfileImagesMap.get(eventKey);
         if(profileImage != null){
             // Event creator has profile image
-            infoImageView.setImageBitmap(creatorProfileImagesMap.get(eventKey));
+            infoImageView.setImageBitmap(getClip(creatorProfileImagesMap.get(eventKey)));
         }
         else {
             // Event creator does not have profile image
@@ -706,13 +784,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Drawable drawable = getResources().getDrawable(android.R.drawable.ic_dialog_map);
             infoImageView.setImageDrawable(drawable);
         }
+        infoImageView.setLayoutParams(imageParams);
         infoView.addView(infoImageView);
 
         LinearLayout subInfoView = new LinearLayout(MapsActivity.this);
-        LinearLayout.LayoutParams subInfoViewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         subInfoView.setOrientation(LinearLayout.VERTICAL);
-        subInfoView.setLayoutParams(subInfoViewParams);
+        params.gravity=Gravity.CENTER_VERTICAL;
+        subInfoView.setLayoutParams(params);
 
         /*
         TextView subInfoLat = new TextView(MapsActivity.this);
@@ -723,16 +801,58 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         subInfoView.addView(subInfoLnt);
         */
         TextView eventNameText = new TextView(MapsActivity.this);
-        TextView eventDescriptionText = new TextView(MapsActivity.this);
         eventNameText.setText(event.getName());
-        eventNameText.setPadding(15, 0, 0, 0);
+        eventNameText.setPadding(convertDPtoPX(5), 0, 0, 0);
+        eventNameText.setMaxWidth(convertDPtoPX(200));
+        eventNameText.setTypeface(null, Typeface.BOLD);
+
+        TextView eventDescriptionText = new TextView(MapsActivity.this);
         eventDescriptionText.setText(event.getAbout());
-        eventDescriptionText.setPadding(15, 0, 0, 0);
+        eventDescriptionText.setPadding(convertDPtoPX(5), 0, 0, 0);
+        eventDescriptionText.setMaxWidth(convertDPtoPX(200));
 
         subInfoView.addView(eventNameText);
         subInfoView.addView(eventDescriptionText);
         infoView.addView(subInfoView);
         return infoView;
+    }
+
+
+    private View preparePlaceInfoView(Marker marker){
+        LinearLayout infoView = new LinearLayout(MapsActivity.this);
+        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        infoView.setOrientation(LinearLayout.VERTICAL);
+        infoView.setLayoutParams(infoViewParams);
+
+        TextView placeTitleText = new TextView(MapsActivity.this);
+        placeTitleText.setText(marker.getTitle());
+        placeTitleText.setTypeface(null, Typeface.BOLD);
+
+        TextView placeAddressText = new TextView(MapsActivity.this);
+        placeAddressText.setText(marker.getSnippet());
+
+        infoView.addView(placeTitleText);
+        infoView.addView(placeAddressText);
+        return infoView;
+    }
+
+    // Returns a bitmap as a cropped circle
+    public static Bitmap getClip(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        return output;
     }
 
     /*@Override
@@ -764,7 +884,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Log.d("Creator's profile image", "image returned from storage");
                             Bitmap profileImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                             // Scale profile image
-                            Bitmap scaledProfileImage = profileImage.createScaledBitmap(profileImage, 150, 150, false);
+                            Bitmap scaledProfileImage = profileImage.createScaledBitmap(profileImage, convertDPtoPX(60), convertDPtoPX(60), false);
                             creatorProfileImagesMap.put(eventKey, scaledProfileImage);
                             // Create location marker
                             addLocationMarker(eventKey, eventLocation);
@@ -787,6 +907,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+    }
+
+    // used to set sizes in dp units programmatically. (Some views set sizes programmtically in px, not dp)
+    // We should use this method to make certain views display consistently on different screen densities
+    private int convertDPtoPX(int sizeInDP){
+        float scale = getResources().getDisplayMetrics().density;       // note that 1dp = 1px on a 160dpi screen
+        int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
+        return dpAsPixels;  // return the size in pixels
     }
 }
 
