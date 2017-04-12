@@ -4,23 +4,30 @@
 
     <header
         android:fragment="com.example.gurpreetsingh.encircleme.SettingsActivity2$GeneralPreferenceFragment"
-        android:icon="@drawable/map"
+        android:icon="@drawable/info"
         android:title="@string/pref_header_general">
         <extra android:name="settings" android:value="prefs_general" ></extra>
     </header>
 
     <header
         android:fragment="com.example.gurpreetsingh.encircleme.SettingsActivity2$GeneralPreferenceFragment"
-        android:icon="@drawable/map"
+        android:icon="@drawable/notifications"
         android:title="@string/pref_header_notifications" >
         <extra android:name="settings" android:value="prefs_notification" ></extra>
     </header>
 
     <header
         android:fragment="com.example.gurpreetsingh.encircleme.SettingsActivity2$GeneralPreferenceFragment"
-        android:icon="@drawable/map"
+        android:icon="@drawable/sync"
         android:title="@string/pref_header_data_sync" >
         <extra android:name="settings" android:value="prefs_sync" ></extra>
     </header>
 
+
+    <header
+        android:fragment="com.example.gurpreetsingh.encircleme.SettingsActivity2$GeneralPreferenceFragment"
+        android:icon="@drawable/marker"
+        android:title="Location On/Off" >
+        <extra android:name="settings" android:value="prefs_sync" ></extra>
+    </header>
 </preference-headers>

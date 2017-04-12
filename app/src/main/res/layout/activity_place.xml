@@ -6,122 +6,164 @@
     android:layout_height="match_parent"
     tools:context="com.example.gurpreetsingh.encircleme.PlaceActivity">
 
-   <!-- <android.support.v7.widget.Toolbar
+    <android.support.v7.widget.Toolbar
         android:id="@+id/map_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="40dp"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:title="Place Picker"
+        android:title="Select an interest"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
 
-        &lt;!&ndash;<Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/map_toolbar" />&ndash;&gt;
-
-    </android.support.v7.widget.Toolbar>-->
+    </android.support.v7.widget.Toolbar>
 
 
-    <HorizontalScrollView
+    <LinearLayout
+        android:id="@+id/menubar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttons"
-        android:layout_below="@id/map_toolbar"
-        android:layout_alignParentEnd="true">
+        android:layout_height="65dp"
+        android:baselineAligned="false"
+        android:itemBackground="@drawable/ripple_effect"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btnMusic"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_red_light"
+            android:drawableTop="@drawable/moviebutton"
+            android:elevation="8dp"
+            android:paddingTop="3dp"
+            android:text="Movie Theaters"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="8sp"
+            android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/moviesss"
-                android:padding="5dp"
-                android:text="Movie Theaters"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+        <Button
+            android:id="@+id/btnArts"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:background="@color/cast_libraries_material_featurehighlight_outer_highlight_default_color"
+            android:drawableTop="@drawable/artbutton"
+            android:elevation="8dp"
+            android:paddingTop="3dp"
+            android:text="Art Gallery"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="8sp"
+            android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnArts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/artgallery"
-                android:padding="5dp"
-                android:text="Art Gallery"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+        <Button
+            android:id="@+id/btnCafe"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/cafebutton"
+            android:elevation="8dp"
+            android:paddingTop="3dp"
+            android:text="Cafe"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="8sp"
+            android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnCafe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/cafe"
-                android:padding="5dp"
-                android:text="Cafe"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+        <Button
+            android:id="@+id/btnNightclub"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_orange_dark"
+            android:drawableTop="@drawable/barbutton"
+            android:elevation="8dp"
+            android:paddingTop="3dp"
+            android:text="Bars"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="8sp"
+            android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnNightclub"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/barsign"
-                android:padding="5dp"
-                android:text="Bars"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+        <Button
+            android:id="@+id/btnRestaurant"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_dark"
+            android:drawableTop="@drawable/foodbutton"
+            android:elevation="8dp"
+            android:paddingTop="3dp"
+            android:text="Restaurant"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="8sp"
+            android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnRestaurant"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/restaurant"
-                android:padding="5dp"
-                android:text="Restaurants"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+        <Button
+            android:id="@+id/btnShoppingmalls"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_purple"
+            android:drawableTop="@drawable/deptbutton"
+            android:elevation="8dp"
+            android:paddingTop="3dp"
+            android:text="Dept Stores"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="8sp"
+            android:textStyle="bold" /> 
 
-            <Button
-                android:id="@+id/btnShoppingmalls"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/shopping"
-                android:padding="5dp"
-                android:text="Dept Stores"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+        <Button
+            android:id="@+id/btnOther"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:drawableTop="@drawable/map"
+            android:elevation="8dp"
+            android:paddingTop="3dp"
+            android:text="Other"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="8sp"
+            android:textStyle="bold" /> />
 
-            <Button
-                android:id="@+id/btnOther"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/map"
-                android:padding="5dp"
-                android:text="Other Places"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+    </LinearLayout>
 
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <RelativeLayout
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/buttons">
+        android:id="@+id/map"
+        tools:context="com.example.gurpreetsingh.encircleme.PlaceActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/dragg_result"
+        android:layout_above="@+id/menubar" />
 
-        <fragment
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/map"
-            tools:context="com.example.gurpreetsingh.encircleme.PlaceActivity"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_alignParentStart="true" />
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/marker"
+        android:text="TextView"
+        android:layout_below="@+id/dragg_result"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="168dp" />
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/dragg_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:padding="5dp"
+        android:text="Please drag map to your address.."
+        android:textColor="@android:color/black"
+        android:textSize="15dp"
+        android:layout_below="@+id/map_toolbar"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

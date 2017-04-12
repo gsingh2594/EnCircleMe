@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,6 +92,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Select an interest");
         ActionBar actionBar = getSupportActionBar();
 
         auth = FirebaseAuth.getInstance();
@@ -196,13 +196,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                         TextView interestTextView = new TextView(UserProfileActivity.this);
                         int marginSize = convertDPtoPX(5);
                         LinearLayout.LayoutParams layoutParams =
-                                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
                         interestTextView.setLayoutParams(layoutParams);
-                        interestTextView.setTextSize(16);
+                        interestTextView.setTextSize(10);
                         interestTextView.setText(userInterests.get(i));
                         interestTextView.setElevation((float) convertDPtoPX(4));
-                        int paddingSize = convertDPtoPX(20);
+                        int paddingSize = convertDPtoPX(10);
                         interestTextView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
                         interestTextView.setBackgroundColor(Color.WHITE);
                         interestsLinearLayout.addView(interestTextView);

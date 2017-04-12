@@ -64,21 +64,21 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
 
         // Check which checkbox was clicked
         switch(view.getId()) {
-            case R.id.checkbox_music:
+            case R.id.checkbox_movies:
                 if (checked){
-                    interestsList.add("Music");
+                    interestsList.add("Movie Theatres");
                 }
                 else{
-                    interestsList.remove("Music");
+                    interestsList.remove("Movie Theatres");
                 }
                 break;
 
-            case R.id.checkbox_arts:
+            case R.id.checkbox_artgallery:
                 if (checked){
-                    interestsList.add("Arts & Crafts");
+                    interestsList.add("Art Gallery");
                 }
                 else{
-                    interestsList.remove("Arts & Crafts");
+                    interestsList.remove("Art Gallery");
                 }
                 break;
 
@@ -90,12 +90,12 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
                     interestsList.remove("Cafe");
                 }
                 break;
-            case R.id.checkbox_nightclub:
+            case R.id.checkbox_bars:
                 if (checked){
-                    interestsList.add("Night Club");
+                    interestsList.add("Bars");
                 }
                 else{
-                    interestsList.remove("Night Club");
+                    interestsList.remove("Bars");
                 }
                 break;
             case R.id.checkbox_restaurants:
@@ -106,12 +106,12 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
                     interestsList.remove("Restaurants");
                 }
                 break;
-            case R.id.checkbox_shoppingmalls:
+            case R.id.checkbox_deptstores:
                 if (checked){
-                    interestsList.add("Shopping Malls");
+                    interestsList.add("Department Stores");
                 }
                 else{
-                    interestsList.remove("Shopping Malls");
+                    interestsList.remove("Department Stores");
                 }
                 break;
 

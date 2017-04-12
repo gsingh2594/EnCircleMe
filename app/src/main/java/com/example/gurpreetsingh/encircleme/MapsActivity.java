@@ -27,7 +27,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -69,7 +67,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.text.Line;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -191,6 +188,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
+
+                /*SupportMapFragment mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                mapFrag.getMapAsync(this);*/
+
+
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
@@ -249,6 +251,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 final String eventKey = key;
                 final GeoLocation eventLocation = location;
                 Log.d("onKeyEntered", "event found");
+
 
                 // Load event info from DB
                 DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events/all_events/" + eventKey);
@@ -462,7 +465,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         }
         if (id == R.id.action_tab) {
-            Intent modifyTab = new Intent(MapsActivity.this, MapTabsActivity.class);
+            Intent modifyTab = new Intent(MapsActivity.this, CreateUserProfileActivity.class);
             startActivity(modifyTab);
         }
         if (id == R.id.settings){
@@ -605,7 +608,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
-
         //move map camera only the first time location is received
         if(!locationInitialized) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));

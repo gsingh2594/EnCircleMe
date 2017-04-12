@@ -1,26 +1,18 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Arani Hasan on 3/28/17.
@@ -53,7 +45,7 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
         saveButton = (Button) findViewById(R.id.saveNameAndPhone);
         signUpName = (EditText) findViewById(R.id.signUpName);
         signUpPhone = (EditText) findViewById(R.id.signUpPhone);
-        signUpUsername = (EditText) findViewById(R.id.signUpUsername);
+        //signUpUsername = (EditText) findViewById(R.id.signUpUsername);
         saveButton.setOnClickListener(this);
     }
 
@@ -63,21 +55,21 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
 
         // Check which checkbox was clicked
         switch(view.getId()) {
-            case R.id.checkbox_music:
+            case R.id.checkbox_movies:
                 if (checked){
-                    interestsList.add("Music");
+                    interestsList.add("Movie Theatres");
                 }
                 else{
-                    interestsList.remove("Music");
+                    interestsList.remove("Movie Theatres");
                 }
                 break;
 
-            case R.id.checkbox_arts:
+            case R.id.checkbox_artgallery:
                 if (checked){
-                    interestsList.add("Arts & Crafts");
+                    interestsList.add("Art Gallery");
                 }
                 else{
-                    interestsList.remove("Arts & Crafts");
+                    interestsList.remove("Art Gallery");
                 }
                 break;
 
@@ -89,12 +81,12 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
                     interestsList.remove("Cafe");
                 }
                 break;
-            case R.id.checkbox_nightclub:
+            case R.id.checkbox_bars:
                 if (checked){
-                    interestsList.add("Night Club");
+                    interestsList.add("Bars");
                 }
                 else{
-                    interestsList.remove("Night Club");
+                    interestsList.remove("Bars");
                 }
                 break;
             case R.id.checkbox_restaurants:
@@ -105,36 +97,36 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
                     interestsList.remove("Restaurants");
                 }
                 break;
-            case R.id.checkbox_shoppingmalls:
+            case R.id.checkbox_deptstores:
                 if (checked){
-                    interestsList.add("Shopping Malls");
+                    interestsList.add("Department Stores");
                 }
                 else{
-                    interestsList.remove("Shopping Malls");
+                    interestsList.remove("Department Stores");
                 }
                 break;
 
         }
     }
 
-    public void saveUserProfile(){
+    public void saveUserProfile() {
         final String name = signUpName.getText().toString().trim();
         final String phone = signUpPhone.getText().toString().trim();
         final String email = auth.getCurrentUser().getEmail();
-        username = signUpUsername.getText().toString().trim();
+        //username = signUpUsername.getText().toString().trim();
 
-        if(name.length() < 3)
+        if (name.length() < 3)
             signUpName.setError("Please enter a name at least 3 characters long");
-        else if(phone.length() != 10)
+        else if (phone.length() != 10)
             signUpPhone.setError("Please enter a 10 digit phone number");
-        else if(username.length() < 3) {
-            signUpUsername.setError("Username must be at least 3 characters long");
-        }else{
+            //else if(username.length() < 3) {
+            //    signUpUsername.setError("Username must be at least 3 characters long");}
+        else {
             progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("One moment please...");
             progressDialog.show();
 
-            // check if username already exists in DB
+            /*// check if username already exists in DB
             try {
                 DatabaseReference usernameRef = dbRef.child("usernames").child(username);
                 Log.d("usernameExists", usernameRef.toString());
@@ -189,7 +181,7 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
             }
             catch (Exception e){
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 

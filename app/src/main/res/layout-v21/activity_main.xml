@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView4"
+        android:fontFamily="cursive"
         android:paddingBottom="75dp"
         android:textSize="36sp"
         android:textColor="@android:color/black"
@@ -47,7 +48,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
-            android:hint="@string/hint_password"
+            android:hint="Password"
             android:textColorLink="@color/colorPrimaryDark" />
     </android.support.design.widget.TextInputLayout>
 

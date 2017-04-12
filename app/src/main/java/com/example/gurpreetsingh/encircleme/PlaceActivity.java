@@ -1,16 +1,22 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,36 +32,47 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
 
 public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, View.OnClickListener {
+        LocationListener, View.OnClickListener, GoogleMap.OnCameraMoveStartedListener,
+        GoogleMap.OnCameraMoveListener, //GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
 
+    private GoogleMap.OnCameraIdleListener onCameraIdleListener;
+    private LatLng userLocation;
+    private boolean locationInitialized;
     private GoogleMap mMap;
     double latitude;
     double longitude;
-    private int PROXIMITY_RADIUS = 3218;
+    private int PROXIMITY_RADIUS = 2414;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
     private Button btnOther;
     private static final int PLACE_PICKER_REQUEST = 1000;
+    private TextView resutText;
+    private String interest_choice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
 
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ActionBar actionBar = getSupportActionBar();*/
+        setTitle("Select an interest");
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        resutText = (TextView) findViewById(R.id.dragg_result);
         btnOther = (Button) findViewById(R.id.btnOther);
         btnOther.setOnClickListener(this);
 
@@ -72,11 +89,55 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             Log.d("onCreate","Google Play Services available.");
         }
 
+        configureCameraIdle();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+    private void configureCameraIdle() {
+        onCameraIdleListener = new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+
+                LatLng latLng = mMap.getCameraPosition().target;
+                Geocoder geocoder = new Geocoder(PlaceActivity.this);
+                mMap.clear();
+
+                try {
+                    List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    if (addressList != null && addressList.size() > 0) {
+                        String locality = addressList.get(0).getAddressLine(0);
+                        String country = addressList.get(0).getCountryName();
+                        if (!locality.isEmpty() && !country.isEmpty())
+                            resutText.setText(locality + "  " + country);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                getNearbyPlaces(latLng.latitude, latLng.longitude);
+            }
+        };
+    }
+
+
+    private void getNearbyPlaces(double latitude, double longitude){
+        if (interest_choice == null) {
+
+        }
+        else{
+            String url = getUrl(latitude, longitude, interest_choice);
+            Object[] DataTransfer = new Object[2];
+            DataTransfer[0] = mMap;
+            DataTransfer[1] = url;
+            Log.d("onClick", url);
+            GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+            getNearbyPlacesData.execute(DataTransfer);
+        }
+    }
+
 
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
@@ -105,6 +166,14 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnCameraIdleListener(onCameraIdleListener);
+        mMap.setOnCameraMoveListener(this);
+        mMap.setOnCameraMoveCanceledListener(this);
+        mMap.setOnMarkerClickListener(this);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -121,114 +190,67 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
 
         Button btnMusic = (Button) findViewById(R.id.btnMusic);
         btnMusic.setOnClickListener(new View.OnClickListener() {
-            String movie_theater = "movie_theater";
-
             @Override
             public void onClick(View v) {
+                //LatLng latLng = mMap.getCameraPosition().target;
+                //getNearbyPlaces(latLng.latitude, latLng.longitude);
                 Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, movie_theater);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
+                interest_choice = "movie_theater";
                 Toast.makeText(PlaceActivity.this, "Nearby Movie Theaters", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnRestaurant = (Button) findViewById(R.id.btnRestaurant);
         btnRestaurant.setOnClickListener(new View.OnClickListener() {
-            String restaurant = "restaurant";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, restaurant);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
+                interest_choice = "restaurant";
                 Toast.makeText(PlaceActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnArts = (Button) findViewById(R.id.btnArts);
         btnArts.setOnClickListener(new View.OnClickListener() {
-            String art_gallery = "art_gallery";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, art_gallery);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
+                interest_choice = "art_gallery";
                 Toast.makeText(PlaceActivity.this, "Nearby Art Gallery", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnCafe = (Button) findViewById(R.id.btnCafe);
         btnCafe.setOnClickListener(new View.OnClickListener() {
-            String cafe = "cafe";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, cafe);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
+                interest_choice = "cafe";
                 Toast.makeText(PlaceActivity.this, "Nearby Cafe", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnNightclub = (Button) findViewById(R.id.btnNightclub);
         btnNightclub.setOnClickListener(new View.OnClickListener() {
-            String bar = "bar";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, bar);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
+                interest_choice = "bar";
                 Toast.makeText(PlaceActivity.this, "Nearby Bars", Toast.LENGTH_LONG).show();
             }
         });
 
         Button btnShopping = (Button) findViewById(R.id.btnShoppingmalls);
         btnShopping.setOnClickListener(new View.OnClickListener() {
-            String department_store = "department_store";
 
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                String url = getUrl(latitude, longitude, department_store);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
+                interest_choice = "department_store";
                 Toast.makeText(PlaceActivity.this, "Nearby Department Stores", Toast.LENGTH_LONG).show();
             }
         });
@@ -236,7 +258,6 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
      /*   Button btnSchool = (Button) findViewById(R.id.btnSchool);
         btnSchool.setOnClickListener(new View.OnClickListener() {
             String School = "school";
-
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
@@ -256,6 +277,63 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         });*/
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        // Determine what marker is clicked by using the argument passed in
+        // for example, marker.getTitle() or marker.getSnippet().
+        // Code here for navigating to fragment activity.
+        String title = marker.getTitle();
+        //String snippet = marker.getSnippet();
+        Intent intent = new Intent();
+        intent.putExtra("keyName", title);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+        marker.showInfoWindow();
+        return true;
+    }
+
+    @Override
+    public void onCameraMoveStarted(int reason) {
+
+        if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+            //Toast.makeText(this, "The user gestured on the map.",
+            //        Toast.LENGTH_SHORT).show();
+        } else if (reason == GoogleMap.OnCameraMoveStartedListener
+                .REASON_API_ANIMATION) {
+            //Toast.makeText(this, "The user tapped something on the map.",
+            //        Toast.LENGTH_SHORT).show();
+        } else if (reason == GoogleMap.OnCameraMoveStartedListener
+                .REASON_DEVELOPER_ANIMATION) {
+            //Toast.makeText(this, "The app moved the camera.",
+            //      Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onCameraMove(){
+
+    }
+
+    @Override
+    public void onCameraMoveCanceled() {
+        //Toast.makeText(this, "Camera movement canceled.",
+        //Toast.LENGTH_SHORT).show();
+    }
+
+    /*@Override
+    public void onCameraIdle() {
+
+        LatLng latLng = mMap.getCameraPosition().target;
+        Geocoder geocoder = new Geocoder(PlaceActivity.this);
+        //double CameraLat = mMap.getCameraPosition().target.latitude;
+        //double CameraLong = mMap.getCameraPosition().target.longitude;
+        //Toast.makeText(this, "The camera has stopped moving.",
+        //Toast.LENGTH_SHORT).show();
+    }*/
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -300,6 +378,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onLocationChanged(Location location) {
         Log.d("onLocationChanged", "entered");
 
+
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
@@ -309,11 +388,11 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
+        /*MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        mCurrLocationMarker = mMap.addMarker(markerOptions);*/
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -412,5 +491,6 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         }
-    }}
+    }
+}
 

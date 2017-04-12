@@ -11,15 +11,17 @@
     android:background="#FFAFDAC2">
 
     <TextView
-        android:text="EnCircleMe"
+        android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView4"
         android:layout_weight="0.10"
+        android:fontFamily="cursive"
         android:paddingBottom="75dp"
-        android:textSize="36sp"
+        android:text="EnCircleMe"
+        android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textAlignment="center" />
+        android:textSize="48sp"
+        android:textStyle="bold" />
 
 <android.support.design.widget.TextInputLayout
     android:id="@+id/signup_input_layout_email"

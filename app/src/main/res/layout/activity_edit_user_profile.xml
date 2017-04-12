@@ -18,149 +18,150 @@
         android:theme="?attr/actionBarTheme"
         app:title="Edit Profile" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/info_layout"
-        android:layout_below="@id/toolbar2">
-        <EditText
-            android:id="@+id/signUpName"
+        <ScrollView
+            android:id="@+id/scroll_createuser"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentStart="true"
-            android:hint="Name"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/signUpPhone"
-            android:hint="Phone number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/signUpName"
-            android:maxLength="10"
-            android:inputType="phone"/>
-
-        <EditText
-            android:id="@+id/signUpUsername"
-            android:hint="Username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/signUpPhone"
-            android:inputType="text"/>
-
-        <CheckBox
-            android:id="@+id/checkbox_music"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:layout_below="@id/signUpUsername"
-            android:text="Music" />
-
-        <CheckBox
-            android:id="@+id/checkbox_arts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/checkbox_music"
-            android:onClick="onCheckboxClicked"
-            android:text="Arts and crafts" />
-
-        <CheckBox
-            android:id="@+id/checkbox_cafe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/checkbox_arts"
-            android:onClick="onCheckboxClicked"
-            android:text="Cafe" />
-
-        <CheckBox
-            android:id="@+id/checkbox_nightclub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/checkbox_cafe"
-            android:onClick="onCheckboxClicked"
-            android:text="Night Clubs" />
-
-        <CheckBox
-            android:id="@+id/checkbox_restaurants"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/checkbox_nightclub"
-            android:onClick="onCheckboxClicked"
-            android:text="Restaurants" />
-
-        <CheckBox
-            android:id="@+id/checkbox_shoppingmalls"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/checkbox_restaurants"
-            android:onClick="onCheckboxClicked"
-            android:text="Shopping Malls" />
-    </RelativeLayout>
-
-<!--
-
-<HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="125dp"
-        android:orientation="horizontal"
-        android:id="@+id/scrollView2"
-        android:layout_below="@id/info_layout">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/signUpUsername"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_below="@+id/toolbar2">
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
 
 
-            <ImageView
-                android:id="@+id/profile_image1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_profile_photo" />
+                <EditText
+                    android:id="@+id/signUpName"
+                    android:hint="Name"
+                    android:inputType="textPersonName"
+                    android:textColor="@android:color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/profile_image2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_profile_photo" />
-
-            <ImageView
-                android:id="@+id/profile_image3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_profile_photo" />
-
-            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
-                android:layout_gravity="center"
-                card_view:cardCornerRadius="4dp"
-                android:layout_alignParentStart="true">
+                <EditText
+                    android:id="@+id/signUpPhone"
+                    android:hint="Phone number"
+                    android:textColor="@android:color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="10"
+                    android:inputType="phone"/>
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/signUpUsername"
+                    android:hint="Email"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Hello Card" />
+                    android:layout_height="25dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:inputType="text" />
 
-            </android.support.v7.widget.CardView>
-        </RelativeLayout>
-</HorizontalScrollView>
--->
+                <TextView
+                    android:id="@+id/signUpUsername"
+                    android:hint="Username"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:inputType="text" />
+
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/pickyourinterest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:gravity="left"
+                        android:paddingTop="8dp"
+                        android:text="Edit your interests:"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_movies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginBottom="28dp"
+                        android:button="@animator/movies_selector"
+                        android:onClick="onCheckboxClicked"
+                        android:paddingTop="100dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_artgallery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/checkbox_bars"
+                        android:button="@animator/artgallery_selector"
+                        android:onClick="onCheckboxClicked"
+                        android:paddingTop="100dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_cafe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/pickyourinterest"
+                        android:layout_centerHorizontal="true"
+                        android:button="@animator/cafe_selector"
+                        android:onClick="onCheckboxClicked"
+                        android:paddingTop="100dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_bars"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/pickyourinterest"
+                        android:button="@animator/bars_selector"
+                        android:onClick="onCheckboxClicked"
+                        android:paddingTop="100dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_restaurants"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/pickyourinterest"
+                        android:button="@animator/restaurants_selector"
+                        android:onClick="onCheckboxClicked"
+                        android:paddingTop="100dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_deptstores"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/checkbox_cafe"
+                        android:layout_centerHorizontal="true"
+                        android:button="@animator/deptstores_selector"
+                        android:onClick="onCheckboxClicked"
+                        android:paddingTop="100dp" />
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
     <Button
         android:id="@+id/saveNameAndPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:text="Apply Changes"
-        android:textColor="#FFFFFF"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
