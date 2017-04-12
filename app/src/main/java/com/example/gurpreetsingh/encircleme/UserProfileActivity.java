@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -185,6 +186,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 profileName.setText(user.getName());
+                //email.setText(user.getEmail());
                 // display bio if it has been set
                 if (user.getBio() != null)
                     profileBio.setText(user.getBio());
@@ -195,11 +197,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                         // Create and add a new TextView to the LinearLayout
                         TextView interestTextView = new TextView(UserProfileActivity.this);
                         int marginSize = convertDPtoPX(5);
-                        LinearLayout.LayoutParams layoutParams =
-                                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        RelativeLayout.LayoutParams layoutParams =
+                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
                         interestTextView.setLayoutParams(layoutParams);
-                        interestTextView.setTextSize(10);
+                        interestTextView.setTextSize(13);
                         interestTextView.setText(userInterests.get(i));
                         interestTextView.setElevation((float) convertDPtoPX(4));
                         int paddingSize = convertDPtoPX(10);
