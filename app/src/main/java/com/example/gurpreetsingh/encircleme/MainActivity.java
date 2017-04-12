@@ -64,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         authListener = new FirebaseAuth.AuthStateListener() {
+            /**onAuthStateChanged gets invoked in the UI thread on changes in the authentication state:
+             - Right after the listener has been registered
+             - When a user is signed in
+             - When the current user is signed out
+             - When the current user changes
+             - When there is a change in the current user's token */
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 savedPrefs = getSharedPreferences(PREFS_NAME, 0);

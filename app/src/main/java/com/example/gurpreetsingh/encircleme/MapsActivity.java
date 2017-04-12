@@ -198,6 +198,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
+        Intent notificationService = new Intent(getApplicationContext(), FirebaseNotificationService.class);
+        startService(notificationService);
+
         locationInitialized=false;
         buildGoogleApiClient();
         /*Alerts();

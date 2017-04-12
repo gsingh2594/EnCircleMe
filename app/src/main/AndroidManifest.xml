@@ -85,6 +85,8 @@
         <activity android:name=".OneFragment" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".SettingsActivity2" />
+        <service android:name=".FirebaseNotificationService"
+            android:description="@string/firebase_listener_service_description"/>
     </application>
 
 </manifest>
