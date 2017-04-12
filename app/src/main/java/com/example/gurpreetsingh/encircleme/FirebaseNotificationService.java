@@ -1,21 +1,11 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.app.NotificationManager;
-import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
-
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -143,21 +133,17 @@ public class FirebaseNotificationService extends Service {
 
 
     private void createNewFriendRequestNotification(String usernameOfSender){
-
-        NotificationCompat.Builder mBuilder =   new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_new) // notification icon
-                .setContentTitle("NEW FRIEND REQUEST") // title for notification
-                .setContentText("You have a new friend request. Click now to check who it is") // message for notification
-                .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(this, FriendRequestsActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
-        mBuilder.setContentIntent(pi);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());
-
-
-
-
+        // TODO: Create new notification to be displayed
+            NotificationCompat.Builder mBuilder =   new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.add_user_icon) // notification icon
+                    .setContentTitle("NEW FRIEND REQUEST") // title for notification
+                    .setContentText("You have a new friend request. Click now to check who it is") // message for notification
+                    .setAutoCancel(true); // clear notification after click
+            Intent intent = new Intent(this, FriendRequestsActivity.class);
+            PendingIntent pi = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pi);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(0, mBuilder.build());
     }
 }

@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -111,6 +112,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button friends;
     Button btnSetting;*/
     ImageButton btnSearch;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private View bottomSheet;
 
     private TextView textFavorites;
     private TextView textSchedules;
@@ -210,6 +213,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Settings();
         //Search();*/
 
+/*        bottomSheet = (BottomSheet) findViewById(R.id.bottom_sheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setPeekHeight(150);
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);*/
+
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -240,6 +249,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         creatorProfileImagesMap= new HashMap<String, Bitmap>();
     }
 
+    /*private void updateBottomSheetContent(Marker marker) {
+        TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
+        name.setText(marker.getTitle());
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }*/
 
     private void loadEventsFromDB(){
         DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events/geofire_locations");
@@ -555,6 +569,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MapsActivity.this.startActivityForResult(edit, EDIT_REQUEST);
             }
         });
+
+        /*mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                updateBottomSheetContent(marker);
+                return true;
+            }
+        });
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+        });*/
     }
 
     private void addCustomMarker() {

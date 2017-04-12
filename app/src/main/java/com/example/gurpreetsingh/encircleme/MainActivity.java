@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ResetPasswordActivity.class));
             }
         });
-
     }
 
     @Override
@@ -154,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             auth.removeAuthStateListener(authListener);
         }
     }
-
 
     /**
      * Validating form

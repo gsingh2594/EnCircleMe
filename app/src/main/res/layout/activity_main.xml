@@ -11,13 +11,11 @@
     android:weightSum="1">
 
     <TextView
-        android:text="EnCircleMe"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView4"
         android:fontFamily="cursive"
-        android:layout_weight="0.10"
-        android:paddingBottom="75dp"
+        android:background="@drawable/logo1"
         android:textSize="36sp"
         android:textColor="@android:color/black"
         android:textAlignment="center" />
@@ -59,7 +57,7 @@
         android:text="@string/btn_login"
         android:background="@color/colorPrimary"
         android:layout_marginTop="40dp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:outlineProvider="bounds"
         android:textSize="@dimen/text_large"
         android:elevation="0dp"
@@ -70,7 +68,7 @@
         android:text="NO ACCOUNT? SIGNUP"
         android:background="@color/colorPrimary"
         android:layout_marginTop="10dp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textColorLink="@android:color/black"
         android:textSize="@dimen/text_large"
         android:shadowColor="@android:color/black" />
