@@ -135,7 +135,7 @@ public class FirebaseNotificationService extends Service {
     private void createNewFriendRequestNotification(String usernameOfSender){
         // TODO: Create new notification to be displayed
             NotificationCompat.Builder mBuilder =   new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.add_user_icon) // notification icon
+                    .setSmallIcon(R.drawable.ic_request) // notification icon
                     .setContentTitle("NEW FRIEND REQUEST") // title for notification
                     .setContentText("You have a new friend request. Click now to check who it is") // message for notification
                     .setAutoCancel(true); // clear notification after click
