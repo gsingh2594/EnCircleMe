@@ -134,11 +134,14 @@ public class FirebaseNotificationService extends Service {
 
     private void createNewFriendRequestNotification(String usernameOfSender){
         // TODO: Create new notification to be displayed
+
             NotificationCompat.Builder mBuilder =   new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.ic_request) // notification icon
-                    .setContentTitle("NEW FRIEND REQUEST") // title for notification
-                    .setContentText("You have a new friend request. Click now to check who it is") // message for notification
+                    .setContentTitle("New Friend Request") // title for notification
+                    .setContentText("You have a new friend request from " + usernameOfSender) // message for notification
                     .setAutoCancel(true); // clear notification after click
+                    mBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }); // message vibration
+                    //mBuilder.setSound(Main.System.DEFAULT_NOTIFICATION_URI); // message sound
             Intent intent = new Intent(this, FriendRequestsActivity.class);
             PendingIntent pi = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pi);
