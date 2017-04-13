@@ -134,24 +134,46 @@ public class FirebaseNotificationService extends Service {
     }
 
 
-    private void createNewFriendRequestNotification(String usernameOfSender)
-    {
-        NotificationCompat.Builder mBuilder =   new NotificationCompat.Builder(this);
+    public boolean createNewFriendRequestNotification(String usernameOfSender) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
-                    mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
-                    mBuilder.setContentTitle("New Friend Request"); // title for notification
-                    mBuilder.setContentText("You have a new friend request from " + usernameOfSender); // message for notification
-                    mBuilder.setAutoCancel(true); // clear notification after click
-                    mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
-                    mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
-                    mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
-                    mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
-                    //mBuilder.setSound(soundUri); // message sound
-            Intent intent = new Intent(this, FriendRequestsActivity.class);
-            PendingIntent pi = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-            mBuilder.setContentIntent(pi);
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(0, mBuilder.build());
+        mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
+        mBuilder.setContentTitle("New Friend Request"); // title for notification
+        mBuilder.setContentText("You have a new friend request from " + usernameOfSender); // message for notification
+        mBuilder.setAutoCancel(true); // clear notification after click
+        mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
+        mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
+        mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
+        mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
+
+        Intent intent = new Intent(this, FriendRequestsActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pi);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+
+        return true;
+
+
     }
-}
+
+    private void returnFriendrequestAcceptance(String usernameOfSender) {
+        if (createNewFriendRequestNotification(usernameOfSender)) {
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+
+            mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
+            mBuilder.setContentTitle("Friend Request Accepted"); // title for notification
+            mBuilder.setContentText(usernameOfSender + "has accepted your friend request"); // message for notification
+            mBuilder.setAutoCancel(true); // clear notification after click
+            mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
+            mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
+            mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
+        }
+    }
+
+
+    }
+
