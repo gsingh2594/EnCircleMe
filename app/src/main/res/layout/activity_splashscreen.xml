@@ -12,6 +12,29 @@
         android:id="@+id/splash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/logo1" />
+        android:background="@drawable/logo1"
+        android:layout_marginTop="0dp" />
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:fontFamily="cursive"
+        android:text="Welcome"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:typeface="monospace" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:indeterminate="true" />
 
 </LinearLayout>

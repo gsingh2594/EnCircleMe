@@ -1,16 +1,22 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -22,9 +28,14 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
     private FirebaseAuth auth;
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
+    private DatabaseReference dbUserRef;
+    private String userID;
+    private User user;
 
-    private Button saveButton;
-    private EditText signUpName, signUpPhone, signUpUsername;
+
+    private Button applyChanges;
+    private EditText editName, editPhone;
+    private TextView editEmail, editUsername;
     private ProgressDialog progressDialog;
     private String uid;
     private String username;
@@ -41,12 +52,44 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
         uid = auth.getCurrentUser().getUid();
+        userID = auth.getCurrentUser().getUid();
+        dbUserRef = dbRef.child("users").child(userID);
 
-        saveButton = (Button) findViewById(R.id.saveNameAndPhone);
-        signUpName = (EditText) findViewById(R.id.signUpName);
-        signUpPhone = (EditText) findViewById(R.id.signUpPhone);
+        applyChanges = (Button) findViewById(R.id.apply_changes);
+        editName = (EditText) findViewById(R.id.edit_name);
+        editPhone = (EditText) findViewById(R.id.edit_phone);
+        editUsername = (TextView) findViewById(R.id.edit_username);
+        editEmail = (TextView) findViewById(R.id.edit_email);
+
         //signUpUsername = (EditText) findViewById(R.id.signUpUsername);
-        saveButton.setOnClickListener(this);
+        applyChanges.setOnClickListener(this);
+        loadUserProfile();
+
+    }
+
+    // load user profile from DB
+    private void loadUserProfile() {
+        dbUserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                editEmail.setText("Email: " + user.getEmail());
+                editUsername.setText("Username: " + user.getUsername());
+                // display bio if it has been set
+                if (user.getName() != null)
+                    editName.setText(user.getName());
+                if (user.getName() != null)
+                    editPhone.setText(user.getPhone());
+/*                if (user.getInterests() != null)
+                    editInterest.setText(user.getInterests());*/
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(EditUserProfileActivity.this, "Data could not be retrieved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     public void onCheckboxClicked(View view) {
@@ -54,71 +97,62 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
         boolean checked = ((CheckBox) view).isChecked();
 
         // Check which checkbox was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.checkbox_movies:
-                if (checked){
+                if (checked) {
                     interestsList.add("Movie Theatres");
-                }
-                else{
+                } else {
                     interestsList.remove("Movie Theatres");
                 }
                 break;
 
             case R.id.checkbox_artgallery:
-                if (checked){
+                if (checked) {
                     interestsList.add("Art Gallery");
-                }
-                else{
+                } else {
                     interestsList.remove("Art Gallery");
                 }
                 break;
 
             case R.id.checkbox_cafe:
-                if (checked){
+                if (checked) {
                     interestsList.add("Cafe");
-                }
-                else{
+                } else {
                     interestsList.remove("Cafe");
                 }
                 break;
             case R.id.checkbox_bars:
-                if (checked){
+                if (checked) {
                     interestsList.add("Bars");
-                }
-                else{
+                } else {
                     interestsList.remove("Bars");
                 }
                 break;
             case R.id.checkbox_restaurants:
-                if (checked){
+                if (checked) {
                     interestsList.add("Restaurants");
-                }
-                else{
+                } else {
                     interestsList.remove("Restaurants");
                 }
                 break;
             case R.id.checkbox_deptstores:
-                if (checked){
+                if (checked) {
                     interestsList.add("Department Stores");
-                }
-                else{
+                } else {
                     interestsList.remove("Department Stores");
                 }
                 break;
-
         }
     }
 
     public void saveUserProfile() {
-        final String name = signUpName.getText().toString().trim();
-        final String phone = signUpPhone.getText().toString().trim();
-        final String email = auth.getCurrentUser().getEmail();
-        //username = signUpUsername.getText().toString().trim();
+        final String name = editName.getText().toString().trim();
+        final String phone = editPhone.getText().toString().trim();
 
         if (name.length() < 3)
-            signUpName.setError("Please enter a name at least 3 characters long");
+            editName.setError("Please enter a name at least 3 characters long");
         else if (phone.length() != 10)
-            signUpPhone.setError("Please enter a 10 digit phone number");
+            editPhone.setError("Please enter a 10 digit phone number");
             //else if(username.length() < 3) {
             //    signUpUsername.setError("Username must be at least 3 characters long");}
         else {
@@ -187,8 +221,10 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onClick(View v) {
-        if(v == saveButton)
+        if (v == applyChanges)
             saveUserProfile();
+        Intent refreshProfile = new Intent(EditUserProfileActivity.this, UserProfileActivity.class);
+        startActivity(refreshProfile);
     }
 }
 

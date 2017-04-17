@@ -36,7 +36,7 @@
 
 
                 <EditText
-                    android:id="@+id/signUpName"
+                    android:id="@+id/edit_name"
                     android:hint="Name"
                     android:inputType="textPersonName"
                     android:textColor="@android:color/black"
@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content" />
 
                 <EditText
-                    android:id="@+id/signUpPhone"
+                    android:id="@+id/edit_phone"
                     android:hint="Phone number"
                     android:textColor="@android:color/black"
                     android:layout_width="match_parent"
@@ -53,22 +53,22 @@
                     android:inputType="phone"/>
 
                 <TextView
-                    android:id="@+id/signUpUsername"
+                    android:id="@+id/edit_email"
                     android:hint="Email"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="35dp"
+                    android:padding="5dp"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:inputType="text" />
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/signUpUsername"
+                    android:id="@+id/edit_username"
                     android:hint="Username"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="35dp"
+                    android:padding="5dp"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:inputType="text" />
+                    android:textStyle="bold" />
 
 
 
@@ -85,6 +85,7 @@
                         android:layout_alignParentTop="true"
                         android:gravity="left"
                         android:paddingTop="8dp"
+                        android:padding="5dp"
                         android:text="Edit your interests:"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="18sp"
@@ -156,7 +157,7 @@
         </ScrollView>
 
     <Button
-        android:id="@+id/saveNameAndPhone"
+        android:id="@+id/apply_changes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"

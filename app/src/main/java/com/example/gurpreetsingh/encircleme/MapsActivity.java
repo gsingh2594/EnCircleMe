@@ -197,7 +197,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 /*SupportMapFragment mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                 mapFrag.getMapAsync(this);*/
 
-
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
@@ -481,7 +480,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         }
         if (id == R.id.action_tab) {
-            Intent modifyTab = new Intent(MapsActivity.this, CreateUserProfileActivity.class);
+            Intent modifyTab = new Intent(MapsActivity.this, EditActivity.class);
             startActivity(modifyTab);
         }
         if (id == R.id.settings){

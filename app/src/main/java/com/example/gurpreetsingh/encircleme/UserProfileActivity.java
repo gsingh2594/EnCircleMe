@@ -55,7 +55,6 @@ import java.util.ArrayList;
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth auth;
     private String userID;
-
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
     private DatabaseReference dbUserRef;
@@ -77,6 +76,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     private TextView profileName;
     private TextView profileBio;
+    private TextView profileEmail;
+    private TextView profilePhone;
+    private TextView profileUsername;
     private ImageView editIcon;
     private AlertDialog editBioDialog;
 
@@ -110,6 +112,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         profileName = (TextView) findViewById(R.id.user_profile_name);
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
         editIcon = (ImageView) findViewById(R.id.edit_bio_icon);
+        profileEmail = (TextView) findViewById(R.id.email);
+        profilePhone = (TextView) findViewById(R.id.phone_number);
+        profileUsername = (TextView) findViewById(R.id.username);
 
         profileImage = (ImageView) findViewById(R.id.profile_image);
         coverImage = (ImageView) findViewById(R.id.cover_image);
@@ -158,7 +163,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     Intent events = new Intent(UserProfileActivity.this, PlaceActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
-                    Intent events = new Intent(getApplicationContext(), MapsActivity.class);
+                    Intent events = new Intent(getApplicationContext(), EditActivity.class);
                     startActivity(events);
                 }
 
@@ -207,7 +212,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 profileName.setText(user.getName());
-                //email.setText(user.getEmail());
+                profileEmail.setText(user.getEmail());
+                profilePhone.setText(user.getPhone());
+                profileUsername.setText("Username: " + user.getUsername());
                 // display bio if it has been set
                 if (user.getBio() != null)
                     profileBio.setText(user.getBio());
