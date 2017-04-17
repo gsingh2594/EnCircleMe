@@ -21,8 +21,8 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -76,6 +76,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -204,7 +206,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent notificationService = new Intent(getApplicationContext(), FirebaseNotificationService.class);
         startService(notificationService);
 
-        locationInitialized=false;
+        locationInitialized = false;
         buildGoogleApiClient();
         /*Alerts();
         Maps();
@@ -219,34 +221,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);*/
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_profile:
-                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                        startActivity(profile);
-                        break;
-                    case R.id.action_friends:
-                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
-                        startActivity(friends);
-                        break;
-                    case R.id.action_map:
-                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
-                        startActivity(map);
-                        break;
-/*                            case R.id.action_alerts:
-                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
-                                startActivity(events);
-                                break;
-                        */}
-                return false;
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_profile) {
+                    Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                    startActivity(profile);
+                } else if (tabId == R.id.tab_friends) {
+                    Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                    startActivity(friends);
+                } else if (tabId == R.id.tab_map) {
+                    Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(map);
+                } else if (tabId == R.id.tab_alerts) {
+                    Intent events = new Intent(getApplicationContext(), PlaceActivity.class);
+                    startActivity(events);
+                } else if (tabId == R.id.tab_chats) {
+                    Intent events = new Intent(getApplicationContext(), EditActivity.class);
+                    startActivity(events);
+                }
             }
         });
         //HashMaps for storing info used in marker info window
         eventsInfoMap = new HashMap<String, Event>();
-        creatorProfileImagesMap= new HashMap<String, Bitmap>();
+        creatorProfileImagesMap = new HashMap<String, Bitmap>();
     }
 
     /*private void updateBottomSheetContent(Marker marker) {

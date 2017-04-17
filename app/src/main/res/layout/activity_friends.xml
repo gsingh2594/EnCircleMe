@@ -138,6 +138,7 @@
             android:layout_weight="1"/>
 
     </LinearLayout>-->
+<!--
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -157,6 +158,13 @@
             app:itemTextColor="@android:color/black"
             android:layout_alignParentBottom="true"/>
     </LinearLayout>
+-->
 
+        <com.roughike.bottombar.BottomBar
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            app:bb_tabXmlResource="@xml/bottom_bar" />
 
 </RelativeLayout>

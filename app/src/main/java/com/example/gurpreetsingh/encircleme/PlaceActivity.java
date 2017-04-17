@@ -282,7 +282,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         // Determine what marker is clicked by using the argument passed in
         // for example, marker.getTitle() or marker.getSnippet().
         // Code here for navigating to fragment activity.
-        String title = marker.getTitle();
+        String title = marker.getId();
         //String snippet = marker.getSnippet();
         Intent intent = new Intent();
         intent.putExtra("keyName", title);

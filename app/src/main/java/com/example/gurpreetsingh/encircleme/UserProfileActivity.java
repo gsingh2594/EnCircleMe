@@ -12,8 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +40,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -134,13 +136,38 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         loadUserProfileImage();
         loadUserCoverImage();
 
-/*        Alerts();
+/*      Alerts();
         Maps();
         Friends();
         Profile();
         Settings();*/
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_profile) {
+                    Intent profile = new Intent(UserProfileActivity.this, UserProfileActivity.class);
+                    startActivity(profile);
+                } else if (tabId == R.id.tab_friends) {
+                    Intent friends = new Intent(UserProfileActivity.this, FriendsActivity.class);
+                    startActivity(friends);
+                } else if (tabId == R.id.tab_map) {
+                    Intent map = new Intent(UserProfileActivity.this, MapsActivity.class);
+                    startActivity(map);
+                } else if (tabId == R.id.tab_alerts) {
+                    Intent events = new Intent(UserProfileActivity.this, PlaceActivity.class);
+                    startActivity(events);
+                } else if (tabId == R.id.tab_chats) {
+                    Intent events = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(events);
+                }
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+            }
+        });
+    }
+
+
+        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -157,20 +184,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                         Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                         startActivity(map);
                         break;
-/*                            case R.id.action_alerts:
+*//*                            case R.id.action_alerts:
                                 Intent events = new Intent(getApplicationContext(), SearchActivity.class);
                                 startActivity(events);
                                 break;
-                        */}
+                        *//*}
                 return false;
             }
-        });
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-
-    }
+        });*/
 
     @Override
     protected void onDestroy() {
@@ -201,9 +222,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
                         interestTextView.setLayoutParams(layoutParams);
-                        interestTextView.setTextSize(13);
+                        interestTextView.setTextSize(15);
+                        interestTextView.setTextColor(Color.BLACK);
                         interestTextView.setText(userInterests.get(i));
-                        interestTextView.setElevation((float) convertDPtoPX(4));
+                        interestTextView.setElevation((float) convertDPtoPX(2));
                         int paddingSize = convertDPtoPX(10);
                         interestTextView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
                         interestTextView.setBackgroundColor(Color.WHITE);

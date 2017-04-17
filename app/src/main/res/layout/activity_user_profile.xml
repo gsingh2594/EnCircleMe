@@ -137,9 +137,9 @@
                 </android.support.v7.widget.CardView>
 
 
-                <RelativeLayout
+                <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_below="@+id/profile_layout"
                     android:layout_marginTop="5dp"
                     android:orientation="vertical"
@@ -147,7 +147,7 @@
 
                     <LinearLayout
                         android:id="@+id/interests_linearlayout"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="50dp">
@@ -219,7 +219,7 @@
 
                     </ListView>
                     -->
-                </RelativeLayout>
+                </HorizontalScrollView>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
@@ -294,7 +294,7 @@
 
     </LinearLayout>-->
 
-    <LinearLayout
+<!--    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/menubar"
@@ -311,6 +311,15 @@
             app:menu="@menu/bottom_navigation_main"
             app:itemTextColor="@android:color/black"
             android:layout_alignParentBottom="true"/>
-    </LinearLayout>
+    </LinearLayout>-->
+
+
+
+        <com.roughike.bottombar.BottomBar
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            app:bb_tabXmlResource="@xml/bottom_bar" />
 
 </RelativeLayout>

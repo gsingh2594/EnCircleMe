@@ -2,8 +2,7 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.support.annotation.IdRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +72,30 @@ public class FriendsActivity extends AppCompatActivity {
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_profile) {
+                Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                startActivity(profile);
+                } else if (tabId == R.id.tab_friends) {
+                    Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                    startActivity(friends);
+                } else if (tabId == R.id.tab_map) {
+                    Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(map);
+                } else if (tabId == R.id.tab_alerts) {
+                    Intent events = new Intent(getApplicationContext(), PlaceActivity.class);
+                    startActivity(events);
+                } else if (tabId == R.id.tab_chats) {
+                    Intent events = new Intent(getApplicationContext(), EditActivity.class);
+                    startActivity(events);
+                }
+
+            }
+        });
+        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -88,14 +112,14 @@ public class FriendsActivity extends AppCompatActivity {
                         Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                         startActivity(map);
                         break;
-/*                            case R.id.action_alerts:
+*//*                            case R.id.action_alerts:
                                 Intent events = new Intent(getApplicationContext(), SearchActivity.class);
                                 startActivity(events);
                                 break;
-                        */}
+                        *//*}
                 return false;
             }
-        });
+        });*/
     }
 
 
