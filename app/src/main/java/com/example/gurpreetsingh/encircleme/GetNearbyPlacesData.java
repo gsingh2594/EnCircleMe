@@ -10,6 +10,7 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
@@ -51,16 +52,20 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             Log.d("onPostExecute","Entered into showing locations");
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
+
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
             String placeID = googlePlace.get("placeId");
             String placeName = googlePlace.get("place_name");
+            //String placeId = googlePlace.get("placeId");
             String placeAddress = googlePlace.get("formatted_address");
             String vicinity = googlePlace.get("vicinity");
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(placeName).snippet(vicinity);
-            mMap.addMarker(markerOptions);
+
+            Marker marker = mMap.addMarker(markerOptions);
+            marker.setTag(googlePlace);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             //move map camera
             //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));

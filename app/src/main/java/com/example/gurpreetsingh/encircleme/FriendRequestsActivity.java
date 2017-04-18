@@ -2,12 +2,15 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -36,69 +39,6 @@ public class FriendRequestsActivity extends AppCompatActivity {
     private String currentUserID;
     private String currentUserUsername;
 
-    Button btnAlerts;
-    Button btnMaps;
-    Button btnProfile;
-    Button friends;
-    Button btnChat;
-
-    //Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent profile = new Intent(FriendRequestsActivity.this, UserProfileActivity.class);
-                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(profile);
-            }
-        });
-    }
-
-    public void Alerts() {
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(FriendRequestsActivity.this, SearchActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Maps() {
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(FriendRequestsActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Friends() {
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(FriendRequestsActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-
-    public void Chat() {
-        btnChat = (Button) findViewById(R.id.chat);
-        btnChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent chat = new Intent(FriendRequestsActivity.this, ChatActivity.class);
-                startActivity(chat);
-            }
-        });
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +55,7 @@ public class FriendRequestsActivity extends AppCompatActivity {
         dbRef = firebaseDatabase.getReference();    // root of DB
         dbUserFriendRequests = firebaseDatabase.getReference("friend_requests/" + currentUserID);
 
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -132,15 +72,15 @@ public class FriendRequestsActivity extends AppCompatActivity {
                         Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                         startActivity(map);
                         break;
-*//*                            case R.id.action_alerts:
+/*                            case R.id.action_alerts:
                                 Intent events = new Intent(getApplicationContext(), SearchActivity.class);
                                 startActivity(events);
                                 break;
-                        *//*}
+                        */}
                 return false;
             }
         });
-*/
+
         // Load all friend requests from DB
         dbUserFriendRequests.addValueEventListener(new ValueEventListener() {
             @Override
@@ -285,13 +225,5 @@ public class FriendRequestsActivity extends AppCompatActivity {
                 Toast.makeText(FriendRequestsActivity.this, "Database Error", Toast.LENGTH_LONG).show();
             }
         });
-
-        Alerts();
-        Maps();
-        Friends();
-        Profile();
-        Chat();
     }
-
-
 }

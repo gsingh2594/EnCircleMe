@@ -133,8 +133,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
 
 
         //Place Picker result textview
-        mName = (TextView) findViewById(R.id.textView1);
-        mplace = (TextView) findViewById(R.id.textView2);
+        // mName = (TextView) findViewById(R.id.textView1);
+        mplace = (TextView) findViewById(R.id.textView1);
         mClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -485,9 +485,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
     }
 
     @Override
-    protected void onActivityResult(int requestCode,
-                                    int resultCode, Intent data) {
-
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult", "entering");
         if (requestCode == PLACE_PICKER_REQUEST
                 && resultCode == Activity.RESULT_OK) {
 
@@ -511,16 +510,21 @@ public class EditActivity extends Activity implements View.OnClickListener{
             } else {
                 mPlaceAttribution.setText("");
             }*/
-            if (requestCode == 1) {
-                if(resultCode == Activity.RESULT_OK){
-                    String result = data.getStringExtra("result");
-                    mplace.setText(getTitle());
-                }
-                if (resultCode == Activity.RESULT_CANCELED) {
-                    //Write your code if there's no result
-                }
+        }
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result = data.getStringExtra("result");
+                String placeId = data.getStringExtra("place_id");
+                String placeName = data.getStringExtra("place_name");
+                String address = data.getStringExtra("address");
+                String vicinity = data.getStringExtra("vicinity");
+                Log.d("placeName", placeName);
+                mplace.setText(placeName);  // display the name of the picked place
             }
-        } else {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }    else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

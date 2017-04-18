@@ -2,6 +2,7 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +35,7 @@ public class FriendsActivity extends AppCompatActivity {
     Button btnMaps;
     Button btnProfile;
     Button friends;
-    Button btnChat;
+    Button btnSetting;
 
     ImageView neutralFace;
     TextView noFriendsTextView;
@@ -45,62 +48,9 @@ public class FriendsActivity extends AppCompatActivity {
 
     SimpleAdapter simpleAdapter;
 
-    //Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent profile = new Intent(FriendsActivity.this, UserProfileActivity.class);
-                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(profile);
-            }
-        });
-    }
+    private BottomBar bottomBar;
 
-    public void Alerts() {
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(FriendsActivity.this, SearchActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
 
-    public void Maps() {
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(FriendsActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Friends() {
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(FriendsActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-
-    public void Chat() {
-        btnChat = (Button) findViewById(R.id.chat);
-        btnChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent chat = new Intent(FriendsActivity.this, ChatActivity.class);
-                startActivity(chat);
-            }
-        });
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,13 +60,13 @@ public class FriendsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("My Friends");
 
-
+/*
         Profile();
         Friends();
         Alerts();
         Maps();
-        Chat();
-
+        Settings();
+*/
 
         neutralFace = (ImageView) findViewById(R.id.neutral_face_icon);
         noFriendsTextView = (TextView) findViewById(R.id.no_friends_textview);
@@ -125,16 +75,17 @@ public class FriendsActivity extends AppCompatActivity {
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
 
-       /* BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setDefaultTab(R.id.tab_friends);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 if (tabId == R.id.tab_profile) {
-                Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                startActivity(profile);
-                } else if (tabId == R.id.tab_friends) {
+                    Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                    startActivity(profile);
+                /*} else if (tabId == R.id.tab_friends) {
                     Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
-                    startActivity(friends);
+                    startActivity(friends);*/
                 } else if (tabId == R.id.tab_map) {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
@@ -147,7 +98,7 @@ public class FriendsActivity extends AppCompatActivity {
                 }
 
             }
-        });*/
+        });
         /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -278,4 +229,67 @@ public class FriendsActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomBar.setDefaultTab(R.id.tab_friends);
+    }
+
+
+/*    public void Profile() {
+        btnProfile = (Button) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profile = new Intent(FriendsActivity.this, UserProfileActivity.class);
+                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(profile);
+            }
+        });
+    }
+
+    public void Alerts() {
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(FriendsActivity.this, PlacePickerActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Maps() {
+        btnMaps = (Button) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(FriendsActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Friends() {
+        friends = (Button) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(FriendsActivity.this, FriendsActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+
+    public void Settings() {
+        btnSetting = (Button) findViewById(R.id.setting);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent setting = new Intent(FriendsActivity.this, UserActivity.class);
+                startActivity(setting);
+            }
+        });
+    }*/
 }

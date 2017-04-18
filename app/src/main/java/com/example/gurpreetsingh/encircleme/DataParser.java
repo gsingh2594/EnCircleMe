@@ -51,8 +51,10 @@ public class DataParser {
 
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
         HashMap<String, String> googlePlaceMap = new HashMap<String, String>();
-        String placeName = "-NA-";
-        String vicinity = "-NA-";
+        String placeName = "";
+        String placeId = "";
+        String vicinity = "";
+        String address = "";
         String latitude = "";
         String longitude = "";
         String reference = "";
@@ -66,15 +68,24 @@ public class DataParser {
             if (!googlePlaceJson.isNull("vicinity")) {
                 vicinity = googlePlaceJson.getString("vicinity");
             }
+            if (!googlePlaceJson.isNull("place_id")) {
+                placeId = googlePlaceJson.getString("place_id");
+            }
+            if (!googlePlaceJson.isNull("address")) {
+                address = googlePlaceJson.getString("address");
+            }
             latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
             longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
             reference = googlePlaceJson.getString("reference");
+
             googlePlaceMap.put("place_name", placeName);
+            googlePlaceMap.put("place_id", placeId);
             googlePlaceMap.put("vicinity", vicinity);
+            googlePlaceMap.put("address", address);
             googlePlaceMap.put("lat", latitude);
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
-            Log.d("getPlace", "Putting Places");
+            Log.d("DataParser", "getPlace(): googlePlaceMap = " + googlePlaceMap.toString());
         } catch (JSONException e) {
             Log.d("getPlace", "Error");
             e.printStackTrace();

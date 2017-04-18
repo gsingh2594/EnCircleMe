@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -60,6 +61,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     private static final int PLACE_PICKER_REQUEST = 1000;
     private TextView resutText;
     private String interest_choice;
+//    public HashMap<String, String> placesIdsMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,9 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         setTitle("Select an interest");
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         ActionBar actionBar = getSupportActionBar();
+
+       // placesIdsMap = new HashMap<>();
+
         resutText = (TextView) findViewById(R.id.dragg_result);
         btnOther = (Button) findViewById(R.id.btnOther);
         btnOther.setOnClickListener(this);
@@ -286,6 +291,11 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         //String snippet = marker.getSnippet();
         Intent intent = new Intent();
         intent.putExtra("keyName", title);
+        HashMap<String, String> googlePlace = (HashMap<String, String>)marker.getTag();
+        intent.putExtra("place_id", googlePlace.get("place_id"));
+        intent.putExtra("place_name", googlePlace.get("place_name"));
+        intent.putExtra("vicinity", googlePlace.get("vicinity"));
+        intent.putExtra("address", googlePlace.get("address"));
         setResult(RESULT_OK, intent);
         finish();
     }

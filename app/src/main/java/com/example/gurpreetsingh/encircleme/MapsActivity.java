@@ -21,6 +21,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
@@ -34,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,6 +76,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -106,11 +108,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private HashMap<String, Event> eventsInfoMap;
     private HashMap<String, Bitmap> creatorProfileImagesMap;
     private static final long ONE_MEGABYTE = 1024*1024;
-    Button btnAlerts;
+    /*Button btnAlerts;
     Button btnMaps;
     Button btnProfile;
     Button friends;
-    Button btnChat;
+    Button btnSetting;*/
     ImageButton btnSearch;
     private BottomSheetBehavior bottomSheetBehavior;
     private View bottomSheet;
@@ -119,12 +121,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView textSchedules;
     private TextView textMusic;
 
+    private BottomBar bottomBar;
+
     /*
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
     GeoFire geoFire = new GeoFire(ref);
     */
 
-    //Button
+    /*//Button
     public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
@@ -170,16 +174,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    public void Chat() {
-        btnChat = (Button) findViewById(R.id.chat);
-        btnChat.setOnClickListener(new View.OnClickListener() {
+    public void Settings() {
+        btnSetting = (Button) findViewById(R.id.setting);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent chat = new Intent(MapsActivity.this, ChatActivity.class);
-                startActivity(chat);
+                Intent setting = new Intent(MapsActivity.this, UserActivity.class);
+                startActivity(setting);
             }
         });
-    }
+    }*/
 
 
     @Override
@@ -205,12 +209,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         locationInitialized = false;
         buildGoogleApiClient();
-
-        Alerts();
+        /*Alerts();
         Maps();
         Friends();
         Profile();
-        Chat();
+        Settings();
+        //Search();*/
 
 /*        bottomSheet = (BottomSheet) findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -218,19 +222,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);*/
 
-        /*BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setDefaultTab(R.id.tab_map);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-*//*                if (tabId == R.id.tab_profile) {
+                if (tabId == R.id.tab_profile) {
                     Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                    startActivity(profile);*//*
-                if (tabId == R.id.tab_friends) {
+                    startActivity(profile);
+                } else if (tabId == R.id.tab_friends) {
                     Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
                     startActivity(friends);
-                } else if (tabId == R.id.tab_map) {
+                /*} else if (tabId == R.id.tab_map) {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
-                    startActivity(map);
+                    startActivity(map);*/
                 } else if (tabId == R.id.tab_alerts) {
                     Intent events = new Intent(getApplicationContext(), PlaceActivity.class);
                     startActivity(events);
@@ -239,7 +244,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(events);
                 }
             }
-        });*/
+        });
         //HashMaps for storing info used in marker info window
         eventsInfoMap = new HashMap<String, Event>();
         creatorProfileImagesMap = new HashMap<String, Bitmap>();
@@ -516,6 +521,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onResume(){
         super.onResume();
+        bottomBar.setDefaultTab(R.id.tab_map);
         // Resume location updates when user returns to the MapsActivity
         if(mGoogleApiClient.isConnected()){
             if (ContextCompat.checkSelfPermission(this,

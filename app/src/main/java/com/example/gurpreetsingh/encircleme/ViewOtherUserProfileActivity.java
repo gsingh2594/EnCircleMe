@@ -5,17 +5,19 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,12 +43,6 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     DatabaseReference dbUserRef;
     DatabaseReference friendsRef;
 
-    Button btnAlerts;
-    Button btnMaps;
-    Button btnProfile;
-    Button friends;
-    Button btnChat;
-
     private FirebaseStorage fbStorage;
     private StorageReference fbStorageRef;
     private static final long ONE_MEGABYTE = 1024 * 1024;
@@ -59,62 +55,6 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     private ImageView profileImage;
     private ImageView coverImage;
 
-    //Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent profile = new Intent(ViewOtherUserProfileActivity.this, UserProfileActivity.class);
-                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(profile);
-            }
-        });
-    }
-
-    public void Alerts() {
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(ViewOtherUserProfileActivity.this, SearchActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Maps() {
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(ViewOtherUserProfileActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Friends() {
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(ViewOtherUserProfileActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-
-    public void Chat() {
-        btnChat = (Button) findViewById(R.id.chat);
-        btnChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent chat = new Intent(ViewOtherUserProfileActivity.this, ChatActivity.class);
-                startActivity(chat);
-            }
-        });
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +100,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                 }
             });
 
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -177,20 +117,14 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                         Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                         startActivity(map);
                         break;
-*//*                            case R.id.action_alerts:
+/*                            case R.id.action_alerts:
                                 Intent events = new Intent(getApplicationContext(), SearchActivity.class);
                                 startActivity(events);
                                 break;
-                        *//*}
+                        */}
                 return false;
             }
-        });*/
-
-        Alerts();
-        Maps();
-        Friends();
-        Profile();
-        Chat();
+        });
     }
 
     // Load user profile from DB
