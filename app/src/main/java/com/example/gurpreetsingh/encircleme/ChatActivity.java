@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +25,68 @@ public class ChatActivity extends AppCompatActivity {
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
+    Button btnAlerts;
+    Button btnMaps;
+    Button btnProfile;
+    Button friends;
+    Button btnChat;
+
+    //Button
+    public void Profile() {
+        btnProfile = (Button) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profile = new Intent(ChatActivity.this, UserProfileActivity.class);
+                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(profile);
+            }
+        });
+    }
+
+    public void Alerts() {
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(ChatActivity.this, SearchActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Maps() {
+        btnMaps = (Button) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(ChatActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Friends() {
+        friends = (Button) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(ChatActivity.this, FriendsActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+
+    public void Chat() {
+        btnChat = (Button) findViewById(R.id.chat);
+        btnChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent chat = new Intent(ChatActivity.this, ChatActivity.class);
+                startActivity(chat);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +133,12 @@ public class ChatActivity extends AppCompatActivity {
                 input.setText("");
             }
         });
+
+        Alerts();
+        Maps();
+        Friends();
+        Profile();
+        Chat();
 
     }
 

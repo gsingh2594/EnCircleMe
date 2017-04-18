@@ -3,17 +3,12 @@ package com.example.gurpreetsingh.encircleme;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +39,69 @@ public class AddFriendSearchActivity extends AppCompatActivity {
 
     private String currentUserID;
 
+    Button btnAlerts;
+    Button btnMaps;
+    Button btnProfile;
+    Button friends;
+    Button btnChat;
+
+    //Button
+    public void Profile() {
+        btnProfile = (Button) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profile = new Intent(AddFriendSearchActivity.this, UserProfileActivity.class);
+                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(profile);
+            }
+        });
+    }
+
+    public void Alerts() {
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(AddFriendSearchActivity.this, SearchActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Maps() {
+        btnMaps = (Button) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(AddFriendSearchActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Friends() {
+        friends = (Button) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(AddFriendSearchActivity.this, FriendsActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+
+    public void Chat() {
+        btnChat = (Button) findViewById(R.id.chat);
+        btnChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent chat = new Intent(AddFriendSearchActivity.this, ChatActivity.class);
+                startActivity(chat);
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +115,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         currentUserID = auth.getCurrentUser().getUid();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -74,15 +132,21 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                         Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                         startActivity(map);
                         break;
-/*                            case R.id.action_alerts:
+*//*                            case R.id.action_alerts:
                                 Intent events = new Intent(getApplicationContext(), SearchActivity.class);
                                 startActivity(events);
                                 break;
-                        */
+                        *//*
                 }
                 return false;
             }
-        });
+        });*/
+
+        Alerts();
+        Maps();
+        Friends();
+        Profile();
+        Chat();
     }
 
     @Override

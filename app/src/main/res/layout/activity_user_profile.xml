@@ -348,11 +348,9 @@
         </LinearLayout>
     </ScrollView>
 
-
-
-    <!--<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:id="@+id/menubar"
         android:layout_alignParentBottom="true"
         android:background="#75B095"
@@ -361,62 +359,62 @@
         <Button
             android:id="@+id/btnProfile"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:drawableTop="@drawable/profile"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="Profile"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/friends"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:drawableTop="@drawable/friends"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="Friends"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/btnMaps"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:drawableTop="@drawable/ic_map_black_24dp"
-            android:padding="10dp"
+            android:padding="5dp"
             android:scaleType="centerCrop"
             android:text="Maps"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/btnAlerts"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:drawableTop="@drawable/alerts"
-            android:padding="10dp"
+            android:padding="5dp"
             android:scaleType="centerCrop"
             android:text="Alerts"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
+            android:textSize="12sp" />
 
         <Button
-            android:id="@+id/setting"
+            android:id="@+id/chat"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/ic_settings_black_24dp"
-            android:padding="10dp"
+            android:drawableTop="@drawable/chaticon"
+            android:padding="5dp"
             android:scaleType="centerCrop"
-            android:text="Settings"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
+            android:text="Chat"
+            android:textSize="12sp" />
 
-    </LinearLayout>-->
+    </LinearLayout>
 
     <!--    <LinearLayout
             android:layout_width="match_parent"
@@ -439,11 +437,5 @@
 
 
 
-    <com.roughike.bottombar.BottomBar
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        app:bb_tabXmlResource="@xml/bottom_bar" />
 
 </RelativeLayout>

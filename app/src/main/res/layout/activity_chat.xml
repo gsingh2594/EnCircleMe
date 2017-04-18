@@ -2,14 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.gurpreetsingh.encircleme.ChatActivity">
+
+    <RelativeLayout
     android:id="@+id/activity_main"
+        android:layout_above="@+id/menubar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.gurpreetsingh.encircleme.ChatActivity">
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -47,4 +52,74 @@
         android:divider="@android:color/transparent"
         android:id="@+id/list_of_messages"
         android:layout_marginBottom="16dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/menubar"
+        android:layout_alignParentBottom="true"
+        android:background="#75B095"
+        android:baselineAligned="false">
+
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/profile"
+            android:padding="5dp"
+            android:text="Profile"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/friends"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/friends"
+            android:padding="5dp"
+            android:text="Friends"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnMaps"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_map_black_24dp"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:text="Maps"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnAlerts"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/alerts"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:text="Alerts"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/chat"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/chaticon"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:text="Chat"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
 </RelativeLayout>

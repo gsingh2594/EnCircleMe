@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -22,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,8 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -82,12 +80,68 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private ImageView editIcon;
     private AlertDialog editBioDialog;
 
-    /*Button btnAlerts;
+    Button btnAlerts;
     Button btnMaps;
     Button btnProfile;
     Button friends;
-    Button btnSetting;*/
+    Button btnChat;
 
+    //Button
+    public void Profile() {
+        btnProfile = (Button) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profile = new Intent(UserProfileActivity.this, UserProfileActivity.class);
+                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(profile);
+            }
+        });
+    }
+
+    public void Alerts() {
+        btnAlerts = (Button) findViewById(R.id.btnAlerts);
+        btnAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(UserProfileActivity.this, SearchActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Maps() {
+        btnMaps = (Button) findViewById(R.id.btnMaps);
+        btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent alerts = new Intent(UserProfileActivity.this, MapsActivity.class);
+                startActivity(alerts);
+            }
+        });
+    }
+
+    public void Friends() {
+        friends = (Button) findViewById(R.id.friends);
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent offMaps = new Intent(UserProfileActivity.this, FriendsActivity.class);
+                startActivity(offMaps);
+            }
+        });
+    }
+
+    public void Chat() {
+        btnChat = (Button) findViewById(R.id.chat);
+        btnChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent chat = new Intent(UserProfileActivity.this, ChatActivity.class);
+                startActivity(chat);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,12 +195,12 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         loadUserProfileImage();
         loadUserCoverImage();
 
-/*      Alerts();
+        Alerts();
         Maps();
         Friends();
         Profile();
-        Settings();*/
-        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        Chat();
+/*        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -168,7 +222,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 }
 
             }
-        });
+        });*/
     }
 
 
@@ -309,11 +363,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_editprofile) {
-            Intent modifySettings=new Intent(UserProfileActivity.this,EditUserProfileActivity.class);
+            Intent modifySettings = new Intent(UserProfileActivity.this, EditUserProfileActivity.class);
             startActivity(modifySettings);
         }
-        if (id == R.id.settings){
-            Intent modifySettings=new Intent(UserProfileActivity.this,UserActivity.class);
+        if (id == R.id.settings) {
+            Intent modifySettings = new Intent(UserProfileActivity.this, UserActivity.class);
             startActivity(modifySettings);
         }
         if (id == R.id.logout) {
@@ -354,9 +408,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(userChoosenTask.equals("Take Photo"))
+                    if (userChoosenTask.equals("Take Photo"))
                         cameraIntent();
-                    else if(userChoosenTask.equals("Choose from Library"))
+                    else if (userChoosenTask.equals("Choose from Library"))
                         galleryIntent();
                 } else {
                     //code for deny
@@ -366,24 +420,24 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
-                "Cancel" };
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(UserProfileActivity.this);
+                boolean result = Utility.checkPermission(UserProfileActivity.this);
 
                 if (items[item].equals("Take Photo")) {
-                    userChoosenTask ="Take Photo";
-                    if(result)
+                    userChoosenTask = "Take Photo";
+                    if (result)
                         cameraIntent();
 
                 } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask ="Choose from Library";
-                    if(result)
+                    userChoosenTask = "Choose from Library";
+                    if (result)
                         galleryIntent();
 
                 } else if (items[item].equals("Remove")) {
@@ -412,17 +466,15 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    private void galleryIntent()
-    {
+    private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
 
 
-    private void cameraIntent()
-    {
+    private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
@@ -457,12 +509,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(profileImageSelected) {
+        if (profileImageSelected) {
             uploadProfileImageToFirebaseStorage(bitmap);
             // NOTE: any code after this line might run before the image has been uploaded
             profileImageSelected = false;
-        }
-        else if(coverImageSelected){
+        } else if (coverImageSelected) {
             uploadCoverImageToFirebaseStorage(bitmap);
             // NOTE: any code after this line might run before the image has been uploaded
             coverImageSelected = false;
@@ -472,7 +523,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
-        Bitmap bm=null;
+        Bitmap bm = null;
         if (data != null) {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
@@ -482,12 +533,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }
         Log.d("About to upload image", "profileImageSelected: " + profileImageSelected
                 + "\n" + "coverImageSelected: " + coverImageSelected);
-        if(profileImageSelected) {
+        if (profileImageSelected) {
             uploadProfileImageToFirebaseStorage(bm);
             // NOTE: any code after this line might run before the image has been uploaded
             profileImageSelected = false;
-        }
-        else if(coverImageSelected){
+        } else if (coverImageSelected) {
             uploadCoverImageToFirebaseStorage(bm);
             // NOTE: any code after this line might run before the image has been uploaded
             coverImageSelected = false;
@@ -574,7 +624,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    private void alertImageSizeTooLarge(){
+    private void alertImageSizeTooLarge() {
         AlertDialog.Builder alert = new AlertDialog.Builder(UserProfileActivity.this);
         alert.setMessage("Image size is too large! Please select an image less than 5MB");
         alert.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
@@ -601,15 +651,15 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         return bitmap;
     }
 
-    public void showEditDialog(){
+    public void showEditDialog() {
         final AlertDialog.Builder editBioDialogBuilder = new AlertDialog.Builder(UserProfileActivity.this);
         editBioDialogBuilder.setTitle("Edit Bio");
         EditText textBox = new EditText(this);
         textBox.setId(R.id.edit_bio_text);
         textBox.setText(user.getBio());
         editBioDialogBuilder.setView(textBox);
-        editBioDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int ID){
+        editBioDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int ID) {
                 // User clicked save button
                 saveUserBio();
                 Intent refreshProfile = new Intent(UserProfileActivity.this, UserProfileActivity.class);
@@ -625,7 +675,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         editBioDialog.show();
     }
 
-    public void saveUserBio(){
+    public void saveUserBio() {
         EditText dialogTextBox = (EditText) editBioDialog.findViewById(R.id.edit_bio_text);
         String bio = dialogTextBox.getText().toString().trim();
         user.setBio(bio);
@@ -638,7 +688,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        if(v == editIcon){
+        if (v == editIcon) {
             showEditDialog();
         }
     }
@@ -646,7 +696,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     // used to set sizes in dp units programmatically. (Some views set sizes programmtically in px, not dp)
     // We should use this method to make certain views display consistently on different screen densities
-    private int convertDPtoPX(int sizeInDP){
+    private int convertDPtoPX(int sizeInDP) {
         float scale = getResources().getDisplayMetrics().density;       // note that 1dp = 1px on a 160dpi screen
         int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
         return dpAsPixels;  // return the size in pixels
@@ -658,55 +708,4 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         moveTaskToBack(true);
     }
 
-/*    //Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent time = new Intent(UserProfileActivity.this, UserProfileActivity.class);
-                startActivity(time);
-            }
-        });
-    }
-    public void Alerts(){
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent alerts = new Intent(UserProfileActivity.this, PlacePickerActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-    public void Maps(){
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent alerts = new Intent(UserProfileActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-    public void Friends(){
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(UserProfileActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-    public void Settings(){
-        btnSetting = (Button) findViewById(R.id.setting);
-        btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent setting = new Intent(UserProfileActivity.this, UserActivity.class);
-                startActivity(setting);
-            }
-        });
-    }*/
 }

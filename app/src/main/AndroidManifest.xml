@@ -56,7 +56,6 @@
             android:name=".UserProfileActivity"
             android:launchMode="singleTop" /> <!-- singleTop to prevent fetching from DB every time activity is started -->
         <activity android:name=".SearchActivity" />
-        <activity android:name=".MapTabsActivity" />
         <activity android:name=".PlaceActivity" />
         <activity android:name=".EditUserProfileActivity" />
         <activity
