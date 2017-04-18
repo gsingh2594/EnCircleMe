@@ -48,6 +48,7 @@
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".EditActivity" />
         <activity android:name=".UserActivity" />
+        <activity android:name=".ChatActivity" />
         <activity
             android:name=".CreateUserProfileActivity"
             android:windowSoftInputMode="adjustPan" />
@@ -82,7 +83,6 @@
         <activity android:name=".FriendsActivity" />
         <activity android:name=".ViewOtherUserProfileActivity" />
         <activity android:name=".FriendRequestsActivity" />
-        <activity android:name=".OneFragment" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".SettingsActivity2" />
         <service android:name=".FirebaseNotificationService"

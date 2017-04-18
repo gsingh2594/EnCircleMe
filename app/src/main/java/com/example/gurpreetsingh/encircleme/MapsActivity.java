@@ -224,10 +224,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                if (tabId == R.id.tab_profile) {
+/*                if (tabId == R.id.tab_profile) {
                     Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                    startActivity(profile);
-                } else if (tabId == R.id.tab_friends) {
+                    startActivity(profile);*/
+                if (tabId == R.id.tab_friends) {
                     Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
                     startActivity(friends);
                 } else if (tabId == R.id.tab_map) {
@@ -237,7 +237,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent events = new Intent(getApplicationContext(), PlaceActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
-                    Intent events = new Intent(getApplicationContext(), EditActivity.class);
+                    Intent events = new Intent(getApplicationContext(), ChatActivity.class);
                     startActivity(events);
                 }
             }

@@ -163,7 +163,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     Intent events = new Intent(UserProfileActivity.this, PlaceActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
-                    Intent events = new Intent(getApplicationContext(), EditActivity.class);
+                    Intent events = new Intent(getApplicationContext(), ChatActivity.class);
                     startActivity(events);
                 }
 

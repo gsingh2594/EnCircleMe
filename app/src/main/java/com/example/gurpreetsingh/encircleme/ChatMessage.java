@@ -3,9 +3,8 @@ package com.example.gurpreetsingh.encircleme;
 import java.util.Date;
 
 /**
- * Created by GurpreetSingh on 4/10/17.
+ * Created by GurpreetSingh on 4/18/17.
  */
-
 public class ChatMessage {
 
     private String messageText;
