@@ -147,8 +147,8 @@ public class FirebaseNotificationService extends Service {
         mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
         mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
 
-        Intent intent = new Intent(this, ViewOtherUserProfileActivity.class);
-        intent.putExtra("userID",userIDOfSender);
+        Intent intent = new Intent(this, FriendRequestsActivity.class);
+        //intent.putExtra("userID",userIDOfSender);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
