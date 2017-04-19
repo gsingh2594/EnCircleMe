@@ -45,6 +45,7 @@ public class FirebaseNotificationService extends Service {
                     // a potentially  time consuming task
                     database = FirebaseDatabase.getInstance();
                     addFriendNotificationListener();
+                    acceptedFriendNotificationListener();
                 }
             }).start(); // Run the thread
         }
