@@ -34,6 +34,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.PointOfInterest;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, View.OnClickListener, GoogleMap.OnCameraMoveStartedListener,
         GoogleMap.OnCameraMoveListener, //GoogleMap.OnCameraIdleListener,
-        GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnPoiClickListener {
 
     private GoogleMap.OnCameraIdleListener onCameraIdleListener;
     private LatLng userLocation;
@@ -111,7 +112,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
                 mMap.clear();
 
                 try {
-                    List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    List<Address> addressList = geocoder.getFromLocation(latLng.latitude , latLng.longitude, 1);
                     if (addressList != null && addressList.size() > 0) {
                         String locality = addressList.get(0).getAddressLine(0);
                         String country = addressList.get(0).getCountryName();
@@ -173,7 +174,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-
+        mMap.setOnPoiClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnCameraIdleListener(onCameraIdleListener);
         mMap.setOnCameraMoveListener(this);
@@ -199,6 +200,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             public void onClick(View v) {
                 //LatLng latLng = mMap.getCameraPosition().target;
                 //getNearbyPlaces(latLng.latitude, latLng.longitude);
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
                 Log.d("onClick", "Button is Clicked");
                 interest_choice = "movie_theater";
                 Toast.makeText(PlaceActivity.this, "Nearby Movie Theaters", Toast.LENGTH_LONG).show();
@@ -210,6 +212,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
 
             @Override
             public void onClick(View v) {
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
                 Log.d("onClick", "Button is Clicked");
                 interest_choice = "restaurant";
                 Toast.makeText(PlaceActivity.this, "Nearby Restaurants", Toast.LENGTH_LONG).show();
@@ -222,6 +225,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
                 interest_choice = "art_gallery";
                 Toast.makeText(PlaceActivity.this, "Nearby Art Gallery", Toast.LENGTH_LONG).show();
             }
@@ -233,6 +237,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
                 interest_choice = "cafe";
                 Toast.makeText(PlaceActivity.this, "Nearby Cafe", Toast.LENGTH_LONG).show();
             }
@@ -244,6 +249,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
                 interest_choice = "bar";
                 Toast.makeText(PlaceActivity.this, "Nearby Bars", Toast.LENGTH_LONG).show();
             }
@@ -255,6 +261,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
                 interest_choice = "department_store";
                 Toast.makeText(PlaceActivity.this, "Nearby Department Stores", Toast.LENGTH_LONG).show();
             }
@@ -501,6 +508,15 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onPoiClick(PointOfInterest pointOfInterest) {
+        Toast.makeText(getApplicationContext(), pointOfInterest.name +
+                        //"\nPlace ID:" + pointOfInterest.placeId +
+                        "\nLatitude:" + pointOfInterest.latLng.latitude +
+                        "\nLongitude:" + pointOfInterest.latLng.longitude,
+                Toast.LENGTH_LONG).show();
     }
 }
 

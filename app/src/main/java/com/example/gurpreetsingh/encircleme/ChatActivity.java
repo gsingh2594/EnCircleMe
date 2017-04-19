@@ -7,8 +7,11 @@ package com.example.gurpreetsingh.encircleme;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -34,10 +38,16 @@ public class ChatActivity extends AppCompatActivity {
     private String userID;
     private boolean usernameIsLoaded = false;
 
+    private BottomBar bottomBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.chat_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("EnCircleMe Chat");
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         loadUserName();
@@ -81,7 +91,32 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setDefaultTab(R.id.tab_chats);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_profile) {
+                    Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
+                    startActivity(profile);
+                } else if (tabId == R.id.tab_friends) {
+                    Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+                    startActivity(friends);
+                } else if (tabId == R.id.tab_map) {
+                    Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(map);
+                } else if (tabId == R.id.tab_alerts) {
+                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
+                    startActivity(events);
+/*                } else if (tabId == R.id.tab_chats) {
+                    Intent events = new Intent(getApplicationContext(), ChatActivity.class);
+                    startActivity(events);*/
+                }
+            }
+        });
     }
+
+
 
     private void loadUserName(){
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
@@ -173,11 +208,22 @@ public class ChatActivity extends AppCompatActivity {
                 // Set their text
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
-                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
+                messageTime.setText(DateFormat.format("MM/dd/yy (hh:mma)",
                         model.getMessageTime()));
             }
         };
 
         listOfMessages.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomBar.setDefaultTab(R.id.tab_chats);
     }
 }

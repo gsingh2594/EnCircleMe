@@ -237,7 +237,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);*/
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), PlaceActivity.class);
+                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -525,7 +525,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onResume(){
         super.onResume();
-        bottomBar.setDefaultTab(R.id.tab_map);
+        //bottomBar.setDefaultTab(R.id.tab_map);
         // Resume location updates when user returns to the MapsActivity
         if(mGoogleApiClient.isConnected()){
             if (ContextCompat.checkSelfPermission(this,
