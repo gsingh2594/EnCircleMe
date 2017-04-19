@@ -160,7 +160,7 @@ public class FriendRequestsActivity extends AppCompatActivity {
 
                                                         // Remove request from list and refresh the listview
                                                         requestsList.remove(itemPosition);
-                                                        SimpleAdapter simpleAdapter = new SimpleAdapter(FriendRequestsActivity.this, requestsList,
+                                                         SimpleAdapter simpleAdapter = new SimpleAdapter(FriendRequestsActivity.this, requestsList,
                                                                 R.layout.friend_requests_list_items, new String[]{"username"}, new int[]{R.id.friend_requests_text_view} );
                                                         listView.setAdapter(simpleAdapter);
                                                     }
