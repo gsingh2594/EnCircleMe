@@ -104,7 +104,7 @@ public class EditUserProfileActivity extends AppCompatActivity implements View.O
                         checkBoxCafe.setChecked(true);
                     if(interestsList.contains("Bars"))
                         checkBoxBar.setChecked(true);
-                    if(interestsList.contains("Restaurant"))
+                    if(interestsList.contains("Restaurants"))
                         checkBoxRestaurant.setChecked(true);
                     if(interestsList.contains("Department Stores"))
                         checkBoxDeptStores.setChecked(true);

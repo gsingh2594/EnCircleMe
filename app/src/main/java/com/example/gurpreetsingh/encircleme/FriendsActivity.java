@@ -90,10 +90,10 @@ public class FriendsActivity extends AppCompatActivity {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), PlaceActivity.class);
+                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
-                    Intent events = new Intent(getApplicationContext(), EditActivity.class);
+                    Intent events = new Intent(getApplicationContext(), ChatActivity.class);
                     startActivity(events);
                 }
 
@@ -161,7 +161,7 @@ public class FriendsActivity extends AppCompatActivity {
                     // Find listview from layout and initialize with an adapter
                     final ListView listView = (ListView) findViewById(R.id.friends_listview);
                     simpleAdapter = new SimpleAdapter(FriendsActivity.this, friendsList,
-                            R.layout.friend_requests_list_items, new String[]{"username"}, new int[]{R.id.friend_requests_text_view} );
+                            R.layout.friend_requests_list_items, new String[]{"username"}, new int[]{R.id.friend_requests_text_view});
                     listView.setAdapter(simpleAdapter);
 
                     // Show friend's user profile when clicked

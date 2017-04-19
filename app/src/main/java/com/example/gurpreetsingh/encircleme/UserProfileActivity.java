@@ -1,8 +1,6 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -102,7 +100,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Select an interest");
+        setTitle("Profile");
         ActionBar actionBar = getSupportActionBar();
 
         auth = FirebaseAuth.getInstance();
@@ -167,7 +165,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     Intent map = new Intent(UserProfileActivity.this, MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(UserProfileActivity.this, PlaceActivity.class);
+                    Intent events = new Intent(UserProfileActivity.this, Eventlist_Activity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);

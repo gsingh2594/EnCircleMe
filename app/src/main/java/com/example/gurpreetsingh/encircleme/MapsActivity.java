@@ -237,7 +237,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);*/
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), PlaceActivity.class);
+                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -270,35 +270,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 final GeoLocation eventLocation = location;
                 Log.d("onKeyEntered", "event found");
 
+                // Check if event info has already been loaded
+                if (!eventsInfoMap.containsKey(eventKey)) {
+                    // Not loaded yet --> load event info from DB
+                    Log.d("event not loaded", "loading event info");
+                    DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events/all_events/" + eventKey);
+                    eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            // Get Event object for event info
+                            Event event = dataSnapshot.getValue(Event.class);
 
-                // Load event info from DB
-                DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events/all_events/" + eventKey);
-                eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get Event object for event info
-                        Event event = dataSnapshot.getValue(Event.class);
-
-                        // Check if the event has already happened
-                        Log.d("event already happened?", "checking");
-                        if(eventHasNotHappened(event)) {
-                            Log.d("event already happened?", "NOPE");
-                            // Store event info in HashMap for later access if it is not already there
-                            if (eventsInfoMap.get(eventKey) == null) {
-                                Log.d("event already loaded?", "NOPE");
+                            // Check if the event has already happened
+                            Log.d("event already happened?", "checking");
+                            if (eventHasNotHappened(event)) {
+                                Log.d("event already happened?", "NOPE");
+                                // Store event info in HashMap for later access if it is not already there
+                                Log.d("eventInfo", "storing event info in HashMap");
                                 eventsInfoMap.put(eventKey, event);
                                 // Load the event creator's profile image
                                 loadCreatorProfileImage(eventKey, eventLocation);
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(MapsActivity.this, "Error loading event info", Toast.LENGTH_LONG).show();
-                        Log.d("loadEventsFromDB", "Database error" + databaseError.getMessage());
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(MapsActivity.this, "Error loading event info", Toast.LENGTH_LONG).show();
+                            Log.d("loadEventsFromDB", "Database error" + databaseError.getMessage());
+                        }
+                    });
+                }
+                else{
+                    Log.d("onKeyEntered", "Event info has already been loaded");
+                }
             }
 
             @Override
@@ -525,8 +529,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onResume(){
         super.onResume();
-        bottomBar.setDefaultTab(R.id.tab_map);
+        //bottomBar.setDefaultTab(R.id.tab_map);
         // Resume location updates when user returns to the MapsActivity
+        bottomBar.setDefaultTab(R.id.tab_map);
         if(mGoogleApiClient.isConnected()){
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)

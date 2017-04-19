@@ -24,8 +24,8 @@
         android:title="Friends" />
     <item
         android:id="@+id/action_alerts"
-        android:icon="@drawable/alerts"
-        android:title="Alerts"
+        android:icon="@drawable/view_list"
+        android:title="Events"
         android:enabled="true"
         app:showAsAction="ifRoom"
         barColorWhenSelected="#0ec65e"/>
