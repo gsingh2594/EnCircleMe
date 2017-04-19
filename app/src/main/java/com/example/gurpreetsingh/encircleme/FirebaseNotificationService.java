@@ -46,7 +46,6 @@ public class FirebaseNotificationService extends Service {
                     database = FirebaseDatabase.getInstance();
                     addFriendNotificationListener();
                     acceptedFriendNotificationListener();
-
                 }
             }).start(); // Run the thread
         }
@@ -161,8 +160,7 @@ public class FirebaseNotificationService extends Service {
 
 
     }
-    private void acceptedFriendNotificationListener()
-    {
+    private void acceptedFriendNotificationListener() {
         final DatabaseReference acceptedFriendsRequestsRef = database.getReference("friends/" + userID);
         // List for storing all friends. Only newly accepted friends would be notified
         final List<String> previousFriendsList = new ArrayList<String>();

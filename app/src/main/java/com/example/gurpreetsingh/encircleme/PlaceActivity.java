@@ -32,8 +32,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 
 import java.io.IOException;
@@ -45,7 +47,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, View.OnClickListener, GoogleMap.OnCameraMoveStartedListener,
         GoogleMap.OnCameraMoveListener, //GoogleMap.OnCameraIdleListener,
-        GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnPoiClickListener {
+        GoogleMap.OnCameraMoveCanceledListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnPoiClickListener, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap.OnCameraIdleListener onCameraIdleListener;
     private LatLng userLocation;
@@ -76,7 +79,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         ActionBar actionBar = getSupportActionBar();
 
-       // placesIdsMap = new HashMap<>();
+        // placesIdsMap = new HashMap<>();
 
         resutText = (TextView) findViewById(R.id.dragg_result);
         btnOther = (Button) findViewById(R.id.btnOther);
@@ -90,9 +93,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
-        }
-        else {
-            Log.d("onCreate","Google Play Services available.");
+        } else {
+            Log.d("onCreate", "Google Play Services available.");
         }
 
         configureCameraIdle();
@@ -100,6 +102,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
 
     private void configureCameraIdle() {
@@ -112,7 +116,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
                 mMap.clear();
 
                 try {
-                    List<Address> addressList = geocoder.getFromLocation(latLng.latitude , latLng.longitude, 1);
+                    List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                     if (addressList != null && addressList.size() > 0) {
                         String locality = addressList.get(0).getAddressLine(0);
                         String country = addressList.get(0).getCountryName();
@@ -129,11 +133,10 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
 
-    private void getNearbyPlaces(double latitude, double longitude){
+    private void getNearbyPlaces(double latitude, double longitude) {
         if (interest_choice == null) {
 
-        }
-        else{
+        } else {
             String url = getUrl(latitude, longitude, interest_choice);
             Object[] DataTransfer = new Object[2];
             DataTransfer[0] = mMap;
@@ -148,8 +151,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog(this, result,
                         0).show();
             }
@@ -180,6 +183,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraMoveCanceledListener(this);
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapLongClickListener(this);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -266,6 +270,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
                 Toast.makeText(PlaceActivity.this, "Nearby Department Stores", Toast.LENGTH_LONG).show();
             }
         });
+    }
 
      /*   Button btnSchool = (Button) findViewById(R.id.btnSchool);
         btnSchool.setOnClickListener(new View.OnClickListener() {
@@ -287,24 +292,61 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
                 Toast.makeText(PlaceActivity.this, "Nearby Schools", Toast.LENGTH_LONG).show();
             }
         });*/
+
+    public void onMapLongClick(LatLng latLng) {
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("You picked this location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .draggable(true));
+
+        Toast.makeText(getApplicationContext(),
+                "New marker added@" + latLng.toString(), Toast.LENGTH_LONG)
+                .show();
+
+/*        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker arg0) {
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onMarkerDragEnd(Marker arg0) {
+                Log.d("System out", "onMarkerDragEnd...");
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(arg0.getPosition()));
+            }
+
+            @Override
+            public void onMarkerDrag(Marker arg0) {
+            }
+        });
+*/
     }
+
 
     @Override
     public void onInfoWindowClick(Marker marker) {
         // Determine what marker is clicked by using the argument passed in
         // for example, marker.getTitle() or marker.getSnippet().
         // Code here for navigating to fragment activity.
-        String title = marker.getId();
-        //String snippet = marker.getSnippet();
-        Intent intent = new Intent();
-        intent.putExtra("keyName", title);
-        HashMap<String, String> googlePlace = (HashMap<String, String>)marker.getTag();
-        intent.putExtra("place_id", googlePlace.get("place_id"));
-        intent.putExtra("place_name", googlePlace.get("place_name"));
-        intent.putExtra("vicinity", googlePlace.get("vicinity"));
-        intent.putExtra("address", googlePlace.get("address"));
-        setResult(RESULT_OK, intent);
-        finish();
+        if (marker.getTitle()=="You picked this location"){
+            Intent intent = new Intent();
+            intent.putExtra("You picked this location", marker.getTitle());
+            intent.putExtra("lat", marker.getPosition());
+        }
+        else {
+            String title = marker.getId();
+            //String snippet = marker.getSnippet();
+            Intent intent = new Intent();
+            intent.putExtra("keyName", title);
+            HashMap<String, String> googlePlace = (HashMap<String, String>) marker.getTag();
+            intent.putExtra("place_id", googlePlace.get("place_id"));
+            intent.putExtra("place_name", googlePlace.get("place_name"));
+            intent.putExtra("vicinity", googlePlace.get("vicinity"));
+            intent.putExtra("address", googlePlace.get("address"));
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
         @Override
@@ -518,5 +560,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
                         "\nLongitude:" + pointOfInterest.latLng.longitude,
                 Toast.LENGTH_LONG).show();
     }
+
+
 }
 

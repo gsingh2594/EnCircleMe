@@ -216,11 +216,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Settings();
         //Search();*/
 
-/*        bottomSheet = (BottomSheet) findViewById(R.id.bottom_sheet);
+        bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(150);
+        bottomSheetBehavior.setPeekHeight(200);
         bottomSheetBehavior.setHideable(true);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);*/
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_map);
@@ -249,12 +249,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         eventsInfoMap = new HashMap<String, Event>();
         creatorProfileImagesMap = new HashMap<String, Bitmap>();
     }
-
-    /*private void updateBottomSheetContent(Marker marker) {
-        TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
-        name.setText(marker.getTitle());
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-    }*/
 
     private void loadEventsFromDB(){
         DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events/geofire_locations");
@@ -581,11 +575,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        /*mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                updateBottomSheetContent(marker);
-                return true;
+                if (eventsInfoMap.get(marker.getTitle()) == null)
+                    updateBottomSheetContent(marker);
+                    //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                //return true;
+                return false;
             }
         });
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -593,7 +590,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onMapClick(LatLng latLng) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
-        });*/
+        });
+    }
+
+    private void updateBottomSheetContent(Marker marker) {
+        TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
+        name.setText(marker.getTitle());
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void addCustomMarker() {
@@ -602,7 +605,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
 
-        /*// adding a marker on map with image from  drawable
+        /*// adding a marker on map with image from  dradrawable
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(40.758879, -73.985110))
                 .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.neutral_face_icon))));*/
@@ -774,7 +777,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return prepareEventInfoView(marker);
         else
             // Marker represents a place
-            return preparePlaceInfoView(marker);
+            return null;
+                    //preparePlaceInfoView(marker);
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
