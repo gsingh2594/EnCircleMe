@@ -91,13 +91,14 @@ public class FirebaseNotificationService extends Service {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         // Get username of the user that sent the friend request
                         String usernameOfSender = dataSnapshot.getValue().toString();
+                        String userIDOfSender = dataSnapshot.getKey().toString();
 
                         // Check if friend request is new or not
                         if (!previousFriendRequestsList.contains(usernameOfSender)) {
                             // new friend request
                             Log.d("onChildAdded", "New friend request --> usernameOfSender = " + usernameOfSender);
                             // Create notification to be displayed
-                            createNewFriendRequestNotification(usernameOfSender);
+                            createNewFriendRequestNotification(usernameOfSender,userIDOfSender);
                         }
                     }
 
@@ -134,7 +135,7 @@ public class FirebaseNotificationService extends Service {
     }
 
 
-    public boolean createNewFriendRequestNotification(String usernameOfSender) {
+    public boolean createNewFriendRequestNotification(String usernameOfSender, String userIDOfSender) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
@@ -146,7 +147,8 @@ public class FirebaseNotificationService extends Service {
         mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
         mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
 
-        Intent intent = new Intent(this, FriendRequestsActivity.class);
+        Intent intent = new Intent(this, ViewOtherUserProfileActivity.class);
+        intent.putExtra("userID","userIDOfSender");
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
@@ -158,29 +160,29 @@ public class FirebaseNotificationService extends Service {
 
     }
     private void acceptedFriendNotificationListener() {
-        final DatabaseReference acceptedfriendsRequestsRef = database.getReference("friends/" + userID);
-        // List for storing all previously received requests. That way only new requests will create notifications
-        final List<String> previousFriendRequestsList = new ArrayList<String>();
+        final DatabaseReference acceptedFriendsRequestsRef = database.getReference("friends/" + userID);
+        // List for storing all friends. Only newly accepted friends would be notified
+        final List<String> previousFriendsList = new ArrayList<String>();
 
-        acceptedfriendsRequestsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        acceptedFriendsRequestsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot friendRequest : dataSnapshot.getChildren()) {
-                    String username = friendRequest.getValue().toString();
+                for (DataSnapshot acceptedRequest : dataSnapshot.getChildren()) {
+                    String username = acceptedRequest.getValue().toString();
                     Log.d("onDataChange", "Existing friend request --> username = " + username);
-                    previousFriendRequestsList.add(username);
+                    previousFriendsList.add(username);
                 }
 
-                // listen for new friend requests in DB
-                acceptedfriendsRequestsRef.addChildEventListener(new ChildEventListener() {
+                // listen for new accepted friends in DB
+                acceptedFriendsRequestsRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         // Get username of the user that sent the friend request
                         String usernameOfSender = dataSnapshot.getValue().toString();
 
                         // Check if friend is new or not
-                        if (!previousFriendRequestsList.contains(usernameOfSender)) {
-                            // new friend request
+                        if (!previousFriendsList.contains(usernameOfSender)) {
+                            // Accepted Friend Request
                             Log.d("onChildAdded", "New friend request --> usernameOfSender = " + usernameOfSender);
                             // Create notification to be displayed
                             acceptedFriendRequestNotification(usernameOfSender);
@@ -197,7 +199,7 @@ public class FirebaseNotificationService extends Service {
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
                         String usernameOfSender = dataSnapshot.getValue().toString();
                         Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + usernameOfSender);
-                        previousFriendRequestsList.remove(usernameOfSender);
+                        previousFriendsList.remove(usernameOfSender);
 
                     }
 
