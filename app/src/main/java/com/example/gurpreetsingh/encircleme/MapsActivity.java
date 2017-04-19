@@ -261,7 +261,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         GeoFire eventsGeoFireRef = new GeoFire(eventLocationsRef);
 
         // GeoQuery to retrieve events within a specified distance of the user's current location
-        GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 3.2); // 3.2 km == 2 miles
+        GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 160); // 160 km == 100 miles
         Log.d("loadEventsFromDB()", "starting GeoQuery");
         eventsGeoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -280,9 +280,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Event event = dataSnapshot.getValue(Event.class);
 
                         // Check if the event has already happened
+                        Log.d("event already happened?", "checking");
                         if(eventHasNotHappened(event)) {
+                            Log.d("event already happened?", "NOPE");
                             // Store event info in HashMap for later access if it is not already there
                             if (eventsInfoMap.get(eventKey) == null) {
+                                Log.d("event already loaded?", "NOPE");
                                 eventsInfoMap.put(eventKey, event);
                                 // Load the event creator's profile image
                                 loadCreatorProfileImage(eventKey, eventLocation);
@@ -300,6 +303,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onKeyExited(String key) {
+                Log.d("onKeyExited", "Event disappearing!");
                 // Remove event from HashMap
                 eventsInfoMap.remove(key);
                 // Remove creator's profile image from HashMap

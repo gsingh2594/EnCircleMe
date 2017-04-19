@@ -4,11 +4,13 @@ package com.example.gurpreetsingh.encircleme;
  * Created by GurpreetSingh on 4/18/17.
  */
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -18,36 +20,27 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ChatActivity extends AppCompatActivity {
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
+    private String username;
+    private String userID;
+    private boolean usernameIsLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
-            // Start sign in/sign up activity
-            startActivityForResult(
-                    AuthUI.getInstance().createSignInIntentBuilder().build(),
-                    SIGN_IN_REQUEST_CODE
-            );
-        } else {
-            // User is already signed in. Therefore, display
-            // a welcome Toast
-            Toast.makeText(this,
-                    "Welcome " + FirebaseAuth.getInstance()
-                            .getCurrentUser()
-                            .getDisplayName(),
-                    Toast.LENGTH_LONG)
-                    .show();
-
-            displayChatMessages();
-        }
+        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        loadUserName();
 
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -55,22 +48,65 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 EditText input = (EditText)findViewById(R.id.input);
 
-                // Read the input field and push a new instance
-                // of ChatMessage to the Firebase database
-                FirebaseDatabase.getInstance()
-                        .getReference("chat")
-                        .push()
-                        .setValue(new ChatMessage(input.getText().toString(),
-                                FirebaseAuth.getInstance()
-                                        .getCurrentUser()
-                                        .getDisplayName())
-                        );
+                if(usernameIsLoaded) {
+                    // Read the input field and push a new instance
+                    // of ChatMessage to the Firebase database
+                    FirebaseDatabase.getInstance()
+                            .getReference("chat")
+                            .push()
+                            .setValue(new ChatMessage(input.getText().toString(), username));
 
-                // Clear the input
-                input.setText("");
+                    // Clear the input
+                    input.setText("");
+                }
+                else{
+                    ProgressDialog progressDialog = new ProgressDialog(ChatActivity.this);
+                    progressDialog.setMessage("One moment please");
+
+                    while(!usernameIsLoaded){
+                        Log.d("onClick", "Entering while loop because username is not loaded");
+                        progressDialog.show();
+                    }
+                    progressDialog.hide();
+
+                    // Save message in DB
+                    FirebaseDatabase.getInstance()
+                            .getReference("chat")
+                            .push()
+                            .setValue(new ChatMessage(input.getText().toString(), username));
+
+                    // Clear the input
+                    input.setText("");
+                }
             }
         });
 
+    }
+
+    private void loadUserName(){
+        DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
+        usernamesRef.orderByValue().equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() == 1) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        username = ds.getKey().toString();
+                        usernameIsLoaded = true;
+                        Toast.makeText(ChatActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
+                        displayChatMessages();
+                    }
+                }
+                else{
+                    Log.d("Error", "user somehow has more than 1 username!");
+                    throw new IllegalStateException("user has more than 1 username!");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
