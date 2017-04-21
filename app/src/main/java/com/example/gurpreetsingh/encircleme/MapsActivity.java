@@ -116,11 +116,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     ImageButton btnSearch;
     private BottomSheetBehavior bottomSheetBehavior;
     private View bottomSheet;
-
     private TextView textFavorites;
     private TextView textSchedules;
     private TextView textMusic;
-
     private BottomBar bottomBar;
 
     /*
@@ -218,7 +216,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(200);
+        bottomSheetBehavior.setPeekHeight(180);
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -417,6 +415,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Place place = PlaceAutocomplete.getPlace(this, data);
 
                 String placeDetailsStr = place.getName() + "\n"
+                        + place.getLocale() + "\n"
                         + place.getId() + "\n"
                         + place.getLatLng().toString() + "\n"
                         + place.getAddress() + "\n"
@@ -426,6 +425,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         + place.getRating();
                 //mAutoCompleteFragment.setText(placeDetailsStr);*//*
                 String placeName = (String) place.getName();
+                //String locale = (Locale) place.getLocale();
                 String placeAddress = (String) place.getAddress();
                 LatLng latLng = place.getLatLng();
                 String placeNumber;
@@ -595,7 +595,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void updateBottomSheetContent(Marker marker) {
         TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
+        TextView address = (TextView) bottomSheet.findViewById(R.id.detail_address);
+/*        TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
+        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
+        TextView rating = (TextView) bottomSheet.findViewById(R.id.detail_rating);
+        TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
+        TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);*/
         name.setText(marker.getTitle());
+        address.setText(marker.getSnippet());
+        //number.setText(place.)
+
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 

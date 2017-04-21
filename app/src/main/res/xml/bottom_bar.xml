@@ -5,34 +5,34 @@
         icon="@drawable/profile"
         title="Profile"
         inActiveColor="@android:color/black"
-        activeColor="@color/colorPrimaryDark"
+        activeColor="#FFFFFD"
         barColorWhenSelected="@color/colorPrimary"/>
     <tab
         id="@+id/tab_friends"
         icon="@drawable/friends"
         title="Friends"
         inActiveColor="@android:color/black"
-        activeColor="@color/colorPrimaryDark"
+        activeColor="#FFFFFD"
         barColorWhenSelected="@color/colorPrimary"/>
     <tab
         id="@+id/tab_map"
         icon="@drawable/ic_map_black_24dp"
         title="Map"
         inActiveColor="@android:color/black"
-        activeColor="@color/colorPrimaryDark"
+        activeColor="#FFFFFD"
         barColorWhenSelected="@color/colorPrimary"/>
     <tab
         id="@+id/tab_alerts"
-        icon="@drawable/view_list"
-        title="Events"
+        icon="@drawable/alerts"
+        title="Alerts"
         inActiveColor="@android:color/black"
-        activeColor="@color/colorPrimaryDark"
+        activeColor="#FFFFFD"
         barColorWhenSelected="@color/colorPrimary"/>
     <tab
         id="@+id/tab_chats"
         icon="@drawable/marker"
         title="Chat"
         inActiveColor="@android:color/black"
-        activeColor="@color/colorPrimaryDark"
+        activeColor="#FFFFFD"
         barColorWhenSelected="@color/colorPrimary"/>
 </tabs>

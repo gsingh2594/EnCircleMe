@@ -5,19 +5,17 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,11 +49,14 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
 
     private TextView profileName;
     private TextView profileBio;
+    private TextView profileUsername;
     private ImageView addFriendIcon, alreadyFriendsIcon;
     private byte[] profileImageBytes;
     private byte[] coverImageBytes;
     private ImageView profileImage;
     private ImageView coverImage;
+    private BottomBar bottomBar;
+    private OnTabSelectListener tabSelectListener;
 
 
     @Override
@@ -75,6 +78,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         alreadyFriendsIcon = (ImageView) findViewById(R.id.already_friends_icon);
         profileImage = (ImageView) findViewById(R.id.profile_image);
         coverImage = (ImageView) findViewById(R.id.cover_image);
+        profileUsername = (TextView) findViewById(R.id.username);
 
         loadUserProfile();
         loadUserProfileImage();
@@ -83,48 +87,51 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         // Check if current user is already friends with this user
         friendsRef = database.getReference("friends");
         friendsRef.child(currentUserID).orderByKey().equalTo(userID)
-            .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists())
-                        // Current user is already friends with this user
-                        showAsFriend();
-                    else
-                        // Current user is not friends with this user -> Show as addable friend
-                        showAsAddableFriend();
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(ViewOtherUserProfileActivity.this, "Database error"
-                            + databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists())
+                            // Current user is already friends with this user
+                            showAsFriend();
+                        else
+                            // Current user is not friends with this user -> Show as addable friend
+                            showAsAddableFriend();
+                    }
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(ViewOtherUserProfileActivity.this, "Database error"
+                                + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+/*        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setDefaultTab(R.id.tab_profile);
+        tabSelectListener = new OnTabSelectListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_profile:
-                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                        startActivity(profile);
-                        break;
-                    case R.id.action_friends:
-                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_profile) {
+                    Intent profile = new Intent(ViewOtherUserProfileActivity.this, UserProfileActivity.class);
+                    startActivity(profile);
+                    if (tabId == R.id.tab_friends) {
+                        Log.d("bottomBar", "friends clicked");
+                        Intent friends = new Intent(ViewOtherUserProfileActivity.this, FriendsActivity.class);
                         startActivity(friends);
-                        break;
-                    case R.id.action_map:
-                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
+                    } else if (tabId == R.id.tab_map) {
+                        Intent map = new Intent(ViewOtherUserProfileActivity.this, MapsActivity.class);
                         startActivity(map);
-                        break;
-/*                            case R.id.action_alerts:
-                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
-                                startActivity(events);
-                                break;
-                        */}
-                return false;
+                    } else if (tabId == R.id.tab_alerts) {
+                        Intent events = new Intent(ViewOtherUserProfileActivity.this, Eventlist_Activity.class);
+                        startActivity(events);
+                    } else if (tabId == R.id.tab_chats) {
+                        Intent events = new Intent(getApplicationContext(), ChatActivity.class);
+                        startActivity(events);
+                    }
+                }
             }
-        });
+
+        };
+        bottomBar.setOnTabSelectListener(tabSelectListener);*/
     }
 
     // Load user profile from DB
@@ -135,6 +142,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 profileName.setText(user.getName());
+                profileUsername.setText("Username: " + user.getUsername());
                 if(user.getBio()!=null)
                     profileBio.setText(user.getBio());
                 if(user.getInterests()!= null) {
@@ -142,15 +150,17 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                     for (int i = 0; i < userInterests.size(); i++) {
                         // Create and add a new TextView to the LinearLayout
                         TextView interestTextView = new TextView(ViewOtherUserProfileActivity.this);
+                        interestTextView.getMeasuredHeight();
                         int marginSize = convertDPtoPX(5);
-                        LinearLayout.LayoutParams layoutParams =
-                                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                        RelativeLayout.LayoutParams layoutParams =
+                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
                         interestTextView.setLayoutParams(layoutParams);
-                        interestTextView.setTextSize(16);
+                        interestTextView.setTextSize(15);
+                        interestTextView.setTextColor(Color.BLACK);
                         interestTextView.setText(userInterests.get(i));
-                        interestTextView.setElevation((float) convertDPtoPX(4));
-                        int paddingSize = convertDPtoPX(20);
+                        interestTextView.setElevation((float) convertDPtoPX(2));
+                        int paddingSize = convertDPtoPX(10);
                         interestTextView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
                         interestTextView.setBackgroundColor(Color.WHITE);
                         interestsLinearLayout.addView(interestTextView);
