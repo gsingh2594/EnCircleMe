@@ -51,7 +51,7 @@
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_above="@id/bottomBar"
             tools:context="com.example.gurpreetsingh.encircleme.MapsActivity"
             android:layout_below="@+id/map_toolbar" />
@@ -60,10 +60,9 @@
         <com.roughike.bottombar.BottomBar
             android:id="@+id/bottomBar"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="50dp"
             app:bb_tabXmlResource="@xml/bottom_bar"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
 
@@ -95,7 +94,7 @@
                 android:id="@+id/detail_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="1dp"
                 android:layout_weight="1.05"
                 android:padding="1dp"
                 android:text="Testing Title"

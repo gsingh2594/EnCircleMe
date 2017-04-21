@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -207,6 +208,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 // Set their text
                 messageText.setText(model.getMessageText());
+                messageText.setMovementMethod(LinkMovementMethod.getInstance());
                 messageUser.setText(model.getMessageUser());
                 messageTime.setText(DateFormat.format("MM/dd/yy (hh:mma)",
                         model.getMessageTime()));
