@@ -29,6 +29,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -486,6 +487,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         if (id == R.id.action_tab) {
             Intent modifyTab = new Intent(MapsActivity.this, EditActivity.class);
+            //modifyTab.putExtra("location", userLocation);
             startActivity(modifyTab);
         }
         if (id == R.id.settings){
@@ -865,6 +867,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         TextView eventDescriptionText = new TextView(MapsActivity.this);
         eventDescriptionText.setText(event.getAbout());
+        eventDescriptionText.setMaxLines(2);
+        eventDescriptionText.setEllipsize(TextUtils.TruncateAt.END);
         eventDescriptionText.setPadding(convertDPtoPX(5), 0, 0, 0);
         eventDescriptionText.setMaxWidth(convertDPtoPX(200));
 

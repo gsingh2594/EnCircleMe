@@ -1,5 +1,7 @@
 package com.example.gurpreetsingh.encircleme;
 
+import android.support.annotation.Nullable;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -11,19 +13,24 @@ class Event {
     private String about;
     private String date;
     private String startTime;
+    private String endDate;
     private String endTime;
+    @Nullable private String placeID;
     private double latitude;
     private double longitude;
 
 
     public Event(){}
 
-    public Event(String name, String about, String date, String startTime, String endTime, double latitude, double longitude){
+    public Event(String name, String about, String date, String startTime, String endDate, String endTime,
+                 String placeID, double latitude, double longitude){
         this.name = name;
         this.about = about;
         this.date = date;
         this.startTime = startTime;
+        this.endDate = endDate;
         this.endTime = endTime;
+        this.placeID = placeID; // could be null
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -60,6 +67,10 @@ class Event {
         this.startTime = startTime;
     }
 
+    public String getEndDate(){ return endDate;}
+
+    public void setEndDate(String date){this.endDate = date;}
+
     public String getEndTime() {
         return endTime;
     }
@@ -71,6 +82,10 @@ class Event {
     public double getLatitude() {
         return latitude;
     }
+
+    public String getPlaceID(){return placeID;}
+
+    public void setPlaceID(String placeID){this.placeID = placeID;}
 
     public void setLatitude(double latitude) {this.latitude = latitude;}
 
