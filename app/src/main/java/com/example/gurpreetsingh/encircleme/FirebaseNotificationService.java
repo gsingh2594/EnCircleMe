@@ -158,8 +158,8 @@ public class FirebaseNotificationService extends Service {
 
         return true;
 
-
     }
+
     private void acceptedFriendNotificationListener() {
         final DatabaseReference acceptedFriendsRequestsRef = database.getReference("friends/" + userID);
         // List for storing all friends. Only newly accepted friends would be notified
@@ -227,8 +227,8 @@ public class FirebaseNotificationService extends Service {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
-        mBuilder.setContentTitle("Friend Request Accepted"); // title for notification
-        mBuilder.setContentText("Your recent friend request has been accepted" ); // message for notification
+        mBuilder.setContentTitle("New Friend"); // title for notification
+        mBuilder.setContentText("Congrats! You have a new friend" ); // message for notification
         mBuilder.setAutoCancel(true); // clear notification after click
         mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
         mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
