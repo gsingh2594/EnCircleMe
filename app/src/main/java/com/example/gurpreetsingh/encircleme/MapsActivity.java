@@ -29,6 +29,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -116,11 +117,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     ImageButton btnSearch;
     private BottomSheetBehavior bottomSheetBehavior;
     private View bottomSheet;
-
     private TextView textFavorites;
     private TextView textSchedules;
     private TextView textMusic;
-
     private BottomBar bottomBar;
 
     /*
@@ -218,7 +217,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(200);
+        bottomSheetBehavior.setPeekHeight(180);
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -417,6 +416,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Place place = PlaceAutocomplete.getPlace(this, data);
 
                 String placeDetailsStr = place.getName() + "\n"
+                        + place.getLocale() + "\n"
                         + place.getId() + "\n"
                         + place.getLatLng().toString() + "\n"
                         + place.getAddress() + "\n"
@@ -426,6 +426,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         + place.getRating();
                 //mAutoCompleteFragment.setText(placeDetailsStr);*//*
                 String placeName = (String) place.getName();
+                //String locale = (Locale) place.getLocale();
                 String placeAddress = (String) place.getAddress();
                 LatLng latLng = place.getLatLng();
                 String placeNumber;
@@ -486,6 +487,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         if (id == R.id.action_tab) {
             Intent modifyTab = new Intent(MapsActivity.this, EditActivity.class);
+            //modifyTab.putExtra("location", userLocation);
             startActivity(modifyTab);
         }
         if (id == R.id.settings){
@@ -595,7 +597,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void updateBottomSheetContent(Marker marker) {
         TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
+        TextView address = (TextView) bottomSheet.findViewById(R.id.detail_address);
+/*        TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
+        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
+        TextView rating = (TextView) bottomSheet.findViewById(R.id.detail_rating);
+        TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
+        TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);*/
         name.setText(marker.getTitle());
+        address.setText(marker.getSnippet());
+        //number.setText(place.)
+
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -856,6 +867,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         TextView eventDescriptionText = new TextView(MapsActivity.this);
         eventDescriptionText.setText(event.getAbout());
+        eventDescriptionText.setMaxLines(2);
+        eventDescriptionText.setEllipsize(TextUtils.TruncateAt.END);
         eventDescriptionText.setPadding(convertDPtoPX(5), 0, 0, 0);
         eventDescriptionText.setMaxWidth(convertDPtoPX(200));
 

@@ -296,7 +296,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onMapLongClick(LatLng latLng) {
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title("You picked this location")
+                .title("Create an event here")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .draggable(true));
 
@@ -329,24 +329,31 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         // Determine what marker is clicked by using the argument passed in
         // for example, marker.getTitle() or marker.getSnippet().
         // Code here for navigating to fragment activity.
-        if (marker.getTitle()=="You picked this location"){
-            Intent intent = new Intent();
-            intent.putExtra("You picked this location", marker.getTitle());
-            intent.putExtra("lat", marker.getPosition());
+        Intent intent = new Intent();
+        if (marker.getTitle().equals("Create an event here")){
+            // User chose the marker they dropped on the map
+            intent.putExtra("user_picked_location", marker.getTitle());
+            intent.putExtra("lat", marker.getPosition().latitude);
+            intent.putExtra("lng", marker.getPosition().longitude);
+            Log.d("chosen lat", Double.toString(marker.getPosition().latitude));
+            Log.d("chosen lng", Double.toString(marker.getPosition().longitude));
         }
         else {
-            String title = marker.getId();
+            // User selected a place marker on the map
+            String placeKey = marker.getId();
             //String snippet = marker.getSnippet();
-            Intent intent = new Intent();
-            intent.putExtra("keyName", title);
+            intent.putExtra("keyName", placeKey);
             HashMap<String, String> googlePlace = (HashMap<String, String>) marker.getTag();
             intent.putExtra("place_id", googlePlace.get("place_id"));
             intent.putExtra("place_name", googlePlace.get("place_name"));
             intent.putExtra("vicinity", googlePlace.get("vicinity"));
             intent.putExtra("address", googlePlace.get("address"));
-            setResult(RESULT_OK, intent);
-            finish();
+            intent.putExtra("lat", googlePlace.get("lat"));
+            intent.putExtra("lng", googlePlace.get("lng"));
         }
+        // return result to EditActivity
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
         @Override

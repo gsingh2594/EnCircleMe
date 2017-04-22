@@ -70,19 +70,20 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private DatePicker datePicker;
     private Calendar calendar;
     private TextView dateView;
-    private int year, month, day;
+    private int startYear, startMonth, startDay;
     private int startHour, startMinute, endHour, endMinute;
+    private boolean startDateSelected, startTimeSelected, endDateSelected, endTimeSelected;
     private String format = "";
 
     private TextView mPlaceAttribution;
-    private Button btnDatePicker, btnTimePicker, btnEndTimePicker, btnSave, btnPlacePicker, btnPlacemap;
-    private LatLng latLng;
+    private Button btnDatePicker, btnTimePicker, btnEndDatePicker, btnEndTimePicker, btnSave, btnPlacePicker, btnPlacemap;
     private EditText eventName, about;
-    private TextView txtDate, txtTime, txtEndTime;
+    private TextView txtDate, txtTime, txtEndDate, txtEndTime;
     private int mYear, mMonth, mDay, mHour, mMinute;
-    private DatePickerDialog datePickerDialog;
+    private DatePickerDialog datePickerDialog, endDatePickerDialog;
     private TimePickerDialog startTimePickerDialog, endTimePickerDialog;
-
+    private LatLng latLng;
+    private String placeID;
 
     private static final int PLACE_PICKER_REQUEST = 1000;
     private GoogleApiClient mClient;
@@ -110,22 +111,25 @@ public class EditActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.editactivity);
+        setContentView(R.layout.activity_edit);
 
         btnPlacemap = (Button) findViewById(R.id.placemap);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
         btnDatePicker=(Button)findViewById(R.id.btn_date);
         btnTimePicker=(Button)findViewById(R.id.btn_time);
+        btnEndDatePicker = (Button)findViewById(R.id.btn_end_date);
         btnEndTimePicker=(Button)findViewById(R.id.btn_endtime);
         btnSave = (Button) findViewById(R.id.save);
         txtDate=(TextView)findViewById(R.id.in_date);
         txtTime=(TextView)findViewById(R.id.in_time);
+        txtEndDate = (TextView)findViewById(R.id.end_date);
         txtEndTime=(TextView)findViewById(R.id.end_time);
 
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
         btnPlacePicker=(Button)findViewById(R.id.pickerButton);
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
+        btnEndDatePicker.setOnClickListener(this);
         btnEndTimePicker.setOnClickListener(this);
         //btnPlacePicker.setOnClickListener(this);
         btnSave.setOnClickListener(this);
@@ -141,7 +145,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
 
-        latLng = (LatLng) getIntent().getParcelableExtra("location");
+        //latLng = (LatLng) getIntent().getParcelableExtra("location");
 
         eventName = (EditText) findViewById(R.id.eventname);
         about = (EditText) findViewById(R.id.about);
@@ -209,23 +213,39 @@ public class EditActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if (v == btnDatePicker) {
-            // Get Current Date
             final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+            if (startYear == 0 && startMonth == 0 && startDay == 0) {
+                // User has not picked a start date yet. Set start date to the current date
+                startYear = c.get(Calendar.YEAR);
+                startMonth = c.get(Calendar.MONTH);
+                startDay = c.get(Calendar.DAY_OF_MONTH);
+            }
 
             datePickerDialog = new DatePickerDialog(this,
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             txtDate.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                            startYear = year;
+                            startMonth = monthOfYear;
+                            startDay = dayOfMonth;
+
+                            startDateSelected = true;
                             resetDateAndTimeErrors();
-                            if(startTimePickerDialog != null)
-                                datesAndTimesAreValid();
+                            // Check if selected date is equal to current date
+                            if (startYear == c.get(Calendar.YEAR) && startMonth == c.get(Calendar.MONTH)
+                                    && startDay == c.get(Calendar.DAY_OF_MONTH)) {
+                                if (startTimeSelected && !endDateSelected && endTimeSelected)
+                                    // start and end times are selected, but end date is not selected
+                                    // Check if start and end times are valid for the single (start) date
+                                    datesAndTimesAreValid();
+                                else if (startTimeSelected) {
+                                    // Check if start time is later than current time
+                                    checkStartTimeValidity();
+                                }
+                            }
                         }
-                    }, mYear, mMonth, mDay);
+                    }, startYear, startMonth, startDay);
             datePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
             datePickerDialog.show();
         }
@@ -236,64 +256,122 @@ public class EditActivity extends Activity implements View.OnClickListener{
             mHour = c.get(Calendar.HOUR_OF_DAY);
             mMinute = c.get(Calendar.MINUTE);
 
-            if(startHour != 0 && startMinute != 0){
+            // If start time is already set, display it as the default time in the picker
+            if (startTimeSelected) {
                 mHour = startHour;
                 mMinute = startMinute;
+            }else{
+                mMinute+= 5;  // add 5 minutes to default start time (the current time)
+
+                // Check if 5 minute increase should change the hour.
+                // Note: Does not take into account if the date should be incremented --> End date required
+                if (mMinute >= 60) {
+                    mMinute -= 60;
+                    mHour += 1;
+                    if (mHour > 24)
+                        Toast.makeText(EditActivity.this, "You should add an end date!", Toast.LENGTH_LONG).show();
+                }
             }
 
-            // Launch Time Picker Dialog
-            startTimePickerDialog = new TimePickerDialog(this,
-                    new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay,
-                                              int minute) {
-                            startHour = hourOfDay;
-                            startMinute = minute;
-                            int hour = hourOfDay % 12;
-                            txtTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
-                                    minute, hourOfDay < 12 ? "am" : "pm"));
-                            resetDateAndTimeErrors();
-                            if(datePickerDialog != null){
-                                checkStartTimeValidity();
-                                if(endTimePickerDialog != null){
-                                    datesAndTimesAreValid();
+                // Launch Time Picker Dialog
+                startTimePickerDialog = new TimePickerDialog(this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                startHour = hourOfDay;
+                                startMinute = minute;
+
+                                int hour = hourOfDay % 12;
+                                txtTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
+                                        minute, hourOfDay < 12 ? "am" : "pm"));
+
+                                startTimeSelected = true;
+                                resetDateAndTimeErrors();
+                                if (startDateSelected) {
+                                    // Check if selected start date is equal to current date
+                                    if (startYear == c.get(Calendar.YEAR) && startMonth == c.get(Calendar.MONTH)
+                                            && startDay == c.get(Calendar.DAY_OF_MONTH)) {
+                                        checkStartTimeValidity();
+                                        if (!endDateSelected && endTimeSelected) {
+                                            datesAndTimesAreValid();
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }, mHour, mMinute, false);
-            startTimePickerDialog.show();
-        }
-
-        if (v == btnEndTimePicker) {
-            // Get Current Time
-            final Calendar c = Calendar.getInstance();
-            mHour = c.get(Calendar.HOUR_OF_DAY);
-            mMinute = c.get(Calendar.MINUTE);
-
-            // Set end time equal to start time if it has been set
-            if(startTimePickerDialog != null){
-                mHour = startHour;
-                mMinute = startMinute;
+                        }, mHour, mMinute, false);
+                startTimePickerDialog.show();
             }
 
-            // Launch Time Picker Dialog
-            endTimePickerDialog = new TimePickerDialog(this,
-                    new TimePickerDialog.OnTimeSetListener() {
+            if (v == btnEndDatePicker) {
+                if (!startDateSelected) {
+                    // User must select a start date before the end date
+                    txtDate.setError("Please select a start date first!");
+                } else {
+                    endDatePickerDialog = new DatePickerDialog(EditActivity.this, new DatePickerDialog.OnDateSetListener() {
                         @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay,
-                                              int minute) {
-                            endHour = hourOfDay;
-                            endMinute = minute;
-                            int hour = hourOfDay % 12;
-                            txtEndTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
-                                    minute, hourOfDay < 12 ? "am" : "pm"));
-                            resetDateAndTimeErrors();
-                            if(startTimePickerDialog != null && datePickerDialog != null)
-                                datesAndTimesAreValid();
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            txtEndDate.setText((month + 1) + "/" + dayOfMonth + "/" + year);
+
+                            endDateSelected = true;
+                            if(endTimeSelected){
+                                resetDateAndTimeErrors();
+                            }
                         }
-                    }, mHour, mMinute, false);
-            endTimePickerDialog.show();
-        }
+                    }, startYear, startMonth, startDay);    // Set datePicker to have same date as selected start date
+
+                    // Add one day to the selected start date and set it as the minimum end date:
+                    Calendar defaultEndDate = Calendar.getInstance();   // gets current date
+                    defaultEndDate.clear(); // clear the current date
+                    defaultEndDate.set(startYear, startMonth, startDay);  // set calendar to selected start date
+                    // add one day (in milliseconds) to selected start date (in milliseconds)
+                    long defaultEndDateInMillis = defaultEndDate.getTimeInMillis() + (24 * 60 * 60 * 1000);
+                    // set the minimum date to the one day in advance
+                    endDatePickerDialog.getDatePicker().setMinDate(defaultEndDateInMillis);
+                    endDatePickerDialog.show();
+                }
+            }
+
+            if (v == btnEndTimePicker) {
+                // Get Current Time
+                final Calendar cal = Calendar.getInstance();
+                mHour = cal.get(Calendar.HOUR_OF_DAY);
+                mMinute = cal.get(Calendar.MINUTE);
+
+                // Set end time equal to start time if it has been set
+                if (startTimeSelected) {
+                    mHour = startHour;
+                    mMinute = startMinute + 5;  // Default end time increased by 5 minutes
+
+                    // Check if minute increase should change the hour.
+                    // Note: Does not take into account if the date should be incremented --> End date required
+                    if (mMinute >= 60) {
+                        mMinute -= 60;
+                        mHour += 1;
+                        if (mHour > 24)
+                            Toast.makeText(EditActivity.this, "You should add an end date!", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                // Launch Time Picker Dialog
+                endTimePickerDialog = new TimePickerDialog(this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+                                endHour = hourOfDay;
+                                endMinute = minute;
+                                int hour = hourOfDay % 12;
+                                txtEndTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
+                                        minute, hourOfDay < 12 ? "am" : "pm"));
+
+                                endTimeSelected = true;
+                                resetDateAndTimeErrors();
+                                if (startTimeSelected && startDateSelected)
+                                    datesAndTimesAreValid();
+                            }
+                        }, mHour, mMinute, false);
+                endTimePickerDialog.show();
+            }
 
         /*if (v == btnPlacePicker) {
             mAddress = (TextView) findViewById(R.id.textView2);
@@ -310,141 +388,150 @@ public class EditActivity extends Activity implements View.OnClickListener{
         if (v == btnPlacemap) {
             Intent i = new Intent(this, PlaceActivity.class);
             startActivityForResult(i, 1);
-            }
+        }
+
+        if (v == btnSave) {
+            saveEventInDB();
+        }
+    }
 
 
-        if(v == btnSave){
-            resetAllErrors();
-            if(inputsAreNotEmpty() && datesAndTimesAreValid()){
-                Log.d("inputsAreNotEmpty = ", Boolean.toString(inputsAreNotEmpty()));
-                Log.d("datesAndTimes= ", Boolean.toString(datesAndTimesAreValid()));
 
-                // Check if user's pasts events ArrayList has already loaded
-                if(nextUserCreatedEventIndex != -1) {
-                    // Previous events ArrayList already loaded
-                    // Save event in DB at nextUserCreatedEventIndex
-                    eventsRef = database.getReference("events");
-                    eventKey = eventsRef.push().getKey();
-                    Event event = new Event(eventName.getText().toString(), about.getText().toString(),
-                            txtDate.getText().toString(), txtTime.getText().toString(),
-                            txtEndTime.getText().toString(), latLng.latitude, latLng.longitude);
+    // Checks for valid inputs (showing error messages if not valid) and saves event in DB if inputs are valid
+    private void saveEventInDB() {
+        resetAllErrors();
+        // Check to make sure inputs are valid
+        if (inputsAreNotEmpty() && datesAndTimesAreValid()) {
+            // Inputs are valid --> proceed to save in DB
+            Log.d("inputsAreNotEmpty = ", Boolean.toString(inputsAreNotEmpty()));
+            Log.d("datesAndTimes= ", Boolean.toString(datesAndTimesAreValid()));
 
-                /*
-                // TODO: load user's events ArrayList or store in alternative way
-                if(usersCreatedEventsList == null)
-                    usersCreatedEventsList = new ArrayList<>();
-                if(usersCreatedEventsKeysList==null)
-                    usersCreatedEventsKeysList = new ArrayList<>();
-                usersCreatedEventsList.add(event);
-                usersCreatedEventsKeysList.add(eventKey);
+            // Check if user's pasts events ArrayList has already loaded
+            if (nextUserCreatedEventIndex != -1) {
+                // Previous events ArrayList already loaded
+                // Save event in DB at nextUserCreatedEventIndex
+                eventsRef = database.getReference("events");
+                // Get a unique key for the event from firebase push() method
+                eventKey = eventsRef.push().getKey();
 
+                // Get all user input for the event
+                String evName = eventName.getText().toString();
+                String evAbout = about.getText().toString();
+                String evStartDate = txtDate.getText().toString();
+                String evStartTime = txtTime.getText().toString();
+                String evEndDate;
+                if(endDateSelected)
+                    evEndDate = txtEndDate.getText().toString();
+                else
+                    // Set end date equal to start date
+                    evEndDate = txtDate.getText().toString();
+                String evEndTime = txtEndTime.getText().toString();
+                String evPlaceID = null;    // placeID saved as null if no place selected
+                if(placeID != null)
+                    evPlaceID = placeID;
+                double evLat = latLng.latitude;
+                double evLng = latLng.longitude;
+
+                // Create event object to save
+                Event event = new Event(evName, evAbout, evStartDate, evStartTime, evEndDate, evEndTime, evPlaceID, evLat, evLng);
 
                 // HashMap for multipath updates
-                Map<String, Object>eventUpdates = new HashMap<>();
+                Map<String, Object> eventUpdates = new HashMap<>();
                 eventUpdates.put("all_events/" + eventKey, event);
-                eventUpdates.put("user_created_events/" + userID, usersCreatedEventsList);
-                eventUpdates.put("user_created_events_keys/" + userID, usersCreatedEventsKeysList);
-                eventUpdates.put("geofire_locations/" + eventKey, new GeoLocation(latLng.latitude, latLng.longitude));
-                */
+                eventUpdates.put("user_created_events/" + userID + "/" + nextUserCreatedEventIndex, event);
+                eventUpdates.put("event_key_creators/" + eventKey, userID);
+                //eventUpdates.put("geofire_locations/" + eventKey, new GeoLocation(latLng.latitude, latLng.longitude));
 
-                    // HashMap for multipath updates
-                    Map<String, Object> eventUpdates = new HashMap<>();
-                    eventUpdates.put("all_events/" + eventKey, event);
-                    eventUpdates.put("user_created_events/" + userID + "/" + nextUserCreatedEventIndex, event);
-                    eventUpdates.put("event_key_creators/" + eventKey, userID);
-                    //eventUpdates.put("geofire_locations/" + eventKey, new GeoLocation(latLng.latitude, latLng.longitude));
+                // Update DB at multiple locations
+                eventsRef.updateChildren(eventUpdates, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            // DB update failed
+                            Log.d("btnSave", "Failed to save in database: \n" + databaseError.getMessage());
+                            Toast.makeText(getBaseContext(), "Failed to create event", Toast.LENGTH_LONG).show();
+                        } else {
+                            // DB update successful
+                            Log.d("btnSave", "Database updated successfully");
+                            Toast.makeText(getBaseContext(), "Event created!", Toast.LENGTH_LONG).show();
 
-                    // Update DB at multiple locations
-                    eventsRef.updateChildren(eventUpdates, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            if (databaseError != null) {
-                                // DB update failed
-                                Log.d("btnSave", "Failed to save in database: \n" + databaseError.getMessage());
-                                Toast.makeText(getBaseContext(), "Failed to create event", Toast.LENGTH_LONG).show();
-                            } else {
-                                // DB update successful
-                                Log.d("btnSave", "Database updated successfully");
-                                Toast.makeText(getBaseContext(), "Event created!", Toast.LENGTH_LONG).show();
+                            // Save location with GeoFire
+                            DatabaseReference geoFireLocationsRef = eventsRef.child("geofire_locations");
+                            GeoFire geoFireEvents = new GeoFire(geoFireLocationsRef);
+                            geoFireEvents.setLocation(eventKey, new GeoLocation(latLng.latitude, latLng.longitude),
+                                    new GeoFire.CompletionListener() {
+                                        @Override
+                                        public void onComplete(String key, DatabaseError error) {
+                                            Log.d("GeoFire.setLocation()", "GeoLocation saved");
+                                            Toast.makeText(EditActivity.this, "Location saved", Toast.LENGTH_LONG).show();
 
-                                // Save location with GeoFire
-                                DatabaseReference geoFireLocationsRef = eventsRef.child("geofire_locations");
-                                GeoFire geoFireEvents = new GeoFire(geoFireLocationsRef);
-                                geoFireEvents.setLocation(eventKey, new GeoLocation(latLng.latitude, latLng.longitude),
-                                        new GeoFire.CompletionListener() {
-                                            @Override
-                                            public void onComplete(String key, DatabaseError error) {
-                                                Log.d("GeoFire.setLocation()", "GeoLocation saved");
-                                                Toast.makeText(EditActivity.this, "Location saved", Toast.LENGTH_LONG).show();
+                                            nextUserCreatedEventIndex++;
+                                            // Load profile image from storage
+                                            profileImageStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
+                                            profileImageStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                @Override
+                                                public void onSuccess(byte[] bytes) {
+                                                    // user has profile pic --> display it
+                                                    Log.d("loadUserProfileImage()", "getBytes successful");
+                                                    profileImageBytes = bytes;
+                                                    Log.d("loadUserProfileImage()", "convert bytes to bitmap");
+                                                    Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
 
-                                                nextUserCreatedEventIndex++;
-                                                // Load profile image from storage
-                                                profileImageStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
-                                                profileImageStorageRef.getBytes(ONE_MEGABYTE * 5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                    @Override
-                                                    public void onSuccess(byte[] bytes) {
-                                                        // user has profile pic --> display it
-                                                        Log.d("loadUserProfileImage()", "getBytes successful");
-                                                        profileImageBytes = bytes;
-                                                        Log.d("loadUserProfileImage()", "convert bytes to bitmap");
-                                                        Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
+                                                    // Create marker with user profile image for map
+                                                    createMarkerForMap(profileImageBitmap);
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    // Handle any errors
+                                                    Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
+                                                    Toast.makeText(EditActivity.this, "Failed to load profile image", Toast.LENGTH_LONG).show();
+                                                    // Create marker without a profile image for map
+                                                    createMarkerForMap(null);
+                                                }
+                                            });
+                                        }
+                                    });
+                        }
+                    }
 
-                                                        // Create marker with user profile image for map
-                                                        createMarkerForMap(profileImageBitmap);
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception exception) {
-                                                        // Handle any errors
-                                                        Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                                                        Toast.makeText(EditActivity.this, "Failed to load profile image", Toast.LENGTH_LONG).show();
-                                                        // Create marker without a profile image for map
-                                                        createMarkerForMap(null);
-                                                    }
-                                                });
-                                            }
-                                        });
-                            }
+
+                    private void createMarkerForMap(Bitmap profileImage) {
+                        // Marker for map
+                        MarkerOptions marker;
+                        // Check if a Bitmap was passed as an argument
+                        if (profileImage != null) {
+                            // User has profile image --> display it in the marker
+                            Bitmap scaledProfileImage = Bitmap.createScaledBitmap(profileImage, 200, 200, false);
+                            marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
+                                    .fromBitmap(getMarkerBitmapFromView(scaledProfileImage)));
+                        } else {
+                            // User doesn't have profile image --> show default icon
+                            marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
+                                    .fromBitmap(getMarkerBitmapFromView(R.drawable.neutral_face_icon)));
+                        }
+                        if (eventName.getText() != null) {
+                            marker.title("Event: " + eventName.getText().toString() + ", " +
+                                    (about.getText().toString()));
+                            marker.snippet((txtDate.getText().toString() + " " + (txtTime.getText().toString() +
+                                    " to " + (txtEndTime.getText().toString()))));
+                            marker.draggable(true);
                         }
 
-
-                        private void createMarkerForMap(Bitmap profileImage) {
-                            // Marker for map
-                            MarkerOptions marker;
-                            // Check if a Bitmap was passed as an argument
-                            if (profileImage != null) {
-                                // User has profile image --> display it in the marker
-                                Bitmap scaledProfileImage = Bitmap.createScaledBitmap(profileImage, 200, 200, false);
-                                marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
-                                        .fromBitmap(getMarkerBitmapFromView(scaledProfileImage)));
-                            } else {
-                                // User doesn't have profile image --> show default icon
-                                marker = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
-                                        .fromBitmap(getMarkerBitmapFromView(R.drawable.neutral_face_icon)));
-                            }
-                            if (eventName.getText() != null) {
-                                marker.title("Event: " + eventName.getText().toString() + ", " +
-                                        (about.getText().toString()));
-                                marker.snippet((txtDate.getText().toString() + " " + (txtTime.getText().toString() +
-                                        " to " + (txtEndTime.getText().toString()))));
-                                marker.draggable(true);
-                            }
-
-                            // Return marker as activity result
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("marker", marker);
-                            setResult(Activity.RESULT_OK, resultIntent);
-                            finish();
-                        }
-                    });
-                }
-                else{
-                    AlertDialog.Builder databaseErrorAlert = new AlertDialog.Builder(EditActivity.this);
-                    databaseErrorAlert.setMessage("Database error loading previous events");
-                }
+                        // Return marker as activity result
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("marker", marker);
+                        setResult(Activity.RESULT_OK, resultIntent);
+                        finish();
+                    }
+                });
+            } else {
+                AlertDialog.Builder databaseErrorAlert = new AlertDialog.Builder(EditActivity.this);
+                databaseErrorAlert.setMessage("Database error loading previous events");
             }
         }
     }
+
 
     // Create marker bitmap with a drawable icon
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
@@ -513,18 +600,38 @@ public class EditActivity extends Activity implements View.OnClickListener{
         }
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                String result = data.getStringExtra("result");
-                String placeId = data.getStringExtra("place_id");
-                String placeName = data.getStringExtra("place_name");
-                String address = data.getStringExtra("address");
-                String vicinity = data.getStringExtra("vicinity");
-                Log.d("placeName", placeName);
-                mplace.setText(placeName);  // display the name of the picked place
+                if(data.getStringExtra("user_picked_location") != null){
+                    // User selected a location by dropping a marker on the map
+                    // Retrieve the latitude and longitude of dropped marker from PlaceActivity
+                    double lat = data.getDoubleExtra("lat", -1);
+                    double lng = data.getDoubleExtra("lng", -1);
+                    if (lat != -1 && lng != -1) {
+                        LatLng eventLocation = new LatLng(lat, lng);
+                        // set latLng for saving in DB
+                        latLng = eventLocation;
+                        // display lat and lng of user's selected place
+                        mplace.setText("Lat:\n" + String.valueOf(latLng.latitude)
+                                + "\nLng:\n" + String.valueOf(latLng.longitude));
+                    }
+                }
+                else {
+                    // User selected a place on the map
+                    String result = data.getStringExtra("result");
+                    placeID = data.getStringExtra("place_id");
+                    String placeName = data.getStringExtra("place_name");
+                    String address = data.getStringExtra("address");
+                    String vicinity = data.getStringExtra("vicinity");
+                    Log.d("placeName", placeName);
+                    mplace.setText(placeName);  // display the name of the picked place
+                    double lat = Double.parseDouble(data.getStringExtra("lat"));
+                    double lng = Double.parseDouble(data.getStringExtra("lng"));
+                    latLng = new LatLng(lat, lng);
+                }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
-        }    else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -542,6 +649,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private void resetDateAndTimeErrors(){
         txtDate.setError(null);
         txtTime.setError(null);
+        txtEndDate.setError(null);
         txtEndTime.setError(null);
     }
 
@@ -550,36 +658,43 @@ public class EditActivity extends Activity implements View.OnClickListener{
         about.setError(null);
         txtDate.setError(null);
         txtTime.setError(null);
+        txtEndDate.setError(null);
         txtEndTime.setError(null);
+        mplace.setError(null);
     }
 
     // Returns true if all TextViews are not empty
     private boolean inputsAreNotEmpty(){
         boolean inputsNotEmpty = true;
         Log.d("inputsAreNotEmpty", "starting method");
+        Log.d("inputsAreNotEmpty", "checking event name");
         if(eventName.getText().toString().equals("")){
-            Log.d("inputsAreNotEmpty", "checking event name");
             eventName.setError("Please enter a name for the event");
             inputsNotEmpty = false;
         }
+        Log.d("inputsAreNotEmpty", "checking event description");
         if(about.getText().toString().equals("")){
-            Log.d("inputsAreNotEmpty", "checking event description");
             about.setError("Please enter an event description");
             inputsNotEmpty = false;
         }
-        if(datePickerDialog == null){
-            Log.d("inputsAreNotEmpty", "checking date");
+        Log.d("inputsAreNotEmpty", "checking date");
+        if(!startDateSelected){
             txtDate.setError("Please select a date!");
             inputsNotEmpty = false;
         }
-        if(startTimePickerDialog== null){
-            Log.d("inputsAreNotEmpty", "checking start time");
+        Log.d("inputsAreNotEmpty", "checking start time");
+        if(!startTimeSelected){
             txtTime.setError("Please select a start time!");
             inputsNotEmpty = false;
         }
-        if(endTimePickerDialog == null){
-            Log.d("inputsAreNotEmpty", "checking end time");
+        Log.d("inputsAreNotEmpty", "checking end time");
+        if(!endTimeSelected){
             txtEndTime.setError("Please select an end time!");
+            inputsNotEmpty = false;
+        }
+        Log.d("inputsAreNotEmpty", "checking location");
+        if(mplace.getText().equals("Place")){
+            mplace.setError("Please select a place!");
             inputsNotEmpty = false;
         }
         Log.d("event name", eventName.getText().toString());
@@ -671,6 +786,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
         }
     }
 
+    /* Compares selected start time to the current time
+       Displays error message if current time is after selected start time */
     private void checkStartTimeValidity(){
         // Get start time from TextView
         String[] mdy = txtDate.getText().toString().split("/");
