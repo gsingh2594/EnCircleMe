@@ -356,8 +356,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         finish();
     }
 
-        @Override
-        public boolean onMarkerClick(Marker marker) {
+    @Override
+    public boolean onMarkerClick(Marker marker) {
         marker.showInfoWindow();
         return true;
     }

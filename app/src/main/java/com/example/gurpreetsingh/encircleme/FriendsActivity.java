@@ -90,7 +90,7 @@ public class FriendsActivity extends AppCompatActivity {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
+                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -141,6 +141,7 @@ public class FriendsActivity extends AppCompatActivity {
     private void loadFriendsList(){
         Log.d("loadFriensList", "method started");
         final ArrayList<HashMap<String, String>> friendsList = new ArrayList<HashMap<String,String>>();
+        final HashMap<String, HashMap<String, String>> friendsMap = new HashMap<>();
         DatabaseReference friendsRef = database.getReference("friends");
         friendsRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
             @Override
@@ -148,10 +149,14 @@ public class FriendsActivity extends AppCompatActivity {
                 if(dataSnapshot.hasChildren()){
                     // User has friends -> store the info for each friend
                     for(DataSnapshot friend : dataSnapshot.getChildren()){
-                        HashMap<String, String> friendInfo = new HashMap<String, String>();
-                        friendInfo.put("userID", friend.getKey());
-                        friendInfo.put("username", friend.getValue().toString());
-                        friendsList.add(friendInfo);
+                        if(!friendsMap.containsKey(friend.getKey())) {
+                            // Friend has not been loaded yet --> store the info
+                            HashMap<String, String> friendInfo = new HashMap<String, String>();
+                            friendInfo.put("userID", friend.getKey());
+                            friendInfo.put("username", friend.getValue().toString());
+                            friendsMap.put(friend.getKey(), friendInfo);
+                            friendsList.add(friendInfo);
+                        }
                     }
                     // Hide the "no friends" views
                     neutralFace.setVisibility(View.GONE);
@@ -163,6 +168,7 @@ public class FriendsActivity extends AppCompatActivity {
                     simpleAdapter = new SimpleAdapter(FriendsActivity.this, friendsList,
                             R.layout.friend_requests_list_items, new String[]{"username"}, new int[]{R.id.friend_requests_text_view});
                     listView.setAdapter(simpleAdapter);
+                    simpleAdapter.notifyDataSetChanged();
 
                     // Show friend's user profile when clicked
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

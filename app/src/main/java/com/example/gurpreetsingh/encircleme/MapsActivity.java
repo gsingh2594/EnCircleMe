@@ -86,7 +86,8 @@ import java.util.HashMap;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnPoiClickListener, GoogleMap.InfoWindowAdapter {
+        LocationListener, GoogleMap.OnPoiClickListener, GoogleMap.InfoWindowAdapter,
+        GoogleMap.OnInfoWindowClickListener {
 
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = null;
     private static final int EDIT_REQUEST = 1;
@@ -236,7 +237,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);*/
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
+                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -309,17 +310,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
-
+                Log.d("onKeyMoved", "Somehow an event location has changed");
             }
 
             @Override
             public void onGeoQueryReady() {
-
+                Log.d("onGeoQueryReady", "All event info has loaded. However, event creator profile pictures might not be loaded!");
             }
 
             @Override
             public void onGeoQueryError(DatabaseError error) {
-
+                Log.d("onGeoQueryError", error.getMessage() + error.getDetails());
+                Toast.makeText(MapsActivity.this, "GeoQuery Error", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -546,6 +548,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.setOnPoiClickListener(this);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
         mGoogleMap.setInfoWindowAdapter(this);
+        mGoogleMap.setOnInfoWindowClickListener(this);
         MapsInitializer.initialize(this);
         addCustomMarker();
 
@@ -792,6 +795,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //preparePlaceInfoView(marker);
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String eventKey = marker.getTitle();
+        Intent showFullEventInfo = new Intent(MapsActivity.this, EventInfoActivity.class);
+        showFullEventInfo.putExtra("eventKey", eventKey);
+        startActivity(showFullEventInfo);
+    }
+
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
         View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.search_marker, null);
         ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.pin_image);
@@ -977,6 +988,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
         return dpAsPixels;  // return the size in pixels
     }
+
 }
 
 

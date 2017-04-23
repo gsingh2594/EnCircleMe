@@ -107,6 +107,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private byte[] profileImageBytes;
     private static final long ONE_MEGABYTE = 1024 * 1024;
 
+    private String placeName;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -433,7 +435,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 double evLng = latLng.longitude;
 
                 // Create event object to save
-                Event event = new Event(evName, evAbout, evStartDate, evStartTime, evEndDate, evEndTime, evPlaceID, evLat, evLng);
+                Event event = new Event(evName, evAbout, evStartDate, evStartTime, evEndDate, evEndTime, placeName, evPlaceID, evLat, evLng);
 
                 // HashMap for multipath updates
                 Map<String, Object> eventUpdates = new HashMap<>();
@@ -618,7 +620,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                     // User selected a place on the map
                     String result = data.getStringExtra("result");
                     placeID = data.getStringExtra("place_id");
-                    String placeName = data.getStringExtra("place_name");
+                    placeName = data.getStringExtra("place_name");
                     String address = data.getStringExtra("address");
                     String vicinity = data.getStringExtra("vicinity");
                     Log.d("placeName", placeName);
@@ -631,6 +633,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
+            // remove any error message since place is now selected
+            mplace.setError(null);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

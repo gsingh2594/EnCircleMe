@@ -28,7 +28,7 @@ import com.roughike.bottombar.OnTabSelectListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Eventlist_Activity extends AppCompatActivity {
+public class EventListActivity extends AppCompatActivity {
 
 
     FirebaseAuth auth;
@@ -44,7 +44,7 @@ public class Eventlist_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_list);
+        setContentView(R.layout.activity_event_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.eventlist_toolbar);
         setSupportActionBar(toolbar);
@@ -95,7 +95,7 @@ public class Eventlist_Activity extends AppCompatActivity {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
 /*                } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
+                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
                     startActivity(events);*/
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -118,34 +118,41 @@ public class Eventlist_Activity extends AppCompatActivity {
     // load and display list of all the events (past and future)
     private void loadEventsList(){
         Log.d("loadEventsList", "method started");
-        final ArrayList<HashMap<String, String>> EventsList = new ArrayList<HashMap<String,String>>();
+        final ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String,String>>();
         DatabaseReference eventsRef = database.getReference("events/all_events");
-        eventsRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
+        eventsRef.orderByChild("date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
-                    // User has friends -> store the info for each friend
-                    for(DataSnapshot event : dataSnapshot.getChildren()){
+                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                        // Retrieve data as the Event object
+                        Event event = child.getValue(Event.class);
+                        Log.d("event info", event.toString());
+                        // Store event info in a hashmap
                         HashMap<String, String> eventInfo = new HashMap<String, String>();
-                        eventInfo.put("userID", event.getKey());
-                        eventInfo.put("name", event.getValue().toString());
-                        EventsList.add(eventInfo);
+                        eventInfo.put("eventKey", child.getKey());
+                        eventInfo.put("name", event.getName());
+                        eventInfo.put("description", event.getAbout());
+                        eventInfo.put("startDate", event.getDate());
+                        eventInfo.put("startTime", event.getStartTime());
+                        // Add event info hashmap to the events arraylist
+                        eventsList.add(eventInfo);
                     }
 
                     // Find listview from layout and initialize with an adapter
-                    // Find listview from layout and initialize with an adapter
-                    final ListView listView = (ListView) findViewById(R.id.friends_listview);
-                    simpleAdapter = new SimpleAdapter(Eventlist_Activity.this, EventsList,
-                            R.layout.friend_requests_list_items, new String[]{"name"}, new int[]{R.id.friend_requests_text_view});
+                    final ListView listView = (ListView) findViewById(R.id.events_listview);
+                    simpleAdapter = new SimpleAdapter(EventListActivity.this, eventsList, R.layout.events_list_items,
+                            new String[]{"startDate", "startTime", "name", "description"},
+                            new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about});
                     listView.setAdapter(simpleAdapter);
 
-                    // Show friend's user profile when clicked
+                    // Show EventViewActivity when clicked
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            String otherUserID = EventsList.get(position).get("userID");
-                            Intent fullEventInfo = new Intent(Eventlist_Activity.this, FullEventInfo.class);
-                            fullEventInfo.putExtra("userID", otherUserID);
+                            String eventKey = eventsList.get(position).get("eventKey");
+                            Intent fullEventInfo = new Intent(EventListActivity.this, EventInfoActivity.class);
+                            fullEventInfo.putExtra("eventKey", eventKey);
                             startActivity(fullEventInfo);
                         }
                     });

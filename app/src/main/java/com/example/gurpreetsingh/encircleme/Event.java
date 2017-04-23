@@ -16,6 +16,7 @@ class Event {
     private String endDate;
     private String endTime;
     @Nullable private String placeID;
+    @Nullable private String placeName;
     private double latitude;
     private double longitude;
 
@@ -23,7 +24,7 @@ class Event {
     public Event(){}
 
     public Event(String name, String about, String date, String startTime, String endDate, String endTime,
-                 String placeID, double latitude, double longitude){
+                 String placeID, String placeName, double latitude, double longitude){
         this.name = name;
         this.about = about;
         this.date = date;
@@ -31,6 +32,7 @@ class Event {
         this.endDate = endDate;
         this.endTime = endTime;
         this.placeID = placeID; // could be null
+        this.placeID = placeName; // could be null
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -86,6 +88,10 @@ class Event {
     public String getPlaceID(){return placeID;}
 
     public void setPlaceID(String placeID){this.placeID = placeID;}
+
+    public String getPlaceName(){ return placeName;}
+
+    public void setPlaceName(String placeName){this.placeName = placeName;}
 
     public void setLatitude(double latitude) {this.latitude = latitude;}
 
