@@ -262,9 +262,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onKeyEntered(String key, GeoLocation location) {
                 final String eventKey = key;
                 final GeoLocation eventLocation = location;
-                Log.d("onKeyEntered", "event found");
+                Log.d("onKeyEntered", "event found @" + eventLocation.toString() + "\nEvent Key: " + eventKey);
 
                 // Check if event info has already been loaded
+                Log.d("onKeyEntered", "eventsInfoMap.containsKey() = " + eventsInfoMap.containsKey(eventKey));
                 if (!eventsInfoMap.containsKey(eventKey)) {
                     // Not loaded yet --> load event info from DB
                     Log.d("event not loaded", "loading event info");
@@ -277,8 +278,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             // Check if the event has already happened
                             Log.d("event already happened?", "checking");
-                            if (eventHasNotHappened(event)) {
-                                Log.d("event already happened?", "NOPE");
+                            if (eventHasNotHappened(eventKey, event)) {
+                                Log.d("event already happened?", "NOPE for eventKey = " + dataSnapshot.getKey());
                                 // Store event info in HashMap for later access if it is not already there
                                 Log.d("eventInfo", "storing event info in HashMap");
                                 eventsInfoMap.put(eventKey, event);
@@ -295,7 +296,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     });
                 }
                 else{
-                    Log.d("onKeyEntered", "Event info has already been loaded");
+                    Log.d("onKeyEntered", "Event info has already been loaded, or the event already happened for eventKey = " + eventKey);
                 }
             }
 
@@ -327,7 +328,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private boolean eventHasNotHappened(Event event){
+    private boolean eventHasNotHappened(String eventKey, Event event){
         Calendar calendar = Calendar.getInstance();
         String[] mdy = event.getDate().split("/");
         int month = Integer.parseInt(mdy[0]) -1;
@@ -358,8 +359,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // current date & time is before event end date & time
             return true;
         }
-        else // Event has already ended
+        else { // Event has already ended
+            Log.d("eventHasNotHappened", "eventKey " + eventKey + "has already happened ");
             return false;
+        }
     }
 
 
@@ -369,7 +372,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerOptions.position(new LatLng(location.latitude, location.longitude));
         markerOptions.title(key);   // For retrieving later
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+        //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+        mGoogleMap.addMarker(markerOptions);
     }
 
         /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -798,9 +802,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onInfoWindowClick(Marker marker) {
         String eventKey = marker.getTitle();
-        Intent showFullEventInfo = new Intent(MapsActivity.this, EventInfoActivity.class);
-        showFullEventInfo.putExtra("eventKey", eventKey);
-        startActivity(showFullEventInfo);
+        // Check if the marker represents a place or an event
+        if(eventsInfoMap.containsKey(eventKey)) {
+            // Marker is an event --> show full event info
+            Intent showFullEventInfo = new Intent(MapsActivity.this, EventInfoActivity.class);
+            showFullEventInfo.putExtra("eventKey", eventKey);
+            startActivity(showFullEventInfo);
+        }
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
