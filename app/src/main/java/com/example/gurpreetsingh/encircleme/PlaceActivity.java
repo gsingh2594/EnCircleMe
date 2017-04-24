@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -100,7 +101,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         configureCameraIdle();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.map_picker);
         mapFragment.getMapAsync(this);
 
 
@@ -416,8 +417,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -451,9 +451,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         }
 
         //Place current location marker
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //userLocation = latLng;
         /*MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -461,8 +460,13 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         mCurrLocationMarker = mMap.addMarker(markerOptions);*/
 
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+        CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(11);
+        mMap.moveCamera(center);
+        mMap.animateCamera(zoom);
         Toast.makeText(PlaceActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
 
         Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));

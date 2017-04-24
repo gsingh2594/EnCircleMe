@@ -15,7 +15,7 @@
         android:elevation="0dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:title="EnCircleMe Chat"/>
+        app:title="Message Board"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -23,6 +23,7 @@
             android:layout_above="@+id/bottomBar"
             android:layout_marginBottom="3dp"
             android:hint="Type a message..."
+            android:inputType="textCapSentences"
             android:id="@+id/input"
             android:layout_toStartOf="@+id/fab" />
 

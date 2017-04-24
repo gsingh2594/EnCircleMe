@@ -8,17 +8,10 @@
     tools:context=".UserActivity"
     android:orientation="horizontal">
 
-
-
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="0dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp">
-
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/text_user"
@@ -28,123 +21,115 @@
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Menu"/>
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/view2"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:elevation="5dp"
+            android:shape="rectangle"
+            android:thicknessRatio="1.5"
+            app:contentPadding="3dp"
+            android:layout_centerHorizontal="true"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="8dp"
+            android:layout_below="@+id/text_user">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:visibility="gone" />
+            <android.support.v7.widget.CardView
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                app:cardCornerRadius="5dp">
 
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/default_profile_photo" />
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:id="@+id/menubar"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:background="#75B095"-->
-            <!--android:baselineAligned="false">-->
+            </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-            <!--<Button-->
-                <!--android:id="@+id/btnProfile"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:drawableTop="@drawable/profile"-->
-                <!--android:padding="10dp"-->
-                <!--android:text="Profile"-->
-                <!--android:textSize="12sp"-->
-                <!--android:layout_weight="1"/>-->
+        <TextView
+            android:id="@+id/profile_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_below="@+id/view2"
+            android:layout_centerHorizontal="true" />
 
-            <!--<Button-->
-                <!--android:id="@+id/friends"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:drawableTop="@drawable/friends"-->
-                <!--android:padding="10dp"-->
-                <!--android:text="Friends"-->
-                <!--android:textSize="12sp"-->
-                <!--android:layout_weight="1"/>-->
+        <Button
+            android:id="@+id/edit_userprofile"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:text="EDIT PROFILE"
+            android:background="@color/colorPrimary"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            android:layout_below="@+id/profile_name"
+            android:layout_centerHorizontal="true" />
 
-            <!--<Button-->
-                <!--android:id="@+id/btnMaps"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:drawableTop="@drawable/ic_map_black_24dp"-->
-                <!--android:padding="10dp"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--android:text="Maps"-->
-                <!--android:textSize="12sp"-->
-                <!--android:layout_weight="1"/>-->
+        <Button
+            android:id="@+id/notifications"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/password"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="11dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorPrimary"
+            android:elevation="0dp"
+            android:text="Manage Noficications"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-            <!--<Button-->
-                <!--android:id="@+id/btnAlerts"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:drawableTop="@drawable/alerts"-->
-                <!--android:padding="10dp"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--android:text="Alerts"-->
-                <!--android:textSize="12sp"-->
-                <!--android:layout_weight="1"/>-->
-
-            <!--<Button-->
-                <!--android:id="@+id/setting"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:drawableTop="@drawable/ic_settings_black_24dp"-->
-                <!--android:padding="10dp"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--android:text="Settings"-->
-                <!--android:textSize="12sp"-->
-                <!--android:layout_weight="1"/>-->
-
-        <!--</LinearLayout>-->
+        <Button
+            android:id="@+id/password"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sign_out"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="11dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorPrimary"
+            android:elevation="0dp"
+            android:text="Reset password"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/sign_out"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/colorPrimary"
             android:text="@string/btn_sign_out"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:elevation="0dp"
-            android:layout_below="@+id/text_user"
-            android:layout_toEndOf="@+id/progressBar"
-            android:layout_marginTop="28dp" />
-
-
-
+            android:layout_marginBottom="11dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:id="@+id/menubar"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:baselineAligned="false">
-
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:itemBackground="@drawable/ripple_effect"
-            app:elevation="8dp"
-            app:itemIconTint="@android:color/black"
-            app:menu="@menu/bottom_navigation_main"
-            app:itemTextColor="@android:color/black"
-            android:layout_alignParentBottom="true"/>
-
-    </LinearLayout>
-<!--
+    <!--
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"

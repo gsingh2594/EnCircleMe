@@ -48,7 +48,12 @@
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".EditActivity"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".UserActivity" />
+        <activity android:name=".UserActivity" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.NOTIFICATION_PREFERENCES" />
+        </intent-filter>
+    </activity>
         <activity android:name=".ChatActivity"
             android:windowSoftInputMode="stateHidden"/>
         <activity

@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     android:elevation="1dp">
 
     <TextView
@@ -10,7 +11,6 @@
         android:id="@+id/message_user"
         android:textStyle="normal|bold"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"
         android:textColor="@color/colorPrimaryDark"
         android:layout_alignTop="@+id/user_icon"
         android:layout_toEndOf="@+id/user_icon" />
@@ -37,6 +37,11 @@
         android:autoLink="all"
         android:textColorLink="#03A9F4"
         android:linksClickable="true"
+        android:enabled="true"
+        android:paddingTop="5dp"
+        android:textIsSelectable="true"
+        android:focusable="true"
+        android:longClickable="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_marginLeft="3dp"
         android:textSize="18sp"

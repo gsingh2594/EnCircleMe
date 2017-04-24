@@ -50,8 +50,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
-
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth auth;
     private String userID;
@@ -664,11 +662,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         // bottomBar.removeOnTabReselectListener();
         bottomBar.setDefaultTab(R.id.tab_profile);
         // bottomBar.setOnTabSelectListener(tabSelectListener);
-    }
-
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
     }
 
 /*    //Button

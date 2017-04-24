@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lin_lay"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -19,7 +20,7 @@
         android:id="@+id/welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="200dp"
         android:fontFamily="cursive"
         android:text="Welcome"
         android:textAlignment="center"
@@ -31,10 +32,12 @@
 
     <ProgressBar
         android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleHorizontal"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:indeterminate="true" />
+        android:indeterminate="true"
+        android:visibility="visible"
+        android:indeterminateTint="@color/colorPrimaryDark" />
 
 </LinearLayout>

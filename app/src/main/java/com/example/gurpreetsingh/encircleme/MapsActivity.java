@@ -218,7 +218,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(180);
+        bottomSheetBehavior.setPeekHeight(300);
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -497,7 +497,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(modifyTab);
         }
         if (id == R.id.settings){
-            Intent modifySettings=new Intent(MapsActivity.this,SettingsActivity2.class);
+            Intent modifySettings=new Intent(MapsActivity.this,UserActivity.class);
             startActivity(modifySettings);
 
 

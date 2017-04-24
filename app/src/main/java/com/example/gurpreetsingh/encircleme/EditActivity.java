@@ -128,7 +128,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
         txtEndTime=(TextView)findViewById(R.id.end_time);
 
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
-        btnPlacePicker=(Button)findViewById(R.id.pickerButton);
+        //btnPlacePicker=(Button)findViewById(R.id.pickerButton);
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
         btnEndDatePicker.setOnClickListener(this);
