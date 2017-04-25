@@ -295,9 +295,31 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         });*/
 
     public void onMapLongClick(LatLng latLng) {
+        // Retrieve address of dropped marker
+        Geocoder geocoder = new Geocoder(PlaceActivity.this);
+        String address = "";
+        try {
+            List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addressList != null && addressList.size() > 0) {
+                String locality = addressList.get(0).getAddressLine(0);
+                String country = addressList.get(0).getCountryName();
+                if (!locality.isEmpty() && !country.isEmpty())
+                    address = locality + " " + country;
+                else
+                    // No address at selected place --> show lat & lng
+                    address= "Lat= " + latLng.latitude + " Lng= " + latLng.longitude;
+            }else{
+                // No address at selected place --> show lat & lng
+                address= "Lat= " + latLng.latitude + " Lng= " + latLng.longitude;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title("Create an event here")
+                .title("Select this location")
+                .snippet(address)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .draggable(true));
 
@@ -331,9 +353,12 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         // for example, marker.getTitle() or marker.getSnippet().
         // Code here for navigating to fragment activity.
         Intent intent = new Intent();
-        if (marker.getTitle().equals("Create an event here")){
+        if (marker.getTitle().equals("Select this location")){
             // User chose the marker they dropped on the map
             intent.putExtra("user_picked_location", marker.getTitle());
+            // If an address was available, return it to event creation
+            if(!marker.getSnippet().isEmpty())
+                intent.putExtra("address", marker.getSnippet());
             intent.putExtra("lat", marker.getPosition().latitude);
             intent.putExtra("lng", marker.getPosition().longitude);
             Log.d("chosen lat", Double.toString(marker.getPosition().latitude));
@@ -348,7 +373,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             intent.putExtra("place_id", googlePlace.get("place_id"));
             intent.putExtra("place_name", googlePlace.get("place_name"));
             intent.putExtra("vicinity", googlePlace.get("vicinity"));
-            intent.putExtra("address", googlePlace.get("address"));
+            //intent.putExtra("address", googlePlace.get("address"));
+            intent.putExtra("address",marker.getSnippet());
             intent.putExtra("lat", googlePlace.get("lat"));
             intent.putExtra("lng", googlePlace.get("lng"));
         }
@@ -444,6 +470,20 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onLocationChanged(Location location) {
         Log.d("onLocationChanged", "entered");
 
+        // Display current address from Geocoder
+        Geocoder geocoder = new Geocoder(PlaceActivity.this);
+        try {
+            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addressList != null && addressList.size() > 0) {
+                String locality = addressList.get(0).getAddressLine(0);
+                String country = addressList.get(0).getCountryName();
+                if (!locality.isEmpty() && !country.isEmpty())
+                    resutText.setText(locality + "  " + country);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         mLastLocation = location;
         if (mCurrLocationMarker != null) {

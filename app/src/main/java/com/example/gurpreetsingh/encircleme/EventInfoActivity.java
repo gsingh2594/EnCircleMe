@@ -123,6 +123,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         String eventEndTime = event.getEndTime();
         String eventPlaceID = event.getPlaceID();
         String eventPlaceName = event.getPlaceName();
+        String eventAddress = event.getAddress();
         double eventLatitude = event.getLatitude();
         double eventLongitude = event.getLongitude();
 
@@ -135,6 +136,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         Log.d("eventEndTime", eventEndTime);
         if(eventPlaceID!=null)
             Log.d("eventPlaceID", eventPlaceID);
+        if(eventAddress!=null)
+            Log.d("eventAddress", eventAddress);
         Log.d("eventLatitude", Double.toString(eventLatitude));
         Log.d("eventLongitude", Double.toString(eventLongitude));
 
@@ -149,10 +152,25 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
             // Display with end date
             txtEventTime.setText(event.getStartTime() + " to " + event.getEndDate() + " " + event.getEndTime());
 
-        if(eventPlaceName!=null)
-            txtEventLocation.setText(eventPlaceName);
-        else
-            txtEventLocation.setText("Lat: " + eventLatitude + "\nLng: " + eventLongitude);
+
+        // Display event place name and location
+        if(eventPlaceName!=null) {
+            // Event has a selected place
+            if(eventAddress!=null)
+                txtEventLocation.setText(eventPlaceName + "\n" + eventAddress);
+            else
+                txtEventLocation.setText(eventPlaceName);// This line shouldn't run because a place is stored with its address
+        }
+        else {
+            // Event does not have a selected place
+            if(eventAddress!=null)
+                txtEventLocation.setText(eventAddress);
+            else
+                // No place name and no address --> resort to displaying lat & lng.
+                // (Likely will never execute because Geocoder always finds an "address" to save)
+                txtEventLocation.setText("Lat: " + eventLatitude + "\nLng: " + eventLongitude);
+        }
+
         txtEventDescription.setText(event.getAbout());
     }
 
@@ -163,6 +181,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(eventLatLng)
                 .title(event.getName())
+                .snippet(event.getAddress())
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         googleMap.addMarker(markerOptions);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 12));

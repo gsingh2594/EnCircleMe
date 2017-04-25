@@ -84,6 +84,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private TimePickerDialog startTimePickerDialog, endTimePickerDialog;
     private LatLng latLng;
     private String placeID;
+    private String address;
 
     private static final int PLACE_PICKER_REQUEST = 1000;
     private GoogleApiClient mClient;
@@ -435,7 +436,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 double evLng = latLng.longitude;
 
                 // Create event object to save
-                Event event = new Event(evName, evAbout, evStartDate, evStartTime, evEndDate, evEndTime, placeName, evPlaceID, evLat, evLng);
+                Event event = new Event(evName, evAbout, evStartDate, evStartTime, evEndDate, evEndTime,
+                        evPlaceID, placeName, address, evLat, evLng);
 
                 // HashMap for multipath updates
                 Map<String, Object> eventUpdates = new HashMap<>();
@@ -604,6 +606,9 @@ public class EditActivity extends Activity implements View.OnClickListener{
             if(resultCode == Activity.RESULT_OK){
                 if(data.getStringExtra("user_picked_location") != null){
                     // User selected a location by dropping a marker on the map
+                    // Get the address of the location if available
+                    if(!data.getStringExtra("address").isEmpty())
+                        address = data.getStringExtra("address");
                     // Retrieve the latitude and longitude of dropped marker from PlaceActivity
                     double lat = data.getDoubleExtra("lat", -1);
                     double lng = data.getDoubleExtra("lng", -1);
@@ -621,7 +626,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                     String result = data.getStringExtra("result");
                     placeID = data.getStringExtra("place_id");
                     placeName = data.getStringExtra("place_name");
-                    String address = data.getStringExtra("address");
+                    address = data.getStringExtra("address");
                     String vicinity = data.getStringExtra("vicinity");
                     Log.d("placeName", placeName);
                     mplace.setText(placeName);  // display the name of the picked place
