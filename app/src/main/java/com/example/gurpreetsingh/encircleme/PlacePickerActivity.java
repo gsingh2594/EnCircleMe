@@ -37,7 +37,7 @@ public class PlacePickerActivity extends AppCompatActivity {
     Button btnSetting;
 
 
-    //Button
+    /*//Button
     public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +91,7 @@ public class PlacePickerActivity extends AppCompatActivity {
                 startActivity(setting);
             }
         });
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,11 +131,11 @@ public class PlacePickerActivity extends AppCompatActivity {
             }
         });
 
-        Alerts();
+/*        Alerts();
         Maps();
         Friends();
         Profile();
-        Settings();
+        Settings();*/
     }
 
     @Override

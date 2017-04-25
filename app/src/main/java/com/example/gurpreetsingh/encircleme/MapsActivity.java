@@ -56,6 +56,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -194,10 +195,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-
-
-                /*SupportMapFragment mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                mapFrag.getMapAsync(this);*/
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
@@ -575,14 +572,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mGoogleMap.setMyLocationEnabled(true);
         }
 
-        mGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        /*mGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng latLng) {
                 Intent edit = new Intent(MapsActivity.this, EditActivity.class);
                 edit.putExtra("location", latLng);
                 MapsActivity.this.startActivityForResult(edit, EDIT_REQUEST);
             }
-        });
+        });*/
 
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -620,7 +617,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void addCustomMarker() {
         Log.d(TAG, "addCustomMarker()");
         if (mGoogleMap == null) {
-            return;
         }
 
         /*// adding a marker on map with image from  dradrawable
@@ -645,8 +641,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(10000);
-        //mLocationRequest.setSmallestDisplacement(5); // no location updates unless user has moved 5 meters. Default is 0 meters
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(10); // no location updates unless user has moved 5 meters. Default is 0 meters
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -669,13 +665,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
+
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
         //move map camera only the first time location is received
         if(!locationInitialized) {
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-            locationInitialized = true;
+            CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+            CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
+            mGoogleMap.moveCamera(center);
+            mGoogleMap.animateCamera(zoom);
+            //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            //mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+            locationInitialized = false;
         }
         // Reload events from DB based on new location
         loadEventsFromDB();

@@ -15,4 +15,5 @@
     <item name="tab" type="id" />
     <item name="tabbar" type="id" />
     <item name="tab_chats" type="id" />
+    <item name="list_of_eventmessages" type="id" />
 </resources>

@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:elevation="1dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/message_user"
+        android:textStyle="normal|bold"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_alignTop="@+id/user_icon"
+        android:layout_toEndOf="@+id/user_icon" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_icon"
+        android:src="@drawable/profile"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/message_user"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/message_time" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/message_text"
+        android:autoLink="all"
+        android:textColorLink="#03A9F4"
+        android:linksClickable="true"
+        android:enabled="true"
+        android:paddingTop="5dp"
+        android:textIsSelectable="true"
+        android:focusable="true"
+        android:longClickable="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:layout_marginLeft="3dp"
+        android:textSize="18sp"
+        android:layout_below="@+id/message_user"/>
+</RelativeLayout>
