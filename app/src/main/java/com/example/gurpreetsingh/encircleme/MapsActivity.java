@@ -56,6 +56,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -86,7 +87,8 @@ import java.util.HashMap;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnPoiClickListener, GoogleMap.InfoWindowAdapter {
+        LocationListener, GoogleMap.OnPoiClickListener, GoogleMap.InfoWindowAdapter,
+        GoogleMap.OnInfoWindowClickListener {
 
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = null;
     private static final int EDIT_REQUEST = 1;
@@ -108,6 +110,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private HashMap<String, Event> eventsInfoMap;
     private HashMap<String, Bitmap> creatorProfileImagesMap;
+    private HashMap<String, Place> placeInfoBottomSheet;
+
     private static final long ONE_MEGABYTE = 1024*1024;
     /*Button btnAlerts;
     Button btnMaps;
@@ -194,10 +198,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
-
-                /*SupportMapFragment mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                mapFrag.getMapAsync(this);*/
-
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
@@ -217,7 +217,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(180);
+        bottomSheetBehavior.setPeekHeight(300);
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -236,7 +236,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);*/
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
+                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -247,6 +247,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //HashMaps for storing info used in marker info window
         eventsInfoMap = new HashMap<String, Event>();
         creatorProfileImagesMap = new HashMap<String, Bitmap>();
+        placeInfoBottomSheet = new HashMap<>();
     }
 
     private void loadEventsFromDB(){
@@ -261,9 +262,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onKeyEntered(String key, GeoLocation location) {
                 final String eventKey = key;
                 final GeoLocation eventLocation = location;
-                Log.d("onKeyEntered", "event found");
+                Log.d("onKeyEntered", "event found @" + eventLocation.toString() + "\nEvent Key: " + eventKey);
 
                 // Check if event info has already been loaded
+                Log.d("onKeyEntered", "eventsInfoMap.containsKey() = " + eventsInfoMap.containsKey(eventKey));
                 if (!eventsInfoMap.containsKey(eventKey)) {
                     // Not loaded yet --> load event info from DB
                     Log.d("event not loaded", "loading event info");
@@ -276,8 +278,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             // Check if the event has already happened
                             Log.d("event already happened?", "checking");
-                            if (eventHasNotHappened(event)) {
-                                Log.d("event already happened?", "NOPE");
+                            if (eventHasNotHappened(eventKey, event)) {
+                                Log.d("event already happened?", "NOPE for eventKey = " + dataSnapshot.getKey());
                                 // Store event info in HashMap for later access if it is not already there
                                 Log.d("eventInfo", "storing event info in HashMap");
                                 eventsInfoMap.put(eventKey, event);
@@ -294,7 +296,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     });
                 }
                 else{
-                    Log.d("onKeyEntered", "Event info has already been loaded");
+                    Log.d("onKeyEntered", "Event info has already been loaded, or the event already happened for eventKey = " + eventKey);
                 }
             }
 
@@ -309,23 +311,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
-
+                Log.d("onKeyMoved", "Somehow an event location has changed");
             }
 
             @Override
             public void onGeoQueryReady() {
-
+                Log.d("onGeoQueryReady", "All event info has loaded. However, event creator profile pictures might not be loaded!");
             }
 
             @Override
             public void onGeoQueryError(DatabaseError error) {
-
+                Log.d("onGeoQueryError", error.getMessage() + error.getDetails());
+                Toast.makeText(MapsActivity.this, "GeoQuery Error", Toast.LENGTH_LONG).show();
             }
         });
     }
 
 
-    private boolean eventHasNotHappened(Event event){
+    private boolean eventHasNotHappened(String eventKey, Event event){
         Calendar calendar = Calendar.getInstance();
         String[] mdy = event.getDate().split("/");
         int month = Integer.parseInt(mdy[0]) -1;
@@ -356,8 +359,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // current date & time is before event end date & time
             return true;
         }
-        else // Event has already ended
+        else { // Event has already ended
+            Log.d("eventHasNotHappened", "eventKey " + eventKey + "has already happened ");
             return false;
+        }
     }
 
 
@@ -367,7 +372,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerOptions.position(new LatLng(location.latitude, location.longitude));
         markerOptions.title(key);   // For retrieving later
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+        //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+        mGoogleMap.addMarker(markerOptions);
     }
 
         /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -414,6 +420,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 // Get the user's selected place from the Intent.
                 Place place = PlaceAutocomplete.getPlace(this, data);
+                placeInfoBottomSheet.put(place.getAddress().toString(), place);
 
                 String placeDetailsStr = place.getName() + "\n"
                         + place.getLocale() + "\n"
@@ -491,7 +498,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(modifyTab);
         }
         if (id == R.id.settings){
-            Intent modifySettings=new Intent(MapsActivity.this,SettingsActivity2.class);
+            Intent modifySettings=new Intent(MapsActivity.this,UserActivity.class);
             startActivity(modifySettings);
 
 
@@ -546,6 +553,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.setOnPoiClickListener(this);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
         mGoogleMap.setInfoWindowAdapter(this);
+        mGoogleMap.setOnInfoWindowClickListener(this);
         MapsInitializer.initialize(this);
         addCustomMarker();
 
@@ -568,21 +576,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mGoogleMap.setMyLocationEnabled(true);
         }
 
-        mGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        /*mGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng latLng) {
                 Intent edit = new Intent(MapsActivity.this, EditActivity.class);
                 edit.putExtra("location", latLng);
                 MapsActivity.this.startActivityForResult(edit, EDIT_REQUEST);
             }
-        });
+        });*/
 
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (eventsInfoMap.get(marker.getTitle()) == null)
-                    updateBottomSheetContent(marker);
-                    //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if (eventsInfoMap.get(marker.getTitle()) == null){
+                    if(placeInfoBottomSheet.containsKey(marker.getSnippet()));
+                        updateBottomSheetContent(placeInfoBottomSheet.get(marker.getSnippet().toString()));
+                }
+                //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 //return true;
                 return false;
             }
@@ -595,16 +605,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void updateBottomSheetContent(Marker marker) {
+    private void updateBottomSheetContent(Place place) {
         TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
         TextView address = (TextView) bottomSheet.findViewById(R.id.detail_address);
-/*        TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
-        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
+      TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
+/*        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
         TextView rating = (TextView) bottomSheet.findViewById(R.id.detail_rating);
         TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
         TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);*/
-        name.setText(marker.getTitle());
-        address.setText(marker.getSnippet());
+        name.setText(place.getName());
+        address.setText(place.getAddress());
+        number.setText(place.getPhoneNumber());
         //number.setText(place.)
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -613,7 +624,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void addCustomMarker() {
         Log.d(TAG, "addCustomMarker()");
         if (mGoogleMap == null) {
-            return;
         }
 
         /*// adding a marker on map with image from  dradrawable
@@ -638,8 +648,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(10000);
-        //mLocationRequest.setSmallestDisplacement(5); // no location updates unless user has moved 5 meters. Default is 0 meters
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(10); // no location updates unless user has moved 5 meters. Default is 0 meters
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -662,13 +672,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
+
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
         //move map camera only the first time location is received
         if(!locationInitialized) {
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-            locationInitialized = true;
+            CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+            CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
+            mGoogleMap.moveCamera(center);
+            mGoogleMap.animateCamera(zoom);
+            //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            //mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+            locationInitialized = false;
         }
         // Reload events from DB based on new location
         loadEventsFromDB();
@@ -790,6 +805,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Marker represents a place
             return null;
                     //preparePlaceInfoView(marker);
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String eventKey = marker.getTitle();
+        // Check if the marker represents a place or an event
+        if(eventsInfoMap.containsKey(eventKey)) {
+            // Marker is an event --> show full event info
+            Intent showFullEventInfo = new Intent(MapsActivity.this, EventInfoActivity.class);
+            showFullEventInfo.putExtra("eventKey", eventKey);
+            startActivity(showFullEventInfo);
+        }
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
@@ -977,6 +1004,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
         return dpAsPixels;  // return the size in pixels
     }
+
 }
 
 

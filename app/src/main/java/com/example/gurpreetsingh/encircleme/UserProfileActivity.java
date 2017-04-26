@@ -50,8 +50,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
-
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth auth;
     private String userID;
@@ -165,7 +163,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     Intent map = new Intent(UserProfileActivity.this, MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(UserProfileActivity.this, Eventlist_Activity.class);
+                    Intent events = new Intent(UserProfileActivity.this, EventListActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -272,7 +270,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // User has not set profile image
+                // User has not set profile image or storage error
                 Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
                 Toast.makeText(UserProfileActivity.this, "No profile image", Toast.LENGTH_LONG).show();
             }
@@ -664,11 +662,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         // bottomBar.removeOnTabReselectListener();
         bottomBar.setDefaultTab(R.id.tab_profile);
         // bottomBar.setOnTabSelectListener(tabSelectListener);
-    }
-
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true);
     }
 
 /*    //Button

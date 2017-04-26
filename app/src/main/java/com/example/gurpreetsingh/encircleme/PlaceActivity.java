@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -100,7 +101,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         configureCameraIdle();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.map_picker);
         mapFragment.getMapAsync(this);
 
 
@@ -294,9 +295,31 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         });*/
 
     public void onMapLongClick(LatLng latLng) {
+        // Retrieve address of dropped marker
+        Geocoder geocoder = new Geocoder(PlaceActivity.this);
+        String address = "";
+        try {
+            List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addressList != null && addressList.size() > 0) {
+                String locality = addressList.get(0).getAddressLine(0);
+                String country = addressList.get(0).getCountryName();
+                if (!locality.isEmpty() && !country.isEmpty())
+                    address = locality + " " + country;
+                else
+                    // No address at selected place --> show lat & lng
+                    address= "Lat= " + latLng.latitude + " Lng= " + latLng.longitude;
+            }else{
+                // No address at selected place --> show lat & lng
+                address= "Lat= " + latLng.latitude + " Lng= " + latLng.longitude;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title("Create an event here")
+                .title("Select this location")
+                .snippet(address)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .draggable(true));
 
@@ -330,9 +353,12 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         // for example, marker.getTitle() or marker.getSnippet().
         // Code here for navigating to fragment activity.
         Intent intent = new Intent();
-        if (marker.getTitle().equals("Create an event here")){
+        if (marker.getTitle().equals("Select this location")){
             // User chose the marker they dropped on the map
             intent.putExtra("user_picked_location", marker.getTitle());
+            // If an address was available, return it to event creation
+            if(!marker.getSnippet().isEmpty())
+                intent.putExtra("address", marker.getSnippet());
             intent.putExtra("lat", marker.getPosition().latitude);
             intent.putExtra("lng", marker.getPosition().longitude);
             Log.d("chosen lat", Double.toString(marker.getPosition().latitude));
@@ -347,7 +373,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
             intent.putExtra("place_id", googlePlace.get("place_id"));
             intent.putExtra("place_name", googlePlace.get("place_name"));
             intent.putExtra("vicinity", googlePlace.get("vicinity"));
-            intent.putExtra("address", googlePlace.get("address"));
+            //intent.putExtra("address", googlePlace.get("address"));
+            intent.putExtra("address",marker.getSnippet());
             intent.putExtra("lat", googlePlace.get("lat"));
             intent.putExtra("lng", googlePlace.get("lng"));
         }
@@ -356,8 +383,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         finish();
     }
 
-        @Override
-        public boolean onMarkerClick(Marker marker) {
+    @Override
+    public boolean onMarkerClick(Marker marker) {
         marker.showInfoWindow();
         return true;
     }
@@ -416,8 +443,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -444,6 +470,20 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onLocationChanged(Location location) {
         Log.d("onLocationChanged", "entered");
 
+        // Display current address from Geocoder
+        Geocoder geocoder = new Geocoder(PlaceActivity.this);
+        try {
+            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addressList != null && addressList.size() > 0) {
+                String locality = addressList.get(0).getAddressLine(0);
+                String country = addressList.get(0).getCountryName();
+                if (!locality.isEmpty() && !country.isEmpty())
+                    resutText.setText(locality + "  " + country);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
@@ -451,9 +491,8 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         }
 
         //Place current location marker
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //userLocation = latLng;
         /*MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -461,8 +500,13 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         mCurrLocationMarker = mMap.addMarker(markerOptions);*/
 
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+        CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(11);
+        mMap.moveCamera(center);
+        mMap.animateCamera(zoom);
         Toast.makeText(PlaceActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
 
         Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));

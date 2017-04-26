@@ -16,14 +16,16 @@ class Event {
     private String endDate;
     private String endTime;
     @Nullable private String placeID;
+    @Nullable private String placeName;
+    @Nullable String address;
     private double latitude;
     private double longitude;
 
 
-    public Event(){}
+    public Event(){} // Empty constructor for FirebaseDatabase
 
     public Event(String name, String about, String date, String startTime, String endDate, String endTime,
-                 String placeID, double latitude, double longitude){
+                 String placeID, String placeName, String address, double latitude, double longitude){
         this.name = name;
         this.about = about;
         this.date = date;
@@ -31,6 +33,8 @@ class Event {
         this.endDate = endDate;
         this.endTime = endTime;
         this.placeID = placeID; // could be null
+        this.placeName = placeName; // could be null
+        this.address = address; // could be null
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -79,13 +83,21 @@ class Event {
         this.endTime = endTime;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
     public String getPlaceID(){return placeID;}
 
     public void setPlaceID(String placeID){this.placeID = placeID;}
+
+    public String getPlaceName(){ return placeName;}
+
+    public void setPlaceName(String placeName){this.placeName = placeName;}
+
+    public String getAddress(){return address;}
+
+    public void setAddress(String address){this.address = address;}
+
+    public double getLatitude() {
+        return latitude;
+    }
 
     public void setLatitude(double latitude) {this.latitude = latitude;}
 

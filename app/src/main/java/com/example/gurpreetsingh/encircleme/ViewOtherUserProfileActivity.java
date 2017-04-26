@@ -121,7 +121,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                         Intent map = new Intent(ViewOtherUserProfileActivity.this, MapsActivity.class);
                         startActivity(map);
                     } else if (tabId == R.id.tab_alerts) {
-                        Intent events = new Intent(ViewOtherUserProfileActivity.this, Eventlist_Activity.class);
+                        Intent events = new Intent(ViewOtherUserProfileActivity.this, EventListActivity.class);
                         startActivity(events);
                     } else if (tabId == R.id.tab_chats) {
                         Intent events = new Intent(getApplicationContext(), ChatActivity.class);

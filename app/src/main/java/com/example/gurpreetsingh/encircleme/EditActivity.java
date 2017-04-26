@@ -84,6 +84,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private TimePickerDialog startTimePickerDialog, endTimePickerDialog;
     private LatLng latLng;
     private String placeID;
+    private String address;
 
     private static final int PLACE_PICKER_REQUEST = 1000;
     private GoogleApiClient mClient;
@@ -107,6 +108,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
     private byte[] profileImageBytes;
     private static final long ONE_MEGABYTE = 1024 * 1024;
 
+    private String placeName;
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +129,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
         txtEndTime=(TextView)findViewById(R.id.end_time);
 
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
-        btnPlacePicker=(Button)findViewById(R.id.pickerButton);
+        //btnPlacePicker=(Button)findViewById(R.id.pickerButton);
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
         btnEndDatePicker.setOnClickListener(this);
@@ -433,7 +436,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 double evLng = latLng.longitude;
 
                 // Create event object to save
-                Event event = new Event(evName, evAbout, evStartDate, evStartTime, evEndDate, evEndTime, evPlaceID, evLat, evLng);
+                Event event = new Event(evName, evAbout, evStartDate, evStartTime, evEndDate, evEndTime,
+                        evPlaceID, placeName, address, evLat, evLng);
 
                 // HashMap for multipath updates
                 Map<String, Object> eventUpdates = new HashMap<>();
@@ -602,6 +606,9 @@ public class EditActivity extends Activity implements View.OnClickListener{
             if(resultCode == Activity.RESULT_OK){
                 if(data.getStringExtra("user_picked_location") != null){
                     // User selected a location by dropping a marker on the map
+                    // Get the address of the location if available
+                    if(!data.getStringExtra("address").isEmpty())
+                        address = data.getStringExtra("address");
                     // Retrieve the latitude and longitude of dropped marker from PlaceActivity
                     double lat = data.getDoubleExtra("lat", -1);
                     double lng = data.getDoubleExtra("lng", -1);
@@ -618,8 +625,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
                     // User selected a place on the map
                     String result = data.getStringExtra("result");
                     placeID = data.getStringExtra("place_id");
-                    String placeName = data.getStringExtra("place_name");
-                    String address = data.getStringExtra("address");
+                    placeName = data.getStringExtra("place_name");
+                    address = data.getStringExtra("address");
                     String vicinity = data.getStringExtra("vicinity");
                     Log.d("placeName", placeName);
                     mplace.setText(placeName);  // display the name of the picked place
@@ -631,6 +638,8 @@ public class EditActivity extends Activity implements View.OnClickListener{
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
+            // remove any error message since place is now selected
+            mplace.setError(null);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

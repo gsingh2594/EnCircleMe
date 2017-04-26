@@ -36,10 +36,11 @@ public class ChatActivity extends AppCompatActivity {
     private static final int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
     private String username;
+    private String name;
     private String userID;
     private boolean usernameIsLoaded = false;
-
     private BottomBar bottomBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +49,7 @@ public class ChatActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.chat_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("EnCircleMe Chat");
+        actionBar.setTitle("Message Board");
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         loadUserName();
@@ -62,13 +63,18 @@ public class ChatActivity extends AppCompatActivity {
                 if(usernameIsLoaded) {
                     // Read the input field and push a new instance
                     // of ChatMessage to the Firebase database
-                    FirebaseDatabase.getInstance()
-                            .getReference("chat")
-                            .push()
-                            .setValue(new ChatMessage(input.getText().toString(), username));
+                        if(input.getText().toString().equals("")){
+                           // input.setError("Type a message");
+                        }
+                        else {
+                            FirebaseDatabase.getInstance()
+                                    .getReference("chat")
+                                    .push()
+                                    .setValue(new ChatMessage(input.getText().toString(), username));
 
-                    // Clear the input
-                    input.setText("");
+                            // Clear the input
+                            input.setText("");
+                        }
                 }
                 else{
                     ProgressDialog progressDialog = new ProgressDialog(ChatActivity.this);
@@ -80,14 +86,19 @@ public class ChatActivity extends AppCompatActivity {
                     }
                     progressDialog.hide();
 
-                    // Save message in DB
-                    FirebaseDatabase.getInstance()
-                            .getReference("chat")
-                            .push()
-                            .setValue(new ChatMessage(input.getText().toString(), username));
+                    if(input.getText().toString().equals("")){
+                        //input.setError("Type a message");
+                    }
+                    else {
+                        // Save message in DB
+                        FirebaseDatabase.getInstance()
+                                .getReference("chat")
+                                .push()
+                                .setValue(new ChatMessage(input.getText().toString(), username));
 
-                    // Clear the input
-                    input.setText("");
+                        // Clear the input
+                        input.setText("");
+                    }
                 }
             }
         });
@@ -107,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), Eventlist_Activity.class);
+                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
                     startActivity(events);
 /*                } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -214,7 +225,6 @@ public class ChatActivity extends AppCompatActivity {
                         model.getMessageTime()));
             }
         };
-
         listOfMessages.setAdapter(adapter);
     }
 

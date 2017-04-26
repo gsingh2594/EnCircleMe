@@ -23,8 +23,8 @@
         barColorWhenSelected="@color/colorPrimary"/>
     <tab
         id="@+id/tab_alerts"
-        icon="@drawable/alerts"
-        title="Alerts"
+        icon="@drawable/list_icon"
+        title="Event List"
         inActiveColor="@android:color/black"
         activeColor="#FFFFFD"
         barColorWhenSelected="@color/colorPrimary"/>
