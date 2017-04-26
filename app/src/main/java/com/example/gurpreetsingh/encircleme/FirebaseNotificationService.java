@@ -46,6 +46,7 @@ public class FirebaseNotificationService extends Service {
                     database = FirebaseDatabase.getInstance();
                     addFriendNotificationListener();
                     acceptedFriendNotificationListener();
+                    addEventNotificationListener();
                 }
             }).start(); // Run the thread
         }
@@ -99,7 +100,7 @@ public class FirebaseNotificationService extends Service {
                             // new friend request
                             Log.d("onChildAdded", "New friend request --> usernameOfSender = " + usernameOfSender);
                             // Create notification to be displayed
-                            createNewFriendRequestNotification(usernameOfSender,userIDOfSender);
+                            createNewFriendRequestNotification(usernameOfSender, userIDOfSender);
                         }
                     }
 
@@ -228,7 +229,7 @@ public class FirebaseNotificationService extends Service {
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
         mBuilder.setContentTitle("New Friend"); // title for notification
-        mBuilder.setContentText("Congrats! You have a new friend" ); // message for notification
+        mBuilder.setContentText("Congrats! You have a new friend"); // message for notification
         mBuilder.setAutoCancel(true); // clear notification after click
         mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
         mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
@@ -246,10 +247,93 @@ public class FirebaseNotificationService extends Service {
 
 
     }
+
+    private void addEventNotificationListener() {
+        final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
+        // List for storing all previously created events. That way only new events will create notifications
+        final List<String> previousEventsList = new ArrayList<String>();
+
+        addEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot existingEvent : dataSnapshot.getChildren()) {
+                    String username = existingEvent.getValue().toString();
+                    Log.d("onDataChange", "Existing event --> username = " + username);
+                    previousEventsList.add(username);
+                }
+
+                // listen for new event creation in DB
+                addEventRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        // Get username of the user that creates the event
+                        String usernameOfCreator = dataSnapshot.getValue().toString();
+                        String userIDOfCreator = dataSnapshot.getKey().toString();
+
+                        // Check if the event created is new or not
+                        if (!previousEventsList.contains(usernameOfCreator)) {
+                            // new event created
+                            Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
+                            // Create notification to be displayed
+                            createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        String usernameOfSender = dataSnapshot.getValue().toString();
+                        Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + usernameOfSender);
+                        previousEventsList.remove(usernameOfSender);
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("NotificationService", "DB error: " + databaseError.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("NotificationService", "DB error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    public boolean createNewEventCreatedNotification(String usernameOfCreator, String userIDOfCreator) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
+        mBuilder.setContentTitle("New Event Created"); // title for notification
+        mBuilder.setContentText("New event has been created by" + usernameOfCreator); // message for notification
+        mBuilder.setAutoCancel(true); // clear notification after click
+        mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
+        mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
+        mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
+        mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
+
+        Intent intent = new Intent(this, Event.class);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pi);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+
+        return true;
+
+
+    }
+
+
 }
-
-
-
-
-
-
