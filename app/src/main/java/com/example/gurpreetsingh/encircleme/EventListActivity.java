@@ -26,6 +26,9 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class EventListActivity extends AppCompatActivity {
@@ -128,16 +131,61 @@ public class EventListActivity extends AppCompatActivity {
                         // Retrieve data as the Event object
                         Event event = child.getValue(Event.class);
                         Log.d("event info", event.toString());
-                        // Store event info in a hashmap
-                        HashMap<String, String> eventInfo = new HashMap<String, String>();
-                        eventInfo.put("eventKey", child.getKey());
-                        eventInfo.put("name", event.getName());
-                        eventInfo.put("description", event.getAbout());
-                        eventInfo.put("startDate", event.getDate());
-                        eventInfo.put("startTime", event.getStartTime());
-                        // Add event info hashmap to the events arraylist
-                        eventsList.add(eventInfo);
+                        // Check if event has ended
+                        if(!eventHasEnded(event)) {
+                            // Store event info in a hashmap
+                            HashMap<String, String> eventInfo = new HashMap<String, String>();
+                            eventInfo.put("eventKey", child.getKey());
+                            eventInfo.put("name", event.getName());
+                            eventInfo.put("description", event.getAbout());
+                            eventInfo.put("startDate", event.getDate());
+                            eventInfo.put("startTime", event.getStartTime());
+                            // Add event info hashmap to the events arraylist
+                            eventsList.add(eventInfo);
+                        }
                     }
+
+                    // Comparator for comparing and sorting dates for the events
+                    Comparator eventDatesAndTimesComparator = new Comparator<HashMap<String, String>>() {
+                        @Override
+                        public int compare(HashMap<String, String> event1, HashMap<String, String> event2) {
+                            String[] startMDY1 = event1.get("startDate").split("/");
+                            String[] startMDY2 = event2.get("startDate").split("/");
+                            int year1 = Integer.parseInt(startMDY1[2]);
+                            int year2 = Integer.parseInt(startMDY2[2]);
+                            if(year1 < year2)
+                                return -1; // first event date is before the second event
+                            else if(year1 > year2)
+                                return 1; // second event date is before the first event
+                            else { // years are equal --> check months
+                                int month1 = Integer.parseInt(startMDY1[0]);
+                                int month2 = Integer.parseInt(startMDY2[0]);
+                                if (month1 < month2)
+                                    return -1;
+                                else if(month1 > month2)
+                                    return 1;
+                                else{ // months are equal --> check days
+                                    int day1 = Integer.parseInt(startMDY1[1]);
+                                    int day2 = Integer.parseInt(startMDY2[1]);
+                                    if(day1 < day2)
+                                        return -1;
+                                    else if(day1 > day2)
+                                        return 1;
+                                    else{ // days are equal --> check times
+                                        return 0;
+
+                                    }
+                                }
+                            }
+
+                        }
+                    };
+
+                    /* Sort the events in the events list by date using the comparator
+                     https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)
+                     The documentation says it uses a mergesort implementation ^
+                     --> Runtime of O(n * log n) worst case, or almost O(n) when mostly sorted */
+                    Collections.sort(eventsList, eventDatesAndTimesComparator);
 
                     // Find listview from layout and initialize with an adapter
                     final ListView listView = (ListView) findViewById(R.id.events_listview);
@@ -164,6 +212,35 @@ public class EventListActivity extends AppCompatActivity {
                 }
             });
     }
+
+    // returns true if event end date is before the current time, or false otherwise
+    private boolean eventHasEnded(Event event){
+        int endMonth, endDay, endYear;
+        if(event.getEndDate() != null) {
+            String[] mdy = event.getEndDate().split("/");
+            endMonth = Integer.parseInt(mdy[0]);
+            endDay = Integer.parseInt(mdy[1]);
+            endYear = Integer.parseInt(mdy[2]);
+        }
+        else{
+            String[] mdy = event.getDate().split("/");
+            endMonth = Integer.parseInt(mdy[0]);
+            endDay = Integer.parseInt(mdy[1]);
+            endYear = Integer.parseInt(mdy[2]);
+        }
+
+        String hourMin[] = event.getEndTime().split("[: ]");
+        int hour = hourMin[2].equals("pm")?
+                // If pm, add 12 to the hour to convert to 24 hour format
+                Integer.parseInt(hourMin[0])+ 12 : Integer.parseInt(hourMin[0]);
+        for(String elem : hourMin)
+            Log.d("hourMin", elem);
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.set(endYear, endMonth, endDay);
+        return false;
+    }
+
 
     @Override
     protected void onResume() {

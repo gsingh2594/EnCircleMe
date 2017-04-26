@@ -174,7 +174,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         ListView listOf_Messages = (ListView)findViewById(R.id.list_of_eventmessages);
 
         adapter = new FirebaseListAdapter<ChatMessageEvent>(this, ChatMessageEvent.class,
-                R.layout.message_event, FirebaseDatabase.getInstance().getReference("event_chat/" +eventKey)) {
+                R.layout.message_event, FirebaseDatabase.getInstance().getReference("event_chats/" +eventKey)) {
             @Override
             protected void populateView(View v, ChatMessageEvent model, int position) {
                 // Get references to the views of message.xml

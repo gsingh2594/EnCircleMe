@@ -110,6 +110,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private HashMap<String, Event> eventsInfoMap;
     private HashMap<String, Bitmap> creatorProfileImagesMap;
+    private HashMap<String, Place> placeInfoBottomSheet;
+
     private static final long ONE_MEGABYTE = 1024*1024;
     /*Button btnAlerts;
     Button btnMaps;
@@ -245,6 +247,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //HashMaps for storing info used in marker info window
         eventsInfoMap = new HashMap<String, Event>();
         creatorProfileImagesMap = new HashMap<String, Bitmap>();
+        placeInfoBottomSheet = new HashMap<>();
     }
 
     private void loadEventsFromDB(){
@@ -417,6 +420,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 // Get the user's selected place from the Intent.
                 Place place = PlaceAutocomplete.getPlace(this, data);
+                placeInfoBottomSheet.put(place.getAddress().toString(), place);
 
                 String placeDetailsStr = place.getName() + "\n"
                         + place.getLocale() + "\n"
@@ -584,9 +588,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (eventsInfoMap.get(marker.getTitle()) == null)
-                    updateBottomSheetContent(marker);
-                    //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if (eventsInfoMap.get(marker.getTitle()) == null){
+                    if(placeInfoBottomSheet.containsKey(marker.getSnippet()));
+                        updateBottomSheetContent(placeInfoBottomSheet.get(marker.getSnippet().toString()));
+                }
+                //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 //return true;
                 return false;
             }
@@ -599,16 +605,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void updateBottomSheetContent(Marker marker) {
+    private void updateBottomSheetContent(Place place) {
         TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
         TextView address = (TextView) bottomSheet.findViewById(R.id.detail_address);
-/*        TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
-        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
+      TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
+/*        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
         TextView rating = (TextView) bottomSheet.findViewById(R.id.detail_rating);
         TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
         TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);*/
-        name.setText(marker.getTitle());
-        address.setText(marker.getSnippet());
+        name.setText(place.getName());
+        address.setText(place.getAddress());
+        number.setText(place.getPhoneNumber());
         //number.setText(place.)
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
