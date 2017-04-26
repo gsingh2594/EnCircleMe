@@ -282,6 +282,19 @@ public class FirebaseNotificationService extends Service {
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+                        // Get username of the user that creates the event
+                        String usernameOfCreator = dataSnapshot.getValue().toString();
+                        String userIDOfCreator = dataSnapshot.getKey().toString();
+
+                        // Check if the event created is new or not
+                        if (!previousEventsList.contains(usernameOfCreator)) {
+                            // new event created
+                            Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
+                            // Create notification to be displayed
+                            createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
+                        }
+
+
                     }
 
                     @Override
