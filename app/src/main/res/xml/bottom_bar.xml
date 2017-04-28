@@ -30,8 +30,8 @@
         barColorWhenSelected="@color/colorPrimary"/>
     <tab
         id="@+id/tab_chats"
-        icon="@drawable/marker"
-        title="Chat"
+        icon="@drawable/message_board"
+        title="Board"
         inActiveColor="@android:color/black"
         activeColor="#FFFFFD"
         barColorWhenSelected="@color/colorPrimary"/>

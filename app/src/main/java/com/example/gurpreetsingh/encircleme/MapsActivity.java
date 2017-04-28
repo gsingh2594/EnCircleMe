@@ -217,7 +217,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(300);
+        bottomSheetBehavior.setPeekHeight(250);
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -371,7 +371,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(location.latitude, location.longitude));
         markerOptions.title(key);   // For retrieving later
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.marker_encircleme)));
         //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
         mGoogleMap.addMarker(markerOptions);
     }
@@ -431,6 +431,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         + place.getPhoneNumber() + "\n"
                         + place.getWebsiteUri() + "\n"
                         + place.getRating();
+
                 //mAutoCompleteFragment.setText(placeDetailsStr);*//*
                 String placeName = (String) place.getName();
                 //String locale = (Locale) place.getLocale();
@@ -608,15 +609,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void updateBottomSheetContent(Place place) {
         TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
         TextView address = (TextView) bottomSheet.findViewById(R.id.detail_address);
-      TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
-/*        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
+        TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
+        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
         TextView rating = (TextView) bottomSheet.findViewById(R.id.detail_rating);
         TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
-        TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);*/
+        TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);
+
         name.setText(place.getName());
         address.setText(place.getAddress());
         number.setText(place.getPhoneNumber());
-        //number.setText(place.)
+        website.setText(place.getWebsiteUri().toString());
+        rating.setText(Float.toString(place.getRating()));
+        price.setText(Integer.toString(place.getPriceLevel()));
+        type.setText(place.getPlaceTypes().toString());
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
@@ -683,7 +688,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mGoogleMap.animateCamera(zoom);
             //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             //mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-            locationInitialized = false;
+            locationInitialized = true;
         }
         // Reload events from DB based on new location
         loadEventsFromDB();

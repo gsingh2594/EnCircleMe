@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
     private GoogleMap googleMap;
     private TextView txtEventName, txtEventStartDate, txtEventTime, txtEventLocation, txtEventDescription, txtEventCreator;
     private ImageView creatorProfileImage;
+    private ScrollView childScroll;
+    private ScrollView parentScroll;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +72,9 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+
+/*        parentScroll = (ScrollView) findViewById(R.id.parent_scroll);
+        childScroll=(ScrollView)findViewById(R.id.scroll_chat);*/
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         loadUserName();
@@ -142,7 +148,28 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         });
+       /* parentScroll.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.v("PARENT", "PARENT TOUCH");
+                findViewById(R.id.scroll_chat).getParent()
+                        .requestDisallowInterceptTouchEvent(false);
+                return false;
+            }
+        });
+
+        childScroll.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.v("CHILD", "CHILD TOUCH");
+                // Disallow the touch request for parent scroll on touch of
+                // child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });*/
     }
+
 
     private void loadUserName(){
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
@@ -372,7 +399,6 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
     }
-
 
     // used to set sizes in dp units programmatically. (Some views set sizes programmtically in px, not dp)
     // We should use this method to make certain views display consistently on different screen densities

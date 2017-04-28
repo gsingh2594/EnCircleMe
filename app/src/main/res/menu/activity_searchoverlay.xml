@@ -12,7 +12,7 @@
     <item
         android:id="@+id/action_tab"
         android:orderInCategory="100"
-        android:icon="@drawable/marker"
+        android:icon="@drawable/pin_drop"
         android:title="Tab"
         app:showAsAction="always"/>
 

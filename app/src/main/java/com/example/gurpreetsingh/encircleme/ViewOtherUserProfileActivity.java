@@ -141,6 +141,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     // Load user profile from DB
     private void loadUserProfile(){
         final LinearLayout interestsLinearLayout = (LinearLayout) findViewById(R.id.interests_linearlayout);
+        final LinearLayout interestsLinearLayout2 = (LinearLayout) findViewById(R.id.interests_linearlayout2);
         dbUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -153,21 +154,45 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                     ArrayList<String> userInterests = user.getInterests();
                     for (int i = 0; i < userInterests.size(); i++) {
                         // Create and add a new TextView to the LinearLayout
-                        TextView interestTextView = new TextView(ViewOtherUserProfileActivity.this);
-                        interestTextView.getMeasuredHeight();
-                        int marginSize = convertDPtoPX(5);
+                        ImageView interestImageView= new ImageView(ViewOtherUserProfileActivity.this);
+                        interestImageView.getMeasuredHeight();
+                        int marginSize = convertDPtoPX(1);
                         RelativeLayout.LayoutParams layoutParams =
                                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
-                        interestTextView.setLayoutParams(layoutParams);
-                        interestTextView.setTextSize(15);
-                        interestTextView.setTextColor(Color.BLACK);
-                        interestTextView.setText(userInterests.get(i));
-                        interestTextView.setElevation((float) convertDPtoPX(2));
+                        interestImageView.setLayoutParams(layoutParams);
+                        /*interestImageView.setTextSize(15);
+                        interestImageView.setTextColor(Color.BLACK);
+                        interestImageView.setText(userInterests.get(i));*/
+                        interestImageView.setElevation((float) convertDPtoPX(2));
                         int paddingSize = convertDPtoPX(10);
-                        interestTextView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
-                        interestTextView.setBackgroundColor(Color.WHITE);
-                        interestsLinearLayout.addView(interestTextView);
+                        interestImageView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+                        interestImageView.setBackgroundColor(Color.WHITE);
+                        switch (userInterests.get(i)) {
+                            case "Movie Theatres":
+                                interestImageView.setBackgroundResource(R.drawable.movies);
+                                break;
+                            case "Art Gallery":
+                                interestImageView.setBackgroundResource(R.drawable.artgallery);
+                                break;
+                            case "Cafe":
+                                interestImageView.setBackgroundResource(R.drawable.cafe);
+                                break;
+                            case "Bars":
+                                interestImageView.setBackgroundResource(R.drawable.bars);
+                                break;
+                            case "Restaurants":
+                                interestImageView.setBackgroundResource(R.drawable.restaurants);
+                                break;
+                            case "Department Stores":
+                                interestImageView.setBackgroundResource(R.drawable.deptstores);
+                                break;
+                        }
+                        if (i < 3){
+                            interestsLinearLayout.addView(interestImageView);
+                        }
+                        else
+                            interestsLinearLayout2.addView(interestImageView);
                     }
                 }
             }

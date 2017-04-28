@@ -10,12 +10,6 @@
         android:layout_height="match_parent"
         android:layout_below="@id/profile_toolbar">
 
-        <LinearLayout
-            android:id="@+id/LinearLayout01"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -90,7 +84,7 @@
                         android:textStyle="bold"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="39dp" />
+                        android:layout_marginTop="40dp" />
 
                     <TextView
                         android:id="@+id/username"
@@ -142,147 +136,112 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/profile_layout"
-                    android:elevation="15dp">
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="4dp"
+                    app:contentPadding="15dp"
+                    android:elevation="5dp"
+                    android:layout_margin="5dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/card_bio"
+                    android:layout_below="@+id/profile_layout">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@id/profile_layout"
-                        android:layout_margin="15dp">
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/bio_icon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:elevation="0dp"
+                            android:src="@drawable/info"
+                            android:layout_alignParentTop="true"
+                            android:layout_toStartOf="@+id/user_bio" />
 
                         <TextView
-                            android:id="@+id/aboutme_text"
+                            android:id="@+id/user_bio"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
                             android:text="About me"
-                            android:elevation="3dp"
-                            android:textColor="@color/bb_inActiveBottomBarItemColor"
-                            android:textSize="14dp" />
+                            android:layout_centerHorizontal="true"
+                            android:textAlignment="center"
+                            android:paddingTop="1dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/user_profile_bio"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="About me"
+                            android:text="About me..."
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
                             android:textSize="16dp"
+                            android:paddingTop="8dp"
                             android:textStyle="bold"
-                            android:layout_below="@+id/aboutme_text"
+                            android:layout_below="@+id/user_bio"
                             android:layout_alignParentStart="true" />
+
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_interest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:cardCornerRadius="4dp"
+                    app:contentPadding="5dp"
+                    android:elevation="15dp"
+                    android:layout_below="@+id/card_bio">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/interest_title">
+
+                        <ImageView
+                            android:id="@+id/interest_icon"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:elevation="0dp"
+                            android:src="@drawable/star_like_interest" />
 
                         <TextView
                             android:id="@+id/interest_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="13dp"
                             android:text="Interests"
-                            android:textColor="@color/bb_inActiveBottomBarItemColor"
-                            android:textSize="14dp"
-                            android:layout_below="@+id/user_profile_bio"
-                            android:layout_alignParentStart="true" />
+                            android:textColor="@android:color/black"
+                            android:textSize="16dp"
+                            android:paddingTop="2dp"
+                            android:layout_marginLeft="10dp"
+                            android:textStyle="bold"
+                            android:layout_toEndOf="@+id/interest_icon" />
 
 
-                        <HorizontalScrollView
-                            android:id="@+id/relativeLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_below="@+id/interest_text"
-                            android:layout_alignParentStart="true">
-
-                            <LinearLayout
-                                android:id="@+id/interests_linearlayout"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:paddingBottom="1dp">
-
-                                <TextView
-                                    android:id="@+id/blank_text"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_below="@+id/interests_linearlayout"
-                                    android:textColor="@color/bb_inActiveBottomBarItemColor"
-                                    android:textSize="@dimen/text_large"
-                                    android:textStyle="bold" />
-
-
-                                <!--    Dummies for displaying interests
-                        <TextView
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:id="@+id/interests_linearlayout2"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest1" />
+                            android:orientation="horizontal"
+                            android:layout_below="@id/interest_text">
 
-                        <TextView
-                            android:layout_width="match_parent"
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/interests_linearlayout"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_marginBottom="3dp"
-                            android:layout_marginTop="3dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest2" />
+                            android:orientation="horizontal"
+                            android:layout_below="@id/interests_linearlayout2">
+                        </LinearLayout>
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest3"
-                            android:textAlignment="textStart" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_marginBottom="3dp"
-                            android:layout_marginTop="3dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest4" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest5" />
-                        -->
-                            </LinearLayout>
-
-                            <!--
-                    <ListView
-                        android:id="@+id/user_profile_interests_listview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                    </ListView>
-                    -->
-                        </HorizontalScrollView>
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>
             </RelativeLayout>
-        </LinearLayout>
     </ScrollView>
 
 
@@ -376,11 +335,11 @@
 
 
 
-<!--    <com.roughike.bottombar.BottomBar
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        app:bb_tabXmlResource="@xml/bottom_bar" />-->
+    <!--    <com.roughike.bottombar.BottomBar
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            app:bb_tabXmlResource="@xml/bottom_bar" />-->
 
 </RelativeLayout>
