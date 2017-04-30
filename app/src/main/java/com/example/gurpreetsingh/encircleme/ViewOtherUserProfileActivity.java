@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,7 +51,10 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     private TextView profileName;
     private TextView profileBio;
     private TextView profileUsername;
+    private TextView profileEmail;
+    private TextView profilePhone;
     private ImageView addFriendIcon, alreadyFriendsIcon, acceptFriendRequestIcon;
+    private CardView emailCard, phoneCard;
     private byte[] profileImageBytes;
     private byte[] coverImageBytes;
     private ImageView profileImage;
@@ -74,12 +78,17 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
 
         profileName = (TextView) findViewById(R.id.user_profile_name);
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
+        profileEmail = (TextView) findViewById(R.id.email);
+        profilePhone = (TextView) findViewById(R.id.phone_number);
         addFriendIcon = (ImageView) findViewById(R.id.add_friend_icon);
         alreadyFriendsIcon = (ImageView) findViewById(R.id.already_friends_icon);
         acceptFriendRequestIcon = (ImageView)findViewById(R.id.accept_friend_request_icon);
         profileImage = (ImageView) findViewById(R.id.profile_image);
         coverImage = (ImageView) findViewById(R.id.cover_image);
         profileUsername = (TextView) findViewById(R.id.username);
+
+        emailCard = (CardView) findViewById(R.id.card_email);
+        phoneCard = (CardView) findViewById(R.id.card_phone);
 
         loadUserProfile();
         loadUserProfileImage();
@@ -147,6 +156,8 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 profileName.setText(user.getName());
+                profileEmail.setText(user.getEmail());
+                profilePhone.setText(user.getPhone());
                 profileUsername.setText("Username: " + user.getUsername());
                 if(user.getBio()!=null)
                     profileBio.setText(user.getBio());
@@ -204,7 +215,6 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         });
     }
 
-
     // load user profile image from Firebase Storage
     private void loadUserProfileImage() {
         Log.d("load profile pic", "about to load from storage");
@@ -254,7 +264,6 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         });
     }
 
-
     // Check to see if current user has received a pending friend request from this user
     private void checkForPendingFriendRequest(){
         DatabaseReference friendRequestsRef = database.getReference("friend_requests/" + currentUserID + "/" + userID);
@@ -284,7 +293,8 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         // Hide other icons if visible
         acceptFriendRequestIcon.setVisibility(View.GONE);
         alreadyFriendsIcon.setVisibility(View.GONE);
-
+        emailCard.setVisibility(View.GONE);
+        phoneCard.setVisibility(View.GONE);
         addFriendIcon.setVisibility(View.VISIBLE);
         // add friend option when clicked
         addFriendIcon.setOnClickListener(new View.OnClickListener() {
@@ -322,7 +332,8 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         //Hide other icons if visible
         addFriendIcon.setVisibility(View.GONE);
         acceptFriendRequestIcon.setVisibility(View.GONE);
-
+        emailCard.setVisibility(View.VISIBLE);
+        phoneCard.setVisibility(View.VISIBLE);
         alreadyFriendsIcon.setVisibility(View.VISIBLE);
         // remove friend option when clicked
         alreadyFriendsIcon.setOnClickListener(new View.OnClickListener() {

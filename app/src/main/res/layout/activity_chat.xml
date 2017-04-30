@@ -65,6 +65,7 @@
             android:dividerHeight="1dp"
             android:divider="@android:color/darker_gray"
             android:id="@+id/list_of_messages"
+            android:transcriptMode="alwaysScroll"
             android:stackFromBottom="true"
             android:layout_alignParentBottom="true" />
 

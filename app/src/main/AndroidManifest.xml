@@ -55,7 +55,7 @@
         </intent-filter>
     </activity>
         <activity android:name=".ChatActivity"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".CreateUserProfileActivity"
             android:windowSoftInputMode="adjustPan" />
