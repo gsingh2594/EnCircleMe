@@ -32,14 +32,13 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/tab_layout"
-        android:layout_above="@+id/bottomBar"/>
+        android:layout_below="@id/tab_layout"/>
 
-    <com.roughike.bottombar.BottomBar
+<!--    <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        app:bb_tabXmlResource="@xml/bottom_bar"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        app:bb_tabXmlResource="@xml/bottom_bar" />-->
 
 </RelativeLayout>

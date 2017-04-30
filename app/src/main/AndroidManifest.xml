@@ -66,8 +66,7 @@
         <activity android:name=".PlaceActivity" />
         <activity android:name=".EditUserProfileActivity"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".EventListActivity" />
-        <activity android:name=".EventInfoActivity"
+        <activity android:name=".EventsInfoTabActivity"
             android:launchMode="singleTop"/>
         <activity
             android:name=".MainActivity"
@@ -95,6 +94,7 @@
         <activity android:name=".FriendRequestsActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".SettingsActivity2" />
+        <activity android:name=".EventsTabActivity"/>
         <service android:name=".FirebaseNotificationService"
             android:description="@string/firebase_listener_service_description"/>
     </application>

@@ -3,4 +3,6 @@
     <item name="bottom_navigation_view" type="id" />
     <item name="tabbar" type="id" />
     <item name="tab_chats" type="id" />
+    <item name="event_info" type="id" />
+    <item name="event_chat" type="id" />
 </resources>

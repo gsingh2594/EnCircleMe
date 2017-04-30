@@ -1,23 +1,21 @@
 package com.example.gurpreetsingh.encircleme;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
-import android.text.method.LinkMovementMethod;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +44,7 @@ import com.google.firebase.storage.StorageReference;
  * Created by GurpreetSingh on 4/18/17.
  */
 
-public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessageEvent> adapter;
@@ -64,14 +62,17 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
     private ScrollView childScroll;
     private ScrollView parentScroll;
 
-    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_event_info, container, false);
+        //ListView listView = (ListView) view.findViewById(R.id.events_listview);
+/*    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d("onCreate", "method started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();*/
 
 /*        parentScroll = (ScrollView) findViewById(R.id.parent_scroll);
         childScroll=(ScrollView)findViewById(R.id.scroll_chat);*/
@@ -79,32 +80,32 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         loadUserName();
 
-        txtEventName = (TextView) findViewById(R.id.event_name);
-        txtEventStartDate = (TextView) findViewById(R.id.start_date);
-        txtEventTime = (TextView) findViewById(R.id.time);
-        txtEventLocation = (TextView) findViewById(R.id.location);
-        txtEventDescription = (TextView) findViewById(R.id.event_description);
-        txtEventCreator = (TextView) findViewById(R.id.creator_name);
-        creatorProfileImage = (ImageView) findViewById(R.id.creator_profile_image);
+        txtEventName = (TextView) view.findViewById(R.id.event_name);
+        txtEventStartDate = (TextView) view.findViewById(R.id.start_date);
+        txtEventTime = (TextView) view.findViewById(R.id.time);
+        txtEventLocation = (TextView) view.findViewById(R.id.location);
+        txtEventDescription = (TextView) view.findViewById(R.id.event_description);
+        txtEventCreator = (TextView) view.findViewById(R.id.creator_name);
+        creatorProfileImage = (ImageView) view.findViewById(R.id.creator_profile_image);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map_snippet);
         // Configure MapFragment options and get a new instance
         GoogleMapOptions googleMapOptions =  new GoogleMapOptions().liteMode(true);
         mapFragment.newInstance(googleMapOptions);
         mapFragment.getMapAsync(this);
 
-        eventKey = getIntent().getStringExtra("eventKey");
+        eventKey = getActivity().getIntent().getStringExtra("eventKey");
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         loadUserName();
-        displayChatMessages();
+        //displayChatMessages();
 
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText input = (EditText)findViewById(R.id.input);
+                EditText input = (EditText)view.findViewById(R.id.input);
 
                 if(usernameIsLoaded) {
                     // Read the input field and push a new instance
@@ -123,7 +124,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                 }
                 else{
-                    ProgressDialog progressDialog = new ProgressDialog(EventInfoActivity.this);
+                    ProgressDialog progressDialog = new ProgressDialog(EventInfoActivity.this.getActivity().getApplicationContext());
                     progressDialog.setMessage("One moment please");
 
                     while(!usernameIsLoaded){
@@ -148,7 +149,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         });
-       /* parentScroll.setOnTouchListener(new View.OnTouchListener() {
+        parentScroll.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
                 Log.v("PARENT", "PARENT TOUCH");
@@ -168,6 +169,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                 return false;
             }
         });*/
+       return view;
     }
 
 
@@ -180,8 +182,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         username = ds.getKey().toString();
                         usernameIsLoaded = true;
-                        Toast.makeText(EventInfoActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
-                        displayChatMessages();
+                        Toast.makeText(EventInfoActivity.this.getActivity().getApplicationContext(), "Welcome " + username, Toast.LENGTH_LONG).show();
+                        //displayChatMessages();
                     }
                 }
                 else{
@@ -197,8 +199,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-    private void displayChatMessages() {
-        ListView listOf_Messages = (ListView)findViewById(R.id.list_of_eventmessages);
+    /*private void displayChatMessages() {
+        ListView listOf_Messages = (ListView)getView().findViewById(R.id.list_of_eventmessages);
 
         adapter = new FirebaseListAdapter<ChatMessageEvent>(this, ChatMessageEvent.class,
                 R.layout.message_event, FirebaseDatabase.getInstance().getReference("event_chats/" +eventKey)) {
@@ -219,17 +221,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
             }
         };
         listOf_Messages.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        Log.d("onNewIntent", "method started");
-        super.onNewIntent(intent);
-        Log.d("onNewIntent", "getting extra");
-        eventKey = intent.getStringExtra("eventKey");
-        loadEventInfoFromDB();
-        displayChatMessages();
-    }
+    }*/
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -256,7 +248,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("onCancelled", "Database Error: " + databaseError.getMessage());
-                Toast.makeText(EventInfoActivity.this, "Could not load event", Toast.LENGTH_LONG).show();
+                Toast.makeText(EventInfoActivity.this.getActivity().getApplicationContext(), "Could not load event", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -331,7 +323,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                 .position(eventLatLng)
                 .title(event.getName())
                 .snippet(event.getAddress())
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.marker_encircleme)));
         googleMap.addMarker(markerOptions);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 12));
     }
@@ -407,4 +399,24 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
         return dpAsPixels;  // return the size in pixels
     }
+
+    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
+        View customMarkerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.search_marker, null);
+        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.pin_image);
+        markerImageView.setImageResource(resId);
+        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+        customMarkerView.buildDrawingCache();
+        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        Drawable drawable = customMarkerView.getBackground();
+        if (drawable != null)
+            drawable.draw(canvas);
+        customMarkerView.draw(canvas);
+        return returnedBitmap;
+    }
+
+
 }

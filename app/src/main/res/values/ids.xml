@@ -17,4 +17,6 @@
     <item name="tab_chats" type="id" />
     <item name="list_of_eventmessages" type="id" />
     <item name="interest_title" type="id" />
+    <item name="event_info" type="id" />
+    <item name="event_chat" type="id" />
 </resources>

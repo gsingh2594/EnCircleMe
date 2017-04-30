@@ -118,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
+                    Intent events = new Intent(getApplicationContext(), EventsTabActivity.class);
                     startActivity(events);
 /*                } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);

@@ -4,18 +4,15 @@ package com.example.gurpreetsingh.encircleme;
  * Created by GurpreetSingh on 4/2/17.
  */
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
 
-public class EventsTabActivity extends AppCompatActivity{
+public class EventsInfoTabActivity extends AppCompatActivity {
 
     private BottomBar bottomBar;
     Toolbar toolbar;
@@ -24,20 +21,19 @@ public class EventsTabActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.events_tabs_layout);
+        setContentView(R.layout.eventsinfo_tabs_layout);
         setSupportActionBar(toolbar);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Events"));
-        tabLayout.addTab(tabLayout.newTab().setText("Your Events"));
-        tabLayout.addTab(tabLayout.newTab().setText("EnCircled Events"));
+        tabLayout.addTab(tabLayout.newTab().setText("Event Info"));
+        tabLayout.addTab(tabLayout.newTab().setText("Event Chat"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
+        final PagerAdapterEventInfo adapter = new PagerAdapterEventInfo
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -57,8 +53,7 @@ public class EventsTabActivity extends AppCompatActivity{
 
             }
         });
-
-        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        /*bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_alerts);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -72,19 +67,15 @@ public class EventsTabActivity extends AppCompatActivity{
                 } else if (tabId == R.id.tab_map) {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
-/*                } else if (tabId == R.id.tab_alerts) {
+                } else if (tabId == R.id.tab_alerts) {
                     Intent events = new Intent(getApplicationContext(), EventListActivity.class);
-                    startActivity(events);*/
+                    startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
                     startActivity(events);
                 }
             }
-        });
+        });*/
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        bottomBar.setDefaultTab(R.id.tab_alerts);
-    }
+
 }
