@@ -389,7 +389,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                         // Retrieve current user's username
                         DatabaseReference usernamesRef = database.getReference("usernames");
                         Log.d("usernamesRef.toString()", usernamesRef.toString());
-                        usernamesRef.orderByValue().equalTo(currentUserID)
+                        usernamesRef.orderByChild("id").equalTo(currentUserID)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -401,12 +401,13 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                                             for (DataSnapshot user : dataSnapshot.getChildren())
                                                 // retrieve username
                                                 currentUsername = user.getKey();
+
                                             final String currentUsernameFinal = currentUsername;
                                             Log.d("onDataChange", "stored username to variable");
 
                                             // Retrieve the viewed user's username
                                             DatabaseReference otherUsernameRef = database.getReference("usernames");
-                                            otherUsernameRef.orderByValue().equalTo(userID)
+                                            otherUsernameRef.orderByChild("id").equalTo(userID)
                                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                                         String otherUserName;
 
@@ -503,19 +504,20 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                     // Retrieve current user's username
                     DatabaseReference usernamesRef = database.getReference("usernames");
                     Log.d("usernamesRef.toString()", usernamesRef.toString());
-                    usernamesRef.orderByValue().equalTo(currentUserID)
+                    usernamesRef.orderByChild("id").equalTo(currentUserID)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Log.d("onDataChange", "about to check for dataSnapshot.exists()");
                             if (dataSnapshot.hasChildren()) {
                                 Log.d("onDataChange", "snapshot exists!");
-
                                 // variable to store current user's username
                                 String currentUserUsername = null;
-                                for(DataSnapshot user: dataSnapshot.getChildren())
+
+                                for(DataSnapshot user :  dataSnapshot.getChildren())
                                     // retrieve username
                                     currentUserUsername = user.getKey();
+
                                 Log.d("onDataChange", "stored username to variable");
 
                                 if(currentUserUsername!=null) {
