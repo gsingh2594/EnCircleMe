@@ -156,7 +156,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
-        loadNextUserCreatedEventIndex();
+        //loadNextUserCreatedEventIndex();
 
         //Button button1 = (Button) findViewById(R.id.pickerButton);
 
@@ -410,7 +410,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
             Log.d("datesAndTimes= ", Boolean.toString(datesAndTimesAreValid()));
 
             // Check if user's pasts events ArrayList has already loaded
-            if (nextUserCreatedEventIndex != -1) {
+           // if (nextUserCreatedEventIndex != -1) {
                 // Previous events ArrayList already loaded
                 // Save event in DB at nextUserCreatedEventIndex
                 eventsRef = database.getReference("events");
@@ -442,7 +442,7 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 // HashMap for multipath updates
                 Map<String, Object> eventUpdates = new HashMap<>();
                 eventUpdates.put("all_events/" + eventKey, event);
-                eventUpdates.put("user_created_events/" + userID + "/" + nextUserCreatedEventIndex, event);
+                eventUpdates.put("user_created_events/" + userID + "/" + eventKey, event);
                 eventUpdates.put("event_key_creators/" + eventKey, userID);
                 //eventUpdates.put("geofire_locations/" + eventKey, new GeoLocation(latLng.latitude, latLng.longitude));
 
@@ -529,10 +529,10 @@ public class EditActivity extends Activity implements View.OnClickListener{
                         finish();
                     }
                 });
-            } else {
+            /*} else {
                 AlertDialog.Builder databaseErrorAlert = new AlertDialog.Builder(EditActivity.this);
                 databaseErrorAlert.setMessage("Database error loading previous events");
-            }
+            } */
         }
     }
 
