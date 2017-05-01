@@ -33,6 +33,7 @@ public class UserActivity extends AppCompatActivity {
     private Button resetPassword;
     private Button editProfile;
     private Button notifications;
+    private Button locations;
     private TextView helloUserText;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -186,6 +187,7 @@ public class UserActivity extends AppCompatActivity {
         resetPassword = (Button) findViewById(R.id.password);
         editProfile = (Button) findViewById(R.id.edit_userprofile);
         notifications = (Button) findViewById(R.id.notifications);
+        Button locations = (Button) findViewById(R.id.location_settings);
 
         helloUserText = (TextView) findViewById(R.id.text_user);
 
@@ -225,6 +227,12 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 notifications();
+            }
+        });
+        locations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locations();
             }
         });
 
@@ -271,6 +279,18 @@ public class UserActivity extends AppCompatActivity {
                 return false;
             }
         });*/
+    }
+
+    private void locations() {
+/*        Intent location_settings = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(location_settings);*/
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent();
+            intent.setAction("android.settings.");
+            intent.putExtra("app_package", getPackageName());
+            intent.putExtra("app_uid", getApplicationInfo().uid);
+            startActivity(intent);
+        }
     }
 
     private void notifications() {

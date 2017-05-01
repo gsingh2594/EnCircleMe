@@ -118,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
+                    Intent events = new Intent(getApplicationContext(), EventsTabActivity.class);
                     startActivity(events);
 /*                } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -132,7 +132,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void loadUserName(){
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
-        usernamesRef.orderByValue().equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        usernamesRef.orderByChild("id").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount() == 1) {
@@ -206,7 +206,7 @@ public class ChatActivity extends AppCompatActivity {
 */
 
     private void displayChatMessages() {
-        ListView listOfMessages = (ListView)findViewById(R.id.list_of_messages);
+        final ListView listOfMessages = (ListView)findViewById(R.id.list_of_messages);
 
         adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class,
                 R.layout.message, FirebaseDatabase.getInstance().getReference("chat")) {

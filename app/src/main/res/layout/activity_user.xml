@@ -78,6 +78,23 @@
             android:layout_centerHorizontal="true" />
 
         <Button
+            android:id="@+id/location_settings"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/notifications"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="11dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorPrimary"
+            android:elevation="0dp"
+            android:text="Location Settings"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
             android:id="@+id/notifications"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"

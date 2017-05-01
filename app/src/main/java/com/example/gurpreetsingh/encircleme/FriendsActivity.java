@@ -1,8 +1,11 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,17 +20,24 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class FriendsActivity extends AppCompatActivity {
@@ -46,7 +56,14 @@ public class FriendsActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference dbRef;
 
+    long numOfFriends;
+    final ArrayList<HashMap<String, String>> friendsList = new ArrayList<HashMap<String,String>>();
+    final HashMap<String, HashMap<String, String>> friendsMap = new HashMap<>();
+
     SimpleAdapter simpleAdapter;
+    byte[] profileImageBytes;
+    ArrayList<UserWithImage> userWithImageList = new ArrayList<>();
+    Comparator userWithImageComparator;
 
     private BottomBar bottomBar;
 
@@ -90,7 +107,7 @@ public class FriendsActivity extends AppCompatActivity {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
+                    Intent events = new Intent(getApplicationContext(), EventsTabActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -139,30 +156,35 @@ public class FriendsActivity extends AppCompatActivity {
 
     // load and display list of the current user's friends
     private void loadFriendsList(){
-        Log.d("loadFriensList", "method started");
-        final ArrayList<HashMap<String, String>> friendsList = new ArrayList<HashMap<String,String>>();
-        final HashMap<String, HashMap<String, String>> friendsMap = new HashMap<>();
+        Log.d("loadFriendsList", "method started");
         DatabaseReference friendsRef = database.getReference("friends");
         friendsRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
+                    numOfFriends = dataSnapshot.getChildrenCount();
+                    Log.d("numOfFriends", Long.toString(numOfFriends));
                     // User has friends -> store the info for each friend
                     for(DataSnapshot friend : dataSnapshot.getChildren()){
                         if(!friendsMap.containsKey(friend.getKey())) {
                             // Friend has not been loaded yet --> store the info
                             HashMap<String, String> friendInfo = new HashMap<String, String>();
-                            friendInfo.put("userID", friend.getKey());
-                            friendInfo.put("username", friend.getValue().toString());
+                            String userID = friend.getKey();
+                            String username = friend.getValue().toString();
+                            friendInfo.put("userID", userID);
+                            friendInfo.put("username", username);
                             friendsMap.put(friend.getKey(), friendInfo);
                             friendsList.add(friendInfo);
+                            loadUserNameAndID(username);
+                            //loadUserProfileImage(userID, username);
                         }
                     }
+                    Log.d("loadFriendsList", "no friends");
                     // Hide the "no friends" views
                     neutralFace.setVisibility(View.GONE);
                     noFriendsTextView.setVisibility(View.GONE);
                     findFriendsButton.setVisibility(View.GONE);
-
+                    /*
                     // Find listview from layout and initialize with an adapter
                     final ListView listView = (ListView) findViewById(R.id.friends_listview);
                     simpleAdapter = new SimpleAdapter(FriendsActivity.this, friendsList,
@@ -179,7 +201,7 @@ public class FriendsActivity extends AppCompatActivity {
                             viewOtherUserProfile.putExtra("userID", otherUserID);
                             startActivity(viewOtherUserProfile);
                         }
-                    });
+                    }); */
                 }
                 else{
                     // User does not have friends
@@ -193,12 +215,33 @@ public class FriendsActivity extends AppCompatActivity {
                             startActivity(addFriendSearch);
                         }
                     });
-                    // Set listview to be empty to prevent showing friends who have been deleted
+                   // Set listview to be empty to prevent showing friends who have been deleted
                     final ListView listView = (ListView) findViewById(R.id.friends_listview);
-                    simpleAdapter = new SimpleAdapter(FriendsActivity.this, friendsList,    // friendsList empty in this case
+                   /* simpleAdapter = new SimpleAdapter(FriendsActivity.this, friendsList,    // friendsList empty in this case
                             R.layout.friend_requests_list_items, new String[]{"username"}, new int[]{R.id.friend_requests_text_view} );
-                    listView.setAdapter(simpleAdapter);
-                    // listView.setAdapter(null);
+                    listView.setAdapter(simpleAdapter); */
+                    listView.setAdapter(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("loadFriendsList", "error loading friends " + databaseError.getMessage());
+            }
+        });
+    }
+
+
+    // Loads a user's name and id in a NameAndID object for a given username
+    private void loadUserNameAndID(final String username){
+        DatabaseReference usernamesRef= database.getReference("usernames");
+        usernamesRef.orderByKey().equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    NameAndID userNameAndID = dataSnapshot.getValue(NameAndID.class);
+                    Log.d("loadUserNameAndID", "name and ID loaded: " +  userNameAndID.toString());
+                    loadUserProfileImage(userNameAndID, username);
                 }
             }
 
@@ -209,6 +252,77 @@ public class FriendsActivity extends AppCompatActivity {
         });
     }
 
+
+    // Loads a profile image for a specified userID
+    private void loadUserProfileImage(NameAndID userNameAndID, final String username){
+        final String userID = userNameAndID.getID();
+        final String name = userNameAndID.getName();
+        Log.d("load profile pic", "about to load from storage");
+        StorageReference profilePicStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
+        profilePicStorageRef.getBytes(1024*1024*5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // user has profile pic --> display it
+                Log.d("loadUserProfileImage()", "getBytes successful");
+                profileImageBytes = bytes;
+                Log.d("loadUserProfileImage()", "convert bytes to bitmap");
+                Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
+                //profileImage.setImageBitmap(profileImageBitmap);
+                UserWithImage uwi = new UserWithImage(userID, username, name, profileImageBitmap);
+                userWithImageList.add(uwi);
+                Log.d("userWithImageList", "size = " + userWithImageList.size());
+                if(userWithImageList.size() == numOfFriends)
+                    displayListOfFriends();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // User has not set profile image
+                Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
+                Toast.makeText(FriendsActivity.this, "No profile image", Toast.LENGTH_LONG).show();
+                UserWithImage uwi = new UserWithImage(userID, username, name, null);
+                userWithImageList.add(uwi);
+                Log.d("userWithImageList", "size = " + userWithImageList.size());
+                if(userWithImageList.size() == numOfFriends)
+                    displayListOfFriends();
+            }
+        });
+    }
+
+
+
+    // Sorts the list of users with images and displays them in the ListView with an adapter
+    private void displayListOfFriends(){
+        Log.d("displayListOfFriends()", "entering method");
+        // Sort the userWithImages list so that users appear in order of username
+        if(userWithImageComparator == null) {
+            userWithImageComparator = new Comparator<UserWithImage>() {
+                @Override
+                public int compare(UserWithImage u1, UserWithImage u2) {
+                    int result = u1.getUsername().compareTo(u2.getUsername());
+                    if (result < 0) return -1;
+                    else if (result > 0) return 1;
+                    else return 0;
+                }
+            };
+        }
+        Collections.sort(userWithImageList, userWithImageComparator);
+
+        // Initialize the adapter
+        UserProfileListAdapter upla = new UserProfileListAdapter(FriendsActivity.this, userWithImageList);
+        final ListView listView = (ListView) findViewById(R.id.friends_listview);
+        listView.setAdapter(upla);
+        // Add on click listener to view the user's profile
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String otherUserID = friendsList.get(position).get("userID");
+                Intent viewOtherUserProfile = new Intent(FriendsActivity.this, ViewOtherUserProfileActivity.class);
+                viewOtherUserProfile.putExtra("userID", otherUserID);
+                startActivity(viewOtherUserProfile);
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

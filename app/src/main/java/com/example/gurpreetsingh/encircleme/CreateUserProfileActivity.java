@@ -154,11 +154,14 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
                             // username is available -> save user profile in DB
                             // create a User Java object to save all user attributes in the same DB directory at once
                             User newUser = new User(name, phone, email, username, interestsList);
+                            // Save the users name and ID under usernames --> create a NameAndID object
+                            NameAndID newNameAndID = new NameAndID(name, uid);
 
                             // use a Map for multiple path updates in one trip to database
                             Map<String, Object> userProfileUpdates = new HashMap<String, Object>();
                             userProfileUpdates.put("users/" + uid, newUser);
-                            userProfileUpdates.put("usernames/" + username, uid);
+                            userProfileUpdates.put("usernames/" + username, newNameAndID);
+                            userProfileUpdates.put("userIDs_to_names/" + uid, name);
 
 
                             // use updateChildren instead of setValue! setValue causes an error for pathway to the key

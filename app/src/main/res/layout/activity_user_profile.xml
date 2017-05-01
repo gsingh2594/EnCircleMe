@@ -18,336 +18,306 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottomBar"
-        android:layout_below="@id/profile_toolbar">
+        android:layout_below="@id/profile_toolbar"
+        android:id="@+id/scrollView2">
 
-        <LinearLayout
-            android:id="@+id/LinearLayout01"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/cover_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop" />
+
+            <!--<ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_below="@+id/cover_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-60dp"
+                android:background="@drawable/circle_with_border"
+                android:elevation="5dp"
+                android:padding="20dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_profile_photo" />-->
 
             <RelativeLayout
+                android:id="@+id/profile_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+                android:layout_height="170dp"
+                android:background="@color/colorPrimary"
+                android:elevation="2dp"
+                android:paddingBottom="2dp"
+                android:paddingTop="65dp"
+                android:layout_alignTop="@+id/view2"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="74dp">
+                <!--
                 <ImageView
-                    android:id="@+id/cover_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scaleType="centerCrop" />
+                    android:id="@+id/add_friend_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/ic_add_user"/>
+                -->
 
-                <!--<ImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_below="@+id/cover_image"
+                <TextView
+                    android:id="@+id/user_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textColor="@android:color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-60dp"
-                    android:background="@drawable/circle_with_border"
-                    android:elevation="5dp"
-                    android:padding="20dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/default_profile_photo" />-->
+                    android:layout_marginTop="50dp" />
 
-                <RelativeLayout
-                    android:id="@+id/profile_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="170dp"
-                    android:background="@color/colorPrimary"
-                    android:elevation="9dp"
-                    android:paddingBottom="2dp"
-                    android:paddingTop="65dp"
-                    android:layout_below="@+id/cover_image"
-                    android:layout_alignParentStart="true">
-                    <!--
-                    <ImageView
-                        android:id="@+id/add_friend_icon"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="16dp"
-                        android:src="@drawable/ic_add_user"/>
-                    -->
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="Username"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/user_profile_name" />
 
-                    <TextView
-                        android:id="@+id/user_profile_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Name"
-                        android:textColor="@android:color/black"
-                        android:textSize="20dp"
-                        android:textStyle="bold"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="39dp" />
+            </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:text="Username"
-                        android:layout_marginTop="10dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="14dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/user_profile_name" />
-
-                </RelativeLayout>
+            <android.support.v7.widget.CardView
+                android:id="@+id/view2"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_below="@id/cover_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-90dp"
+                android:elevation="12dp"
+                android:innerRadius="0dp"
+                android:shape="ring"
+                android:thicknessRatio="1.9"
+                app:contentPadding="5dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="90dp"
+                app:cardElevation="20dp">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/view2"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:layout_below="@id/cover_image"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-90dp"
-                    android:elevation="12dp"
-                    android:innerRadius="0dp"
-                    android:shape="ring"
-                    android:thicknessRatio="1.9"
-                    app:contentPadding="5dp"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardCornerRadius="90dp"
-                    app:cardElevation="20dp">
-
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/view2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_centerHorizontal="true"
-                        app:cardCornerRadius="85dp">
-
-                        <ImageView
-                            android:id="@+id/profile_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/default_profile_photo" />
-                    </android.support.v7.widget.CardView>
-                </android.support.v7.widget.CardView>
-
-
-                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/profile_layout"
-                    android:elevation="15dp">
+                    android:layout_centerHorizontal="true"
+                    app:cardCornerRadius="85dp">
 
-                    <RelativeLayout
+                    <ImageView
+                        android:id="@+id/profile_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@id/profile_layout"
-                        android:layout_margin="15dp">
-
-                        <TextView
-                            android:id="@+id/email_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Email"
-                            android:textColor="@color/bb_inActiveBottomBarItemColor"
-                            android:textSize="14dp"
-                            android:layout_marginTop="11dp"
-                            android:layout_below="@+id/user_profile_bio"
-                            android:layout_alignParentStart="true" />
-
-                        <ImageView
-                            android:id="@+id/email_back"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:layout_alignParentStart="true"
-                            android:layout_below="@+id/email_text"
-                            android:elevation="2dp" />
-
-                        <TextView
-                            android:id="@+id/aboutme_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:text="About me"
-                            android:elevation="3dp"
-                            android:textColor="@color/bb_inActiveBottomBarItemColor"
-                            android:textSize="14dp" />
-
-                        <TextView
-                            android:id="@+id/user_profile_bio"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="About me"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black"
-                            android:textSize="16dp"
-                            android:textStyle="bold"
-                            android:layout_below="@+id/aboutme_text"
-                            android:layout_alignParentStart="true" />
-
-                        <ImageView
-                            android:id="@+id/edit_bio_icon"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignTop="@+id/user_profile_bio"
-                            android:layout_below="@+id/user_profile_bio"
-                            android:layout_marginEnd="11dp"
-                            android:elevation="0dp"
-                            android:src="@drawable/edit" />
-
-                        <TextView
-                            android:id="@+id/email"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/email_back"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginBottom="10dp"
-                            android:elevation="3dp"
-                            android:text="Email"
-                            android:textColor="@android:color/black"
-                            android:textSize="16dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/phone_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_below="@+id/email_back"
-                            android:layout_marginTop="10dp"
-                            android:text="Phone #"
-                            android:textColor="@color/bb_inActiveBottomBarItemColor"
-                            android:textSize="14dp" />
-
-                        <ImageView
-                            android:id="@+id/phone_back"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:elevation="2dp"
-                            android:layout_below="@+id/phone_text"
-                            android:layout_alignParentStart="true" />
-
-                        <TextView
-                            android:id="@+id/phone_number"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/phone_back"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginTop="10dp"
-                            android:elevation="3dp"
-                            android:text="Phone Number"
-                            android:textColor="@android:color/black"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/interest_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="13dp"
-                            android:text="Interests"
-                            android:textColor="@color/bb_inActiveBottomBarItemColor"
-                            android:textSize="14dp"
-                            android:layout_below="@+id/phone_back"
-                            android:layout_alignParentStart="true" />
-
-
-                        <HorizontalScrollView
-                            android:id="@+id/relativeLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_below="@+id/interest_text"
-                            android:layout_alignParentStart="true">
-
-                            <LinearLayout
-                                android:id="@+id/interests_linearlayout"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:paddingBottom="1dp">
-
-                                <TextView
-                                    android:id="@+id/blank_text"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_below="@+id/interests_linearlayout"
-                                    android:textColor="@color/bb_inActiveBottomBarItemColor"
-                                    android:textSize="@dimen/text_large"
-                                    android:textStyle="bold" />
-
-
-                                <!--    Dummies for displaying interests
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest1" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_marginBottom="3dp"
-                            android:layout_marginTop="3dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest2" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest3"
-                            android:textAlignment="textStart" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_marginBottom="3dp"
-                            android:layout_marginTop="3dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest4" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:background="#fff"
-                            android:clickable="true"
-                            android:elevation="4dp"
-                            android:padding="20dp"
-                            android:text="Interest5" />
-                        -->
-                            </LinearLayout>
-
-                            <!--
-                    <ListView
-                        android:id="@+id/user_profile_interests_listview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                    </ListView>
-                    -->
-                        </HorizontalScrollView>
-                    </RelativeLayout>
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/default_profile_photo" />
                 </android.support.v7.widget.CardView>
-            </RelativeLayout>
-        </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:contentPadding="15dp"
+                android:elevation="5dp"
+                android:layout_margin="5dp"
+                android:id="@+id/card_bio"
+                android:layout_below="@+id/profile_layout">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/bio_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:elevation="0dp"
+                        android:src="@drawable/info"
+                        android:layout_alignParentTop="true"
+                        android:layout_toStartOf="@+id/user_bio" />
+
+                    <TextView
+                        android:id="@+id/user_bio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="About me"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:paddingTop="1dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/user_profile_bio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="About me..."
+                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/user_bio"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/edit_bio_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:elevation="0dp"
+                        android:src="@drawable/edit"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true" />
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                app:cardCornerRadius="4dp"
+                app:contentPadding="15dp"
+                android:elevation="15dp"
+                android:layout_below="@+id/card_bio"
+                android:id="@+id/card_email">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/edit_bio_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:elevation="0dp"
+                        android:src="@drawable/mail"
+                        android:layout_alignParentLeft="@+id/email"/>
+
+                    <TextView
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="3dp"
+                        android:text="Email"
+                        android:textColor="@android:color/black"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="10dp"
+                        android:layout_alignBottom="@+id/edit_bio_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/edit_bio_icon" />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_phone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                app:cardCornerRadius="4dp"
+                app:contentPadding="15dp"
+                android:elevation="15dp"
+                android:layout_below="@+id/card_email">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/edit_bio_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentLeft="@+id/phone_number"
+                        android:elevation="0dp"
+                        android:src="@drawable/ic_contact_phone_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/phone_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="3dp"
+                        android:text="Phone Number"
+                        android:paddingBottom="2dp"
+
+                        android:textColor="@android:color/black"
+                        android:paddingLeft="10dp"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_alignBottom="@+id/edit_bio_icon"
+                        android:layout_toEndOf="@+id/edit_bio_icon" />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_interest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:cardCornerRadius="4dp"
+                app:contentPadding="5dp"
+                android:layout_marginBottom="5dp"
+                android:elevation="15dp"
+                android:layout_below="@+id/card_phone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/interest_title">
+
+                    <ImageView
+                        android:id="@+id/interest_icon"
+                        android:layout_marginLeft="10dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:elevation="0dp"
+                        android:src="@drawable/star_like_interest" />
+
+                    <TextView
+                        android:id="@+id/interest_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Interests"
+                        android:textColor="@android:color/black"
+                        android:textSize="16dp"
+                        android:layout_marginLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:textStyle="bold"
+                        android:layout_toEndOf="@+id/interest_icon" />
+
+                <LinearLayout
+                    android:id="@+id/interests_linearlayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/interests_linearlayout">
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/interests_linearlayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/interest_text">
+            </LinearLayout>
+
+                </RelativeLayout>
+        </android.support.v7.widget.CardView>
+        </RelativeLayout>
     </ScrollView>
 
 

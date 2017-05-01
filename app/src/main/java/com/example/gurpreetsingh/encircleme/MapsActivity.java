@@ -217,7 +217,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(300);
+        bottomSheetBehavior.setPeekHeight(250);
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
@@ -236,7 +236,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);*/
                 } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
+                    Intent events = new Intent(getApplicationContext(), EventsTabActivity.class);
                     startActivity(events);
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
@@ -371,7 +371,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(location.latitude, location.longitude));
         markerOptions.title(key);   // For retrieving later
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.marker_encircleme)));
         //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
         mGoogleMap.addMarker(markerOptions);
     }
@@ -431,6 +431,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         + place.getPhoneNumber() + "\n"
                         + place.getWebsiteUri() + "\n"
                         + place.getRating();
+
                 //mAutoCompleteFragment.setText(placeDetailsStr);*//*
                 String placeName = (String) place.getName();
                 //String locale = (Locale) place.getLocale();
@@ -447,7 +448,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.pin))));
                         // .icon(BitmapDescriptorFactory.fromResource((person_pin))));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
             }
         } else if (resultCode == Activity.RESULT_OK) {
             MarkerOptions markerOptions = data.getParcelableExtra("marker");
@@ -546,6 +547,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        //LatLng new_york = new LatLng(40.758879, -73.985110);
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
@@ -608,16 +612,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void updateBottomSheetContent(Place place) {
         TextView name = (TextView) bottomSheet.findViewById(R.id.detail_name);
         TextView address = (TextView) bottomSheet.findViewById(R.id.detail_address);
-      TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
-/*        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
+        TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
+        TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
         TextView rating = (TextView) bottomSheet.findViewById(R.id.detail_rating);
-        TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
-        TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);*/
+        //TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
+        //TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);
+
         name.setText(place.getName());
         address.setText(place.getAddress());
-        number.setText(place.getPhoneNumber());
-        //number.setText(place.)
-
+        if(place.getPhoneNumber() !=null)
+            number.setText(place.getPhoneNumber());
+        if (place.getWebsiteUri() != null)
+            website.setText(place.getWebsiteUri().toString());
+        if (place.getRating() != 0)
+            rating.setText(String.valueOf(place.getRating()));
+/*        if (place.getPriceLevel() != 0)
+            price.setText(Integer.toString(place.getPriceLevel()));
+/*
+        if (place.getPlaceTypes() != null)
+            type.setText(place.getPlaceTypes().toString());
+*/
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -673,17 +687,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCurrLocationMarker.remove();
         }
 
+
+        //LatLng new_york = new LatLng(40.758879, -73.985110);
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
+        //userLocation = new_york;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
         //move map camera only the first time location is received
         if(!locationInitialized) {
-            CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+            CameraUpdate center=CameraUpdateFactory.newLatLng(latLng);
             CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
             mGoogleMap.moveCamera(center);
             mGoogleMap.animateCamera(zoom);
             //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             //mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-            locationInitialized = false;
+            locationInitialized = true;
         }
         // Reload events from DB based on new location
         loadEventsFromDB();

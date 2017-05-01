@@ -6,12 +6,11 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -23,7 +22,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class EventListActivity extends AppCompatActivity {
+public class EventListActivity extends Fragment {
 
 
     FirebaseAuth auth;
@@ -42,9 +40,13 @@ public class EventListActivity extends AppCompatActivity {
     private HashMap<String, Event> eventsInfo;
 
     private BottomBar bottomBar;
+    private BottomBar topBar;
 
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_event_list, container, false);
+        ListView listView = (ListView) view.findViewById(R.id.events_listview);
     //ArrayList<String> list=new ArrayList<>();
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
@@ -52,11 +54,12 @@ public class EventListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.eventlist_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("EnCircleMe Events");
+        actionBar.setTitle("EnCircleMe Events");*/
 
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         eventsInfo = new HashMap<String, Event>();
+
 /*        listview=(ListView)findViewById(R.id.listview);
         final ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,list);
         listview.setAdapter(adapter);
@@ -83,7 +86,7 @@ public class EventListActivity extends AppCompatActivity {
             }
         });*/
 
-        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        /*bottomBar = (BottomBar) view.findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_alerts);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -97,19 +100,35 @@ public class EventListActivity extends AppCompatActivity {
                 } else if (tabId == R.id.tab_map) {
                     Intent map = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(map);
-/*                } else if (tabId == R.id.tab_alerts) {
+*//*                } else if (tabId == R.id.tab_alerts) {
                     Intent events = new Intent(getApplicationContext(), EventListActivity.class);
-                    startActivity(events);*/
+                    startActivity(events);*//*
                 } else if (tabId == R.id.tab_chats) {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
                     startActivity(events);
                 }
             }
-        });
+        });*/
+
+        /*topBar = (BottomBar) findViewById(R.id.topBar);
+        topBar.setDefaultTab(R.id.event_info);
+        topBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                if (tabId == R.id.event_info) {
+                    Intent profile = new Intent(getApplicationContext(), EventListActivity.class);
+                    startActivity(profile);
+                } else if (tabId == R.id.event_chat) {
+                    Intent friends = new Intent(getApplicationContext(), SearchActivity.class);
+                    startActivity(friends);
+                }
+        }
+    });*/
+        return view;
     }
 
     @Override
-    protected void onStart(){
+    public void onStart(){
         super.onStart();
         Log.d("onStart", "starting the activity");
         loadEventsList();
@@ -247,8 +266,8 @@ public class EventListActivity extends AppCompatActivity {
                     Collections.sort(eventsList, eventDatesAndTimesComparator);
 
                     // Find listview from layout and initialize with an adapter
-                    final ListView listView = (ListView) findViewById(R.id.events_listview);
-                    simpleAdapter = new SimpleAdapter(EventListActivity.this, eventsList, R.layout.events_list_items,
+                    final ListView listView = (ListView) getView().findViewById(R.id.events_listview);
+                    simpleAdapter = new SimpleAdapter(EventListActivity.this.getActivity().getApplicationContext(), eventsList, R.layout.events_list_items,
                             new String[]{"startDate", "startTime", "name", "description"},
                             new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about});
                     listView.setAdapter(simpleAdapter);
@@ -258,18 +277,18 @@ public class EventListActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String eventKey = eventsList.get(position).get("eventKey");
-                            Intent fullEventInfo = new Intent(EventListActivity.this, EventInfoActivity.class);
+                            Intent fullEventInfo = new Intent(EventListActivity.this.getActivity().getApplicationContext(), EventsInfoTabActivity.class);
                             fullEventInfo.putExtra("eventKey", eventKey);
                             startActivity(fullEventInfo);
                         }
                     });
                 }
             }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+            }
+        });
     }
 
 
@@ -334,9 +353,10 @@ public class EventListActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        bottomBar.setDefaultTab(R.id.tab_alerts);
+        //bottomBar.setDefaultTab(R.id.tab_alerts);
+        //topBar.setDefaultTab(R.id.event_info);
     }
 
 

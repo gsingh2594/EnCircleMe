@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,7 +51,10 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     private TextView profileName;
     private TextView profileBio;
     private TextView profileUsername;
-    private ImageView addFriendIcon, alreadyFriendsIcon;
+    private TextView profileEmail;
+    private TextView profilePhone;
+    private ImageView addFriendIcon, alreadyFriendsIcon, acceptFriendRequestIcon;
+    private CardView emailCard, phoneCard;
     private byte[] profileImageBytes;
     private byte[] coverImageBytes;
     private ImageView profileImage;
@@ -74,11 +78,17 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
 
         profileName = (TextView) findViewById(R.id.user_profile_name);
         profileBio = (TextView) findViewById(R.id.user_profile_bio);
+        profileEmail = (TextView) findViewById(R.id.email);
+        profilePhone = (TextView) findViewById(R.id.phone_number);
         addFriendIcon = (ImageView) findViewById(R.id.add_friend_icon);
         alreadyFriendsIcon = (ImageView) findViewById(R.id.already_friends_icon);
+        acceptFriendRequestIcon = (ImageView)findViewById(R.id.accept_friend_request_icon);
         profileImage = (ImageView) findViewById(R.id.profile_image);
         coverImage = (ImageView) findViewById(R.id.cover_image);
         profileUsername = (TextView) findViewById(R.id.username);
+
+        emailCard = (CardView) findViewById(R.id.card_email);
+        phoneCard = (CardView) findViewById(R.id.card_phone);
 
         loadUserProfile();
         loadUserProfileImage();
@@ -94,8 +104,9 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                             // Current user is already friends with this user
                             showAsFriend();
                         else
-                            // Current user is not friends with this user -> Show as addable friend
-                            showAsAddableFriend();
+                            // Current user is not friends with this user
+                            // Check if current user has a pending friend request from this user
+                            checkForPendingFriendRequest();
                     }
 
                     @Override
@@ -104,6 +115,8 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                                 + databaseError.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
+
+
 
 /*        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_profile);
@@ -137,11 +150,14 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     // Load user profile from DB
     private void loadUserProfile(){
         final LinearLayout interestsLinearLayout = (LinearLayout) findViewById(R.id.interests_linearlayout);
+        final LinearLayout interestsLinearLayout2 = (LinearLayout) findViewById(R.id.interests_linearlayout2);
         dbUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 profileName.setText(user.getName());
+                profileEmail.setText(user.getEmail());
+                profilePhone.setText(user.getPhone());
                 profileUsername.setText("Username: " + user.getUsername());
                 if(user.getBio()!=null)
                     profileBio.setText(user.getBio());
@@ -149,21 +165,45 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                     ArrayList<String> userInterests = user.getInterests();
                     for (int i = 0; i < userInterests.size(); i++) {
                         // Create and add a new TextView to the LinearLayout
-                        TextView interestTextView = new TextView(ViewOtherUserProfileActivity.this);
-                        interestTextView.getMeasuredHeight();
-                        int marginSize = convertDPtoPX(5);
+                        ImageView interestImageView= new ImageView(ViewOtherUserProfileActivity.this);
+                        interestImageView.getMeasuredHeight();
+                        int marginSize = convertDPtoPX(1);
                         RelativeLayout.LayoutParams layoutParams =
                                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
-                        interestTextView.setLayoutParams(layoutParams);
-                        interestTextView.setTextSize(15);
-                        interestTextView.setTextColor(Color.BLACK);
-                        interestTextView.setText(userInterests.get(i));
-                        interestTextView.setElevation((float) convertDPtoPX(2));
+                        interestImageView.setLayoutParams(layoutParams);
+                        /*interestImageView.setTextSize(15);
+                        interestImageView.setTextColor(Color.BLACK);
+                        interestImageView.setText(userInterests.get(i));*/
+                        interestImageView.setElevation((float) convertDPtoPX(2));
                         int paddingSize = convertDPtoPX(10);
-                        interestTextView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
-                        interestTextView.setBackgroundColor(Color.WHITE);
-                        interestsLinearLayout.addView(interestTextView);
+                        interestImageView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+                        interestImageView.setBackgroundColor(Color.WHITE);
+                        switch (userInterests.get(i)) {
+                            case "Movie Theatres":
+                                interestImageView.setBackgroundResource(R.drawable.movies);
+                                break;
+                            case "Art Gallery":
+                                interestImageView.setBackgroundResource(R.drawable.artgallery);
+                                break;
+                            case "Cafe":
+                                interestImageView.setBackgroundResource(R.drawable.cafe);
+                                break;
+                            case "Bars":
+                                interestImageView.setBackgroundResource(R.drawable.bars);
+                                break;
+                            case "Restaurants":
+                                interestImageView.setBackgroundResource(R.drawable.restaurants);
+                                break;
+                            case "Department Stores":
+                                interestImageView.setBackgroundResource(R.drawable.deptstores);
+                                break;
+                        }
+                        if (i < 3){
+                            interestsLinearLayout.addView(interestImageView);
+                        }
+                        else
+                            interestsLinearLayout2.addView(interestImageView);
                     }
                 }
             }
@@ -174,7 +214,6 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
             }
         });
     }
-
 
     // load user profile image from Firebase Storage
     private void loadUserProfileImage() {
@@ -225,9 +264,37 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
         });
     }
 
+    // Check to see if current user has received a pending friend request from this user
+    private void checkForPendingFriendRequest(){
+        DatabaseReference friendRequestsRef = database.getReference("friend_requests/" + currentUserID + "/" + userID);
+        friendRequestsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            // Pending friend request exists --> Display icon for accepting it
+                            showAsAcceptableFriendRequest();
+                        }
+                        else
+                            // No friend request --> show as an addable friend (can send a friend request)
+                            // because user is not a friend and no pending friend request received
+                            showAsAddableFriend();
+                    }
 
-    // Method to display the user profile with an addFriendIcon
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+
+    // Method to display the user profile with an addFriendIcon for sending a friend request
     private void showAsAddableFriend(){
+        // Hide other icons if visible
+        acceptFriendRequestIcon.setVisibility(View.GONE);
+        alreadyFriendsIcon.setVisibility(View.GONE);
+        emailCard.setVisibility(View.GONE);
+        phoneCard.setVisibility(View.GONE);
         addFriendIcon.setVisibility(View.VISIBLE);
         // add friend option when clicked
         addFriendIcon.setOnClickListener(new View.OnClickListener() {
@@ -262,6 +329,11 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
 
     // Method to display user profile as a current friend, and option to remove friend
     private void showAsFriend(){
+        //Hide other icons if visible
+        addFriendIcon.setVisibility(View.GONE);
+        acceptFriendRequestIcon.setVisibility(View.GONE);
+        emailCard.setVisibility(View.VISIBLE);
+        phoneCard.setVisibility(View.VISIBLE);
         alreadyFriendsIcon.setVisibility(View.VISIBLE);
         // remove friend option when clicked
         alreadyFriendsIcon.setOnClickListener(new View.OnClickListener() {
@@ -289,9 +361,10 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 Toast.makeText(ViewOtherUserProfileActivity.this, "Friend removed!", Toast.LENGTH_LONG).show();
 
-                                // Change the icon to show that the user is no longer a friend
+                                /*// Change the icon to show that the user is no longer a friend
                                 alreadyFriendsIcon.setVisibility(View.GONE);
-                                addFriendIcon.setVisibility(View.VISIBLE);
+                                addFriendIcon.setVisibility(View.VISIBLE); */      // visibility handled in showAsAddableFriend()
+                                showAsAddableFriend(); // Show as addable friend to send a friend request again
                             }
                         });
                     }
@@ -302,13 +375,116 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     }
 
 
+    private void showAsAcceptableFriendRequest() {
+        acceptFriendRequestIcon.setVisibility(View.VISIBLE);
+        acceptFriendRequestIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder acceptDeclineDialog = new AlertDialog.Builder(ViewOtherUserProfileActivity.this);
+
+                // User accepts friend request
+                acceptDeclineDialog.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Retrieve current user's username
+                        DatabaseReference usernamesRef = database.getReference("usernames");
+                        Log.d("usernamesRef.toString()", usernamesRef.toString());
+                        usernamesRef.orderByChild("id").equalTo(currentUserID)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        String currentUsername = "";
+                                        Log.d("onDataChange", "about to check for dataSnapshot.exists()");
+                                        if (dataSnapshot.hasChildren()) {
+                                            Log.d("onDataChange", "snapshot exists!");
+
+                                            for (DataSnapshot user : dataSnapshot.getChildren())
+                                                // retrieve username
+                                                currentUsername = user.getKey();
+
+                                            final String currentUsernameFinal = currentUsername;
+                                            Log.d("onDataChange", "stored username to variable");
+
+                                            // Retrieve the viewed user's username
+                                            DatabaseReference otherUsernameRef = database.getReference("usernames");
+                                            otherUsernameRef.orderByChild("id").equalTo(userID)
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        String otherUserName;
+
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            if (dataSnapshot.hasChildren()) {
+                                                                Log.d("onDataChange", "snapshot exists!");
+                                                                for (DataSnapshot user : dataSnapshot.getChildren())
+                                                                    // store the other username
+                                                                    otherUserName = user.getKey();
+
+                                                                // Update DB in both users' "friends" location and delete the request
+                                                                DatabaseReference updatesRef = database.getReference();
+                                                                HashMap<String, Object> friendsUpdates = new HashMap<String, Object>();
+                                                                friendsUpdates.put("friends/" + currentUserID + "/" + userID, otherUserName);
+                                                                friendsUpdates.put("friends/" + userID + "/" + currentUserID, currentUsernameFinal);
+                                                                friendsUpdates.put("friend_requests/" + currentUserID + "/" + userID, null);    // null value deletes the request
+                                                                updatesRef.updateChildren(friendsUpdates, new DatabaseReference.CompletionListener() {
+                                                                    @Override
+                                                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                                                        Toast.makeText(ViewOtherUserProfileActivity.this, "You are now friends!", Toast.LENGTH_LONG).show();
+                                                                        // Show as a friend now that the request is accepted
+                                                                        showAsFriend();
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                        } else {
+                                            Log.d("retrieve username", "could not load usernme");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
+                });
+
+                // User declines friend request
+                acceptDeclineDialog.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Delete friend request from DB
+                        DatabaseReference friendRequestsRef = database.getReference("friend_requests");
+                        friendRequestsRef.child(currentUserID).child(userID).removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                Toast.makeText(ViewOtherUserProfileActivity.this, "Friend request removed.", Toast.LENGTH_LONG).show();
+                                // Show as addable friend to send a friend request
+                                showAsAddableFriend();
+
+                            }
+                        });
+                    }
+                });
+                acceptDeclineDialog.setMessage("Accept friend request from " + profileName.getText() + "?");
+                acceptDeclineDialog.create();
+                acceptDeclineDialog.show();
+            }
+        });
+    }
+
 
     // Method to update the friend_requests in the DB
     private void sendFriendRequest(){
         final DatabaseReference friendRequestsRef = database.getReference("friend_requests");
         Log.d("onDataChange", "about to check if friend request exists");
 
-        // First, check if there is already a pending friend request in DB
+        // First, check if a friend request has already been sent to this user and is pending (still stored in DB)
         friendRequestsRef.child(userID).child(currentUserID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -328,19 +504,20 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                     // Retrieve current user's username
                     DatabaseReference usernamesRef = database.getReference("usernames");
                     Log.d("usernamesRef.toString()", usernamesRef.toString());
-                    usernamesRef.orderByValue().equalTo(currentUserID)
+                    usernamesRef.orderByChild("id").equalTo(currentUserID)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Log.d("onDataChange", "about to check for dataSnapshot.exists()");
                             if (dataSnapshot.hasChildren()) {
                                 Log.d("onDataChange", "snapshot exists!");
-
                                 // variable to store current user's username
                                 String currentUserUsername = null;
-                                for(DataSnapshot user: dataSnapshot.getChildren())
+
+                                for(DataSnapshot user :  dataSnapshot.getChildren())
                                     // retrieve username
                                     currentUserUsername = user.getKey();
+
                                 Log.d("onDataChange", "stored username to variable");
 
                                 if(currentUserUsername!=null) {
