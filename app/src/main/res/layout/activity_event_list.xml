@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/bottomBar"
             android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" />
+            android:paddingRight="5dp" />
     </LinearLayout>
 
 <!--    <com.roughike.bottombar.BottomBar

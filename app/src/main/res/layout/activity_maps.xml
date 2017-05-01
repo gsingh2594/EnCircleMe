@@ -52,8 +52,8 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/map_toolbar"
-            android:layout_above="@id/bottomBar"
+            android:layout_below="@+id/map_toolbar"
+            android:layout_above="@+id/bottomBar"
             tools:context="com.example.gurpreetsingh.encircleme.MapsActivity" />
 
         <com.roughike.bottombar.BottomBar
@@ -95,7 +95,7 @@
                 android:layout_weight="1.05"
                 android:padding="5dp"
                 android:text="Testing Title"
-                android:textColor="@android:color/black"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -110,12 +110,16 @@
                 android:id="@+id/detail_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/detail_name"
+                android:layout_below="@+id/detail_name"
                 android:layout_marginLeft="10dp"
                 android:padding="5dp"
                 android:text="detail_address"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:autoLink="all"
+                android:textColorLink="#03A9F4"
+                android:linksClickable="true"
+                android:enabled="true"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -127,12 +131,16 @@
                 android:id="@+id/detail_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/detail_address"
+                android:layout_below="@+id/detail_address"
                 android:layout_marginLeft="10dp"
                 android:padding="5dp"
                 android:text="Phone Number"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:autoLink="all"
+                android:textColorLink="#03A9F4"
+                android:linksClickable="true"
+                android:enabled="true"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -144,30 +152,34 @@
                 android:id="@+id/detail_website"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/detail_phone"
+                android:layout_below="@+id/detail_phone"
                 android:layout_marginLeft="10dp"
                 android:padding="5dp"
                 android:text="Website URL"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:autoLink="all"
+                android:textColorLink="#03A9F4"
+                android:linksClickable="true"
+                android:enabled="true"/>
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Price level:"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/detail_rating"
+                android:id="@+id/detail_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/detail_website"
+                android:layout_below="@+id/detail_rating"
                 android:layout_marginLeft="10dp"
                 android:padding="5dp"
-                android:text="Ratings"
+                android:text="Price level"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
-
+-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -175,17 +187,17 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/detail_price"
-                android:layout_width="match_parent"
+                android:id="@+id/detail_rating"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/detail_rating"
+                android:layout_below="@+id/detail_website"
                 android:layout_marginLeft="10dp"
                 android:padding="5dp"
-                android:text="Price level"
+                android:text="Ratings"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Place Type:"
@@ -195,12 +207,12 @@
                 android:id="@+id/detail_placetype"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/detail_price"
+                android:layout_below="@+id/detail_price"
                 android:layout_marginLeft="10dp"
                 android:padding="5dp"
                 android:text="Place type"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp" />-->
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
     <!--

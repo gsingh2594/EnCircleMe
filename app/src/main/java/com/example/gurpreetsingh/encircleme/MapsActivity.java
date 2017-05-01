@@ -448,7 +448,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.pin))));
                         // .icon(BitmapDescriptorFactory.fromResource((person_pin))));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
             }
         } else if (resultCode == Activity.RESULT_OK) {
             MarkerOptions markerOptions = data.getParcelableExtra("marker");
@@ -547,6 +547,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        //LatLng new_york = new LatLng(40.758879, -73.985110);
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
@@ -612,17 +615,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView number = (TextView) bottomSheet.findViewById(R.id.detail_phone);
         TextView website = (TextView) bottomSheet.findViewById(R.id.detail_website);
         TextView rating = (TextView) bottomSheet.findViewById(R.id.detail_rating);
-        TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
-        TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);
+        //TextView price = (TextView) bottomSheet.findViewById(R.id.detail_price);
+        //TextView type = (TextView) bottomSheet.findViewById(R.id.detail_placetype);
 
         name.setText(place.getName());
         address.setText(place.getAddress());
-        number.setText(place.getPhoneNumber());
-        website.setText(place.getWebsiteUri().toString());
-        rating.setText(Float.toString(place.getRating()));
-        price.setText(Integer.toString(place.getPriceLevel()));
-        type.setText(place.getPlaceTypes().toString());
-
+        if(place.getPhoneNumber() !=null)
+            number.setText(place.getPhoneNumber());
+        if (place.getWebsiteUri() != null)
+            website.setText(place.getWebsiteUri().toString());
+        if (place.getRating() != 0)
+            rating.setText(String.valueOf(place.getRating()));
+/*        if (place.getPriceLevel() != 0)
+            price.setText(Integer.toString(place.getPriceLevel()));
+/*
+        if (place.getPlaceTypes() != null)
+            type.setText(place.getPlaceTypes().toString());
+*/
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -678,11 +687,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCurrLocationMarker.remove();
         }
 
+
+        //LatLng new_york = new LatLng(40.758879, -73.985110);
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
+        //userLocation = new_york;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
         //move map camera only the first time location is received
         if(!locationInitialized) {
-            CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+            CameraUpdate center=CameraUpdateFactory.newLatLng(latLng);
             CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
             mGoogleMap.moveCamera(center);
             mGoogleMap.animateCamera(zoom);
