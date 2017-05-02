@@ -58,7 +58,9 @@ public class FriendsActivity extends AppCompatActivity {
 
     long numOfFriends;
     final ArrayList<HashMap<String, String>> friendsList = new ArrayList<HashMap<String,String>>();
+    final ArrayList<String> friendsIDList = new ArrayList<>();
     final HashMap<String, HashMap<String, String>> friendsMap = new HashMap<>();
+    final ArrayList<HashMap<String, String>> friendsNameUsernameList = new ArrayList<>();
 
     SimpleAdapter simpleAdapter;
     byte[] profileImageBytes;
@@ -174,12 +176,13 @@ public class FriendsActivity extends AppCompatActivity {
                             friendInfo.put("userID", userID);
                             friendInfo.put("username", username);
                             friendsMap.put(friend.getKey(), friendInfo);
+                            friendsIDList.add(friend.getKey());
                             friendsList.add(friendInfo);
                             loadUserNameAndID(username);
                             //loadUserProfileImage(userID, username);
                         }
                     }
-                    Log.d("loadFriendsList", "no friends");
+                    Log.d("loadFriendsList", "current user has friends!");
                     // Hide the "no friends" views
                     neutralFace.setVisibility(View.GONE);
                     noFriendsTextView.setVisibility(View.GONE);
@@ -234,14 +237,22 @@ public class FriendsActivity extends AppCompatActivity {
 
     // Loads a user's name and id in a NameAndID object for a given username
     private void loadUserNameAndID(final String username){
+        Log.d("loadUserNameAndID", "username = " + username);
         DatabaseReference usernamesRef= database.getReference("usernames");
         usernamesRef.orderByKey().equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    NameAndID userNameAndID = dataSnapshot.getValue(NameAndID.class);
-                    Log.d("loadUserNameAndID", "name and ID loaded: " +  userNameAndID.toString());
-                    loadUserProfileImage(userNameAndID, username);
+                    for(DataSnapshot result : dataSnapshot.getChildren()) {
+                        NameAndID userNameAndID = result.getValue(NameAndID.class);
+                        HashMap<String,String> hashMap = new HashMap<>();
+                        hashMap.put("nameAndUsername", userNameAndID.getName() + " (" + username + ")");
+                        friendsNameUsernameList.add(hashMap);
+                        Log.d("loadUserNameAndID", "name and ID loaded: " + userNameAndID.toString());
+                        if(friendsNameUsernameList.size() == numOfFriends)
+                            displaySimpleResultsList(friendsNameUsernameList, friendsIDList);
+                        loadUserProfileImage(userNameAndID, username);
+                    }
                 }
             }
 
@@ -257,6 +268,7 @@ public class FriendsActivity extends AppCompatActivity {
     private void loadUserProfileImage(NameAndID userNameAndID, final String username){
         final String userID = userNameAndID.getID();
         final String name = userNameAndID.getName();
+        Log.d("loadUserProfileImage", "userID = " + userID + "\nname = " + name);
         Log.d("load profile pic", "about to load from storage");
         StorageReference profilePicStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
         profilePicStorageRef.getBytes(1024*1024*5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -290,6 +302,43 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
 
+    // populates the listview with results that have a default icon. (No image displayed)
+    private void displaySimpleResultsList(final ArrayList<HashMap<String,String>> nameAndUsernameMap,
+                                          final ArrayList<String> userIDList){
+        Log.d("displaySimpleResults", "entering method");
+        final ListView listView = (ListView) findViewById(R.id.friends_listview);
+        SimpleAdapter simpleAdapter = new SimpleAdapter(FriendsActivity.this, nameAndUsernameMap,
+                R.layout.friends_search_list_items, new String[]{"nameAndUsername"}, new int[]{R.id.friends_search_text_view} );
+        listView.setAdapter(simpleAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("clicked on item", listView.getItemAtPosition(position).toString());
+                HashMap userInfo = nameAndUsernameMap.get(position);
+                String username = userInfo.get("nameAndUsername").toString();
+                Log.d("clicked on item", "username: " + username);
+
+                //Toast.makeText(AddFriendSearchActivity.this, "Clicked on " + Integer.toString(view.getId()), Toast.LENGTH_LONG).show();
+                Toast.makeText(FriendsActivity.this, "User: " + username, Toast.LENGTH_LONG).show();
+
+                String userID = userIDList.get(position);
+                //String uID = resultsList.get(position).get("username");
+                Log.d("userID: ", userID);
+
+                if (userID.equals(currentUserID)) {
+                    // user selects themself. Take them to their profile.
+                    Intent userProfile = new Intent(FriendsActivity.this, UserProfileActivity.class);
+                    startActivity(userProfile);
+                } else {
+                    // user can view other user profile
+                    Intent viewOtherUserProfile = new Intent(FriendsActivity.this, ViewOtherUserProfileActivity.class);
+                    viewOtherUserProfile.putExtra("userID", userID);
+                    startActivity(viewOtherUserProfile);
+                }
+            }
+        });
+    }
 
     // Sorts the list of users with images and displays them in the ListView with an adapter
     private void displayListOfFriends(){

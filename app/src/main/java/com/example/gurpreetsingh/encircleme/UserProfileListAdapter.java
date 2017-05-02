@@ -26,7 +26,7 @@ import java.util.Map;
  * Created by Brayden on 4/28/2017.
  *
  * This class should be used to display user's in a ListView where
- * each row contains a cropped circle of their profile image and their
+ * each row contains a cropped circle of their profile image with their
  * name and username displayed on the right side. If names are not provided,
  */
 
@@ -76,6 +76,7 @@ public class UserProfileListAdapter extends BaseAdapter {
             // Get cropped circle Bitmap of profile image
             profileImage = getClip(thisUser.getProfileImage());
             profileImageView.setImageBitmap(profileImage);
+            profileImageView.setBackground(null);
         }else{
             // No profile image --> default icon displayed in the list (defined in xml layout)
         }
@@ -102,7 +103,9 @@ public class UserProfileListAdapter extends BaseAdapter {
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
+                (bitmap.getWidth() < bitmap.getHeight())?
+                        bitmap.getWidth()/ 2 : bitmap.getHeight()/2,
+                 paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;

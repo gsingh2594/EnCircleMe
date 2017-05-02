@@ -258,83 +258,82 @@ public class FirebaseNotificationService extends Service {
                     String userID = acceptedRequest.getKey().toString();
                     Log.d("onDataChange", "Existing friend request --> username = " + userID);
                     previousFriendsList.add(userID);
-                }}
-                @Override
-                public void onCancelled (DatabaseError databaseError){
-
                 }
-            });
+                final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
+                // List for storing all previously created events. That way only new events will create notifications
+                final List<String> previousEventsList = new ArrayList<String>();
 
-
-
-        final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
-        // List for storing all previously created events. That way only new events will create notifications
-        final List<String> previousEventsList = new ArrayList<String>();
-
-        addEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot existingEvent : dataSnapshot.getChildren()) {
-                    String username = existingEvent.getValue().toString();
-                    Log.d("onDataChange", "Existing event --> username = " + username);
-                    previousEventsList.add(username);
-                }
-
-
-
-                // listen for new event creation in DB
-                addEventRef.addChildEventListener(new ChildEventListener() {
+                addEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        // Get username of the user that creates the event
-                        String usernameOfCreator = dataSnapshot.getValue().toString();
-                        String userIDOfCreator = dataSnapshot.getKey().toString();
-
-                        // Check if the event created is new or not
-                        if (previousFriendsList.contains(userIDOfCreator)) {
-                            // new event created
-                            Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
-                            // Create notification to be displayed
-                            createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot existingEvent : dataSnapshot.getChildren()) {
+                            String eventKey = existingEvent.getKey().toString();
+                            Log.d("onDataChange", "Existing event --> eventKey = " + eventKey);
+                            previousEventsList.add(eventKey);
                         }
+
+                        // listen for new event creation in DB
+                        addEventRef.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                // Get username of the user that creates the event
+                                String usernameOfCreator = dataSnapshot.getValue().toString();
+                                String userIDOfCreator = dataSnapshot.getKey().toString();
+
+                                //Iterable<DataSnapshot> allEvents = dataSnapshot.getChildren();
+                                //DataSnapshot newEvent = Iterables.getLast(allEvents);
+
+                                // Check if the event created is new or not
+                                if (previousFriendsList.contains(userIDOfCreator)) {
+                                    // new event created
+                                    Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
+                                    // Create notification to be displayed
+                                    createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
+                                }
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                                // Get username of the user that creates the event
+                                String usernameOfCreator = dataSnapshot.getValue().toString();
+                                String userIDOfCreator = dataSnapshot.getKey().toString();
+
+                                Log.d("onChildAdded", "New event created onChildChanged --> usernameOfCreator = " + usernameOfCreator);
+
+                                // Check if the event created is new or not
+                                //if (!previousEventsList.contains(usernameOfCreator)) {
+                                // new event created
+
+                                // Create notification to be displayed
+                                createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
+                                //}
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                                String usernameOfSender = dataSnapshot.getValue().toString();
+                                Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + usernameOfSender);
+                                previousEventsList.remove(usernameOfSender);
+
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("NotificationService", "DB error: " + databaseError.getMessage());
+                            }
+                        });
                     }
 
                     @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    public void onCancelled (DatabaseError databaseError){
 
-                        // Get username of the user that creates the event
-                        String usernameOfCreator = dataSnapshot.getValue().toString();
-                        String userIDOfCreator = dataSnapshot.getKey().toString();
-
-                        Log.d("onChildAdded", "New event created onChildChanged --> usernameOfCreator = " + usernameOfCreator);
-
-                        // Check if the event created is new or not
-                        //if (!previousEventsList.contains(usernameOfCreator)) {
-                            // new event created
-
-                            // Create notification to be displayed
-                            createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
-                        //}
-
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        String usernameOfSender = dataSnapshot.getValue().toString();
-                        Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + usernameOfSender);
-                        previousEventsList.remove(usernameOfSender);
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d("NotificationService", "DB error: " + databaseError.getMessage());
                     }
                 });
             }

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +50,10 @@ public class AddFriendSearchActivity extends AppCompatActivity {
     private String currentUserID;
     Comparator userWithImageComparator;
 
+    TextView textViewNoResults;
+    ImageView sadFaceIcon;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +62,46 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.add_friends_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        RelativeLayout relative=new RelativeLayout(getApplicationContext());
+        SearchView searchView = new SearchView(AddFriendSearchActivity.this);
+        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
+        searchView.setIconified(false);
+        searchView.isActivated();
+        searchView.setQueryHint("Enter name or username (case sensitive)");
+
+        relative.addView(searchView);
+        relative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSearchRequested();
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                doMySearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(!newText.equals(""))
+                    doMySearch(newText);
+                return true;
+            }
+        });
+        actionBar.setCustomView(relative);
         //actionBar.setTitle("Add Friends");
         actionBar.setDisplayShowTitleEnabled(false);
+
+        // Find the "no results" views
+        textViewNoResults = (TextView) findViewById(R.id.no_users_found_textview);
+        sadFaceIcon = (ImageView) findViewById(R.id.sad_face_icon);
+
         auth = FirebaseAuth.getInstance();
         currentUserID = auth.getCurrentUser().getUid();
 
@@ -82,26 +126,29 @@ public class AddFriendSearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d("onCreateOptionsMenu", "about to create menu");
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.add_friend_search_menu, menu);
+        //inflater.inflate(R.menu.add_friend_search_menu, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search_for_friends_icon).getActionView();
+        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
         // Assumes current activity is the searchable activity
         Log.d("searchView", searchView.toString());
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                doMySearch(query);
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                doMySearch(newText);
+                if(!newText.equals(""))
+                    doMySearch(newText);
                 return true;
             }
         });
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default */
         return true;
 
     }
@@ -120,7 +167,6 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: Try to add search suggestions
 
     private void doMySearch(String query){
         DatabaseReference usernamesRef = firebaseDatabase.getReference("usernames");
@@ -132,6 +178,8 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         final ArrayList<String> userIDList = new ArrayList<>();
         final ArrayList<String> usernamesList = new ArrayList<>();
         final ArrayList<NameAndID> userNameAndIDList = new ArrayList<>();
+        // List of type HashMap<String,String> for simple results list
+        final ArrayList<HashMap<String, String>> nameAndUsernameMap = new ArrayList<>();
 
         // class for mutable value that indicates whether the results have been returned from a query
         class Result{
@@ -146,6 +194,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
 
         Log.d("doMySearch", "about to add listener");
 
+        // Query for finding usernames that match the input
         usernamesRef.orderByKey()
             .startAt(query)
             .endAt(query+"\uf8ff")
@@ -153,9 +202,6 @@ public class AddFriendSearchActivity extends AppCompatActivity {
             .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                TextView textViewNoResults = (TextView) findViewById(R.id.no_users_found_textview);
-                ImageView sadFaceIcon = (ImageView) findViewById(R.id.sad_face_icon);
-
                 Log.d("entering onDataChange", "");
                 Log.d("snapshot of children", dataSnapshot.toString());
                 if(dataSnapshot.exists()) {
@@ -164,11 +210,13 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                     for (DataSnapshot user : dataSnapshot.getChildren()) {
                         NameAndID nameAndID = user.getValue(NameAndID.class);
                         if(!userIDList.contains(nameAndID.getID())) {
+                            String username = user.getKey();
                             Log.d("onDataChange", "Adding child from DB to resultsList");
-                            //HashMap<String, String> hashMap = new HashMap<String, String>();
-                            //hashMap.put("username", user.getKey());
+                            HashMap<String, String> hashMap = new HashMap<String, String>();
+                            hashMap.put("nameAndUsername", nameAndID.getName() + " (" + username + ")");
                             // hashMap.put("uid", user.getValue().toString());
                             //resultsList.add(hashMap);
+                            nameAndUsernameMap.add(hashMap);
                             Log.d("adding userID", nameAndID.getID());
                             userIDList.add(nameAndID.getID());
                             usernamesList.add(user.getKey());
@@ -233,9 +281,12 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                 }
                 // Check if other query is completed
                 Log.d("hasNameResults", Integer.toString(hasNameResults.getValue()));
-                if(hasNameResults.getValue() > 0)
-                    // Completed --> load profile images for the results
+                if(hasNameResults.getValue() >= 0) {
+                    // Query completed --> Show basic listview first
+                    displaySimpleResultsList(nameAndUsernameMap, userIDList);
+                    // Load profile images for the results
                     loadProfileImages(userNameAndIDList, usernamesList);
+                }
             }
 
             @Override
@@ -246,6 +297,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
 
 
 
+        // Query for finding names that match the input
         //namesRef.orderByValue()
         usernamesRef.orderByChild("name")
                 .startAt(query)
@@ -265,11 +317,13 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                             for (DataSnapshot user : dataSnapshot.getChildren()) {
                                 NameAndID nameAndID = user.getValue(NameAndID.class);
                                 if(!userIDList.contains(nameAndID.getID())) {
+                                    String username = user.getKey();
+                                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                                    hashMap.put("nameAndUsername", nameAndID.getName() + " (" + username + ")");
                                     Log.d("onDataChange", "Adding child from DB to resultsList");
-                                    //HashMap<String, String> hashMap = new HashMap<String, String>();
-                                    //hashMap.put("username", user.getKey());
                                     // hashMap.put("uid", user.getValue().toString());
                                     //resultsList.add(hashMap);
+                                    nameAndUsernameMap.add(hashMap);
                                     Log.d("adding userID", nameAndID.getID());
                                     userIDList.add(nameAndID.getID());
                                     usernamesList.add(user.getKey());
@@ -326,9 +380,12 @@ public class AddFriendSearchActivity extends AppCompatActivity {
 
                         // Check if other query is completed
                         Log.d("hasUsernameResults", Integer.toString(hasUsernameResults.getValue()));
-                        if(hasUsernameResults.getValue() > 0)
-                            // Completed --> load profile images for the results
+                        if(hasUsernameResults.getValue() >= 0) {
+                            // Query completed --> Show basic listview first
+                            displaySimpleResultsList(nameAndUsernameMap, userIDList);
+                            // Load profile images for the results
                             loadProfileImages(userNameAndIDList, usernamesList);
+                        }
                     }
 
                     @Override
@@ -339,6 +396,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
     }
 
 
+    // Loads all profile images for the users in the NameAndID list and creates a UserWithImage list
     private void loadProfileImages(final ArrayList<NameAndID> userNameAndIDList, ArrayList<String> usernameList) {
         Log.d("loadProfileImages", "entering method");
         // make the lists un-assignable so they can be accessed by the inner classes
@@ -368,7 +426,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                     userWithImageList.add(uwi);
                     Log.d("userWithImageList", "size = " + userWithImageList.size());
                     if (userWithImageList.size() == userNameAndIDResultsList.size())
-                        displayListOfFriends(userWithImageList, userNameAndIDList);
+                        displayListOfResultsWithImages(userWithImageList, userNameAndIDList);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -380,22 +438,57 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                     userWithImageList.add(uwi);
                     Log.d("userWithImageList", "size = " + userWithImageList.size());
                     if (userWithImageList.size() == userNameAndIDResultsList.size())
-                        displayListOfFriends(userWithImageList, userNameAndIDList);
+                        displayListOfResultsWithImages(userWithImageList, userNameAndIDList);
                 }
             });
         }
     }
 
-    private void searchByUsername(ArrayList<UserWithImage> userWithImageList){
 
+    // populates the listview with results that have a default icon. (No image displayed)
+    private void displaySimpleResultsList(final ArrayList<HashMap<String,String>> nameAndUsernameMap,
+            final ArrayList<String> userIDList){
+        Log.d("displaySimpleResults", "entering method");
+        SimpleAdapter simpleAdapter = new SimpleAdapter(AddFriendSearchActivity.this, nameAndUsernameMap,
+                R.layout.friends_search_list_items, new String[]{"nameAndUsername"}, new int[]{R.id.friends_search_text_view} );
+        listView.setAdapter(simpleAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("clicked on item", listView.getItemAtPosition(position).toString());
+                HashMap userInfo = nameAndUsernameMap.get(position);
+                String username = userInfo.get("nameAndUsername").toString();
+                Log.d("clicked on item", "username: " + username);
+
+                //Toast.makeText(AddFriendSearchActivity.this, "Clicked on " + Integer.toString(view.getId()), Toast.LENGTH_LONG).show();
+                Toast.makeText(AddFriendSearchActivity.this, "User: " + username, Toast.LENGTH_LONG).show();
+
+                String userID = userIDList.get(position);
+                //String uID = resultsList.get(position).get("username");
+                Log.d("userID: ", userID);
+
+                if (userID.equals(currentUserID)) {
+                    // user selects themself. Take them to their profile.
+                    Intent userProfile = new Intent(AddFriendSearchActivity.this, UserProfileActivity.class);
+                    startActivity(userProfile);
+                } else {
+                    // user can view other user profile
+                    Intent viewOtherUserProfile = new Intent(AddFriendSearchActivity.this, ViewOtherUserProfileActivity.class);
+                    viewOtherUserProfile.putExtra("userID", userID);
+                    startActivity(viewOtherUserProfile);
+                }
+            }
+        });
     }
 
-    private void searchByName(){
-
-    }
 
     // Sorts the list of users with images and displays them in the ListView with an adapter
-    private void displayListOfFriends(ArrayList<UserWithImage>userWithImageList, final ArrayList<NameAndID>userNameAndIDList) {
+    private void displayListOfResultsWithImages(ArrayList<UserWithImage>userWithImageList, final ArrayList<NameAndID>userNameAndIDList) {
+        // Ensure the "no results" views are gone
+        textViewNoResults.setVisibility(View.GONE);
+        sadFaceIcon.setVisibility(View.GONE);
+
         final ArrayList<NameAndID>userNameAndIDResultList = userNameAndIDList;
         Log.d("displayListOfFriends()", "entering method");
         // Sort the userWithImages list so that users appear in order of username
@@ -422,9 +515,17 @@ public class AddFriendSearchActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 NameAndID naid = userNameAndIDList.get(position);
                 String otherUserID = naid.getID();
-                Intent viewOtherUserProfile = new Intent(AddFriendSearchActivity.this, ViewOtherUserProfileActivity.class);
-                viewOtherUserProfile.putExtra("userID", otherUserID);
-                startActivity(viewOtherUserProfile);
+
+                if (otherUserID.equals(currentUserID)) {
+                    // user selects themself. Take them to their profile.
+                    Intent userProfile = new Intent(AddFriendSearchActivity.this, UserProfileActivity.class);
+                    startActivity(userProfile);
+                } else {
+                    // user can view other user profile
+                    Intent viewOtherUserProfile = new Intent(AddFriendSearchActivity.this, ViewOtherUserProfileActivity.class);
+                    viewOtherUserProfile.putExtra("userID", otherUserID);
+                    startActivity(viewOtherUserProfile);
+                }
             }
         });
         listView.setVisibility(View.VISIBLE);
