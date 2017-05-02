@@ -289,12 +289,12 @@ public class FirebaseNotificationService extends Service {
                         Log.d("onChildAdded", "New event created onChildChanged --> usernameOfCreator = " + usernameOfCreator);
 
                         // Check if the event created is new or not
-                        if (!previousEventsList.contains(usernameOfCreator)) {
+                        //if (!previousEventsList.contains(usernameOfCreator)) {
                             // new event created
 
                             // Create notification to be displayed
                             createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
-                        }
+                        //}
 
 
                     }
@@ -331,14 +331,14 @@ public class FirebaseNotificationService extends Service {
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
         mBuilder.setContentTitle("New Event Created"); // title for notification
-        mBuilder.setContentText("New event has been created by" + usernameOfCreator); // message for notification
+        mBuilder.setContentText("Check out the new event added"); // message for notification
         mBuilder.setAutoCancel(true); // clear notification after click
         mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
         mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
         mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
         mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
 
-        Intent intent = new Intent(this, Event.class);
+        Intent intent = new Intent(this, EventListActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
