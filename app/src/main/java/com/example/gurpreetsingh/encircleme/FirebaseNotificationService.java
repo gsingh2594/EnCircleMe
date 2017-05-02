@@ -23,9 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Brayden on 4/11/2017.
- */
+
 
 public class FirebaseNotificationService extends Service {
     private FirebaseAuth auth;
@@ -73,7 +71,7 @@ public class FirebaseNotificationService extends Service {
     }
 
 
-    private void addFriendNotificationListener() {
+    public void addFriendNotificationListener() {
         final DatabaseReference friendsRequestsRef = database.getReference("friend_requests/" + userID);
         // List for storing all previously received requests. That way only new requests will create notifications
         final List<String> previousFriendRequestsList = new ArrayList<String>();
@@ -161,7 +159,7 @@ public class FirebaseNotificationService extends Service {
 
     }
 
-    private void acceptedFriendNotificationListener() {
+    public void acceptedFriendNotificationListener() {
         final DatabaseReference acceptedFriendsRequestsRef = database.getReference("friends/" + userID);
         // List for storing all friends. Only newly accepted friends would be notified
         final List<String> previousFriendsList = new ArrayList<String>();
@@ -248,7 +246,12 @@ public class FirebaseNotificationService extends Service {
 
     }
 
-    private void addEventNotificationListener() {
+    public void addEventNotificationListener() {
+        final DatabaseReference acceptedFriendsRequestsRef = database.getReference("friends/" + userID);
+        // List for storing all friends. Only newly accepted friends would be notified
+        final List<String> previousFriendsList = new ArrayList<String>();
+
+        
         final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
         // List for storing all previously created events. That way only new events will create notifications
         final List<String> previousEventsList = new ArrayList<String>();
@@ -271,7 +274,7 @@ public class FirebaseNotificationService extends Service {
                         String userIDOfCreator = dataSnapshot.getKey().toString();
 
                         // Check if the event created is new or not
-                        if (!previousEventsList.contains(usernameOfCreator)) {
+                        if (!previousFriendsList.contains(usernameOfCreator)) {
                             // new event created
                             Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
                             // Create notification to be displayed
