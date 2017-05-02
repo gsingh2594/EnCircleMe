@@ -247,11 +247,11 @@ public class FirebaseNotificationService extends Service {
     }
 
     public void addEventNotificationListener() {
-        final DatabaseReference acceptedFriendsRequestsRef = database.getReference("friends/" + userID);
+        final DatabaseReference FriendsRef = database.getReference("friends/" + userID);
         // List for storing all friends. Only newly accepted friends would be notified
         final List<String> previousFriendsList = new ArrayList<String>();
 
-        
+
         final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
         // List for storing all previously created events. That way only new events will create notifications
         final List<String> previousEventsList = new ArrayList<String>();
@@ -274,7 +274,7 @@ public class FirebaseNotificationService extends Service {
                         String userIDOfCreator = dataSnapshot.getKey().toString();
 
                         // Check if the event created is new or not
-                        if (!previousFriendsList.contains(usernameOfCreator)) {
+                        if (!previousFriendsList.contains(userIDOfCreator)) {
                             // new event created
                             Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
                             // Create notification to be displayed
@@ -341,7 +341,7 @@ public class FirebaseNotificationService extends Service {
         mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
         mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
 
-        Intent intent = new Intent(this, EventListActivity.class);
+        Intent intent = new Intent(this, EventsTabActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
