@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -42,6 +43,7 @@ public class EventListActivity extends Fragment {
     private BottomBar bottomBar;
     private BottomBar topBar;
 
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_event_list, container, false);
         ListView listView = (ListView) view.findViewById(R.id.events_listview);
@@ -59,6 +61,7 @@ public class EventListActivity extends Fragment {
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         eventsInfo = new HashMap<String, Event>();
+
 
 /*        listview=(ListView)findViewById(R.id.listview);
         final ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,list);

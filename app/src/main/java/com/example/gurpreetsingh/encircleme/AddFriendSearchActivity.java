@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -68,6 +69,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         RelativeLayout relative=new RelativeLayout(getApplicationContext());
         SearchView searchView = new SearchView(AddFriendSearchActivity.this);
         searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
+        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT);
         searchView.setIconified(false);
         searchView.isActivated();
         searchView.setQueryHint("Enter name or username (case sensitive)");

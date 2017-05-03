@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -29,8 +30,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,6 +42,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
 
 /**
  * Created by GurpreetSingh on 4/18/17.
@@ -62,6 +67,9 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
     private ScrollView childScroll;
     private ScrollView parentScroll;
 
+    private Button btnEnCircleMe, btnEnCircleFriend, btnUnCircleMe;
+
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_event_info, container, false);
         //ListView listView = (ListView) view.findViewById(R.id.events_listview);
@@ -77,28 +85,6 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
 /*        parentScroll = (ScrollView) findViewById(R.id.parent_scroll);
         childScroll=(ScrollView)findViewById(R.id.scroll_chat);*/
 
-        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        loadUserName();
-
-        txtEventName = (TextView) view.findViewById(R.id.event_name);
-        txtEventStartDate = (TextView) view.findViewById(R.id.start_date);
-        txtEventTime = (TextView) view.findViewById(R.id.time);
-        txtEventLocation = (TextView) view.findViewById(R.id.location);
-        txtEventDescription = (TextView) view.findViewById(R.id.event_description);
-        txtEventCreator = (TextView) view.findViewById(R.id.creator_name);
-        creatorProfileImage = (ImageView) view.findViewById(R.id.creator_profile_image);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map_snippet);
-        // Configure MapFragment options and get a new instance
-        GoogleMapOptions googleMapOptions =  new GoogleMapOptions().liteMode(true);
-        mapFragment.newInstance(googleMapOptions);
-        mapFragment.getMapAsync(this);
-
-        eventKey = getActivity().getIntent().getStringExtra("eventKey");
-
-        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        loadUserName();
         //displayChatMessages();
 
         /*FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fab);
@@ -173,6 +159,81 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        txtEventName = (TextView) getView().findViewById(R.id.event_name);
+        txtEventStartDate = (TextView) getView().findViewById(R.id.start_date);
+        txtEventTime = (TextView) getView().findViewById(R.id.time);
+        txtEventLocation = (TextView) getView().findViewById(R.id.location);
+        txtEventDescription = (TextView) getView().findViewById(R.id.event_description);
+        txtEventCreator = (TextView) getView().findViewById(R.id.creator_name);
+        creatorProfileImage = (ImageView) getView().findViewById(R.id.creator_profile_image);
+
+        btnEnCircleMe = (Button) getView().findViewById(R.id.encircle_event);
+        btnEnCircleFriend = (Button) getView().findViewById(R.id.encircle_friends);
+        btnUnCircleMe = (Button) getView().findViewById(R.id.uncircle_event);
+
+        btnEnCircleMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enCircleUserInDB();
+            }
+        });
+
+        btnEnCircleFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //enCircleFriendsInDB();
+            }
+        });
+
+        btnUnCircleMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unCircleUserInDB();
+            }
+        });
+
+        eventKey = getActivity().getIntent().getStringExtra("eventKey");
+        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Log.d("checking if encircled", "");
+        // Check if user is already encircled for the event
+        DatabaseReference userEncircledEventsRef = FirebaseDatabase.getInstance().getReference("events/user_encircled_events/" + userID);
+        userEncircledEventsRef.orderByKey().equalTo(eventKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            // user is encircled to the event. Show un-encircleMe button
+                            Log.d("userIsEncircled", "EnCircled already");
+                            showAsUnCircleMe();
+                        }
+                        else {
+                            // user is not encircled. Show en-circleMe button
+                            Log.d("userIsEncircled", "EnCircled already");
+                            showAsEnCircleMe();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("checkIfEncircled", "DB error: " + databaseError.getMessage());
+                    }
+                });
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map_snippet);
+        // Configure MapFragment options and get a new instance
+        GoogleMapOptions googleMapOptions =  new GoogleMapOptions().liteMode(true);
+        mapFragment.newInstance(googleMapOptions);
+        mapFragment.getMapAsync(this);
+
+        loadUserName();
+    }
+
     private void loadUserName(){
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
         usernamesRef.orderByChild("id").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -227,6 +288,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
         // Load event info after map is ready.
         // If event loads before the map, the event marker would be added to a nonexisting map
         loadEventInfoFromDB();
@@ -380,7 +442,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
                 Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
                 // Scale the image and display it
                 creatorProfileImage.setImageBitmap(Bitmap.createScaledBitmap
-                        (MapsActivity.getClip(profileImageBitmap), convertDPtoPX(40), convertDPtoPX(40), false));
+                        (UserProfileListAdapter.getClip(profileImageBitmap), convertDPtoPX(40), convertDPtoPX(40), false));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -418,5 +480,49 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
         return returnedBitmap;
     }
 
+
+    // Saves the user in user_encricled_events and event_attendees in DB
+    private void enCircleUserInDB(){
+        DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
+        HashMap<String, Object> eventUpdates = new HashMap<>();
+        eventUpdates.put("user_encircled_events/" + userID + "/" + eventKey, true);
+        eventUpdates.put("event_attendees/" + eventKey + "/" + userID, true);
+
+        eventsRef.updateChildren(eventUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(getActivity(), "You are EnCircled!", Toast.LENGTH_LONG).show();
+                showAsUnCircleMe();
+            }
+        });
+    }
+
+
+    // Saves the user in user_encricled_events and event_attendees in DB
+    private void unCircleUserInDB(){
+        DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
+        HashMap<String, Object> eventUpdates = new HashMap<>();
+        eventUpdates.put("user_encircled_events/" + userID + "/" + eventKey, null);
+        eventUpdates.put("event_attendees/" + eventKey + "/" + userID, null);
+
+        eventsRef.updateChildren(eventUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(getActivity(), "You are UnCircled!", Toast.LENGTH_LONG).show();
+                showAsEnCircleMe();
+            }
+        });
+    }
+
+
+    private void showAsEnCircleMe(){
+        btnEnCircleMe.setVisibility(View.VISIBLE);
+        btnUnCircleMe.setVisibility(View.GONE);
+    }
+
+    private void showAsUnCircleMe(){
+        btnEnCircleMe.setVisibility(View.GONE);
+        btnUnCircleMe.setVisibility(View.VISIBLE);
+    }
 
 }

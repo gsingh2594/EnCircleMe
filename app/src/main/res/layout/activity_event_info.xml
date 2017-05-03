@@ -21,7 +21,7 @@
         android:id="@+id/map_snippet"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="175dp" />
+        android:layout_height="200dp" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardview1"
@@ -157,7 +157,22 @@
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textAllCaps="false"
-        android:layout_below="@id/cardview1"/>
+        android:layout_below="@id/cardview1"
+        android:visibility="visible"/>
+
+        <Button
+            android:id="@+id/uncircle_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:itemBackground="@drawable/ripple_effect"
+            android:text="EnCircleMe!"
+            android:layout_margin="5dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:layout_below="@id/cardview1"
+            android:visibility="gone"/>
 
     <Button
         android:id="@+id/encircle_friends"
