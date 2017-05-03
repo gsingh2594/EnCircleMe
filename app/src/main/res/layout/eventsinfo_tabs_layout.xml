@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="?attr/colorPrimary"
+        app:titleTextColor="@android:color/black"
         android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -24,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:background="?attr/colorPrimary"
+        app:tabTextColor="@android:color/black"
+        app:tabSelectedTextColor="@android:color/white"
         android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
@@ -34,11 +37,11 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/tab_layout"/>
 
-<!--    <com.roughike.bottombar.BottomBar
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        app:bb_tabXmlResource="@xml/bottom_bar" />-->
+    <!--    <com.roughike.bottombar.BottomBar
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            app:bb_tabXmlResource="@xml/bottom_bar" />-->
 
 </RelativeLayout>

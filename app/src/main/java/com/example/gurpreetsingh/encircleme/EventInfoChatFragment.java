@@ -126,7 +126,7 @@ public class EventInfoChatFragment extends Fragment {
     }
 
     private void displayChatMessages() {
-        ListView listOf_Messages = (ListView) getActivity().findViewById(R.id.list_of_eventmessages);
+        ListView listOf_Messages = (ListView) getView().findViewById(R.id.list_of_eventmessages);
 
         adapter = new FirebaseListAdapter<ChatMessageEvent>(this.getActivity(), ChatMessageEvent.class,
                 R.layout.message_event, FirebaseDatabase.getInstance().getReference("event_chats/" +eventKey)) {

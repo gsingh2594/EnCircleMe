@@ -1,5 +1,6 @@
 package com.example.gurpreetsingh.encircleme;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +49,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth auth;
@@ -450,21 +455,51 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         intent.setAction(Intent.ACTION_GET_CONTENT);//
         startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);*/
         Intent pickImageIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Uri fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
 
         pickImageIntent.setType("image/*");
         pickImageIntent.putExtra("crop", "true");
-        pickImageIntent.putExtra("outputX", 200);
-        pickImageIntent.putExtra("outputY", 200);
+        pickImageIntent.putExtra("outputX", 450);
+        pickImageIntent.putExtra("outputY", 450);
         pickImageIntent.putExtra("aspectX", 1);
         pickImageIntent.putExtra("aspectY", 1);
         pickImageIntent.putExtra("scale", true);
-        pickImageIntent.putExtra(MediaStore.EXTRA_OUTPUT,  Uri.fromFile(new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg")));
+        pickImageIntent.putExtra(MediaStore.EXTRA_OUTPUT,  fileUri);
         pickImageIntent.putExtra("outputFormat",
 
                 Bitmap.CompressFormat.JPEG.toString());
         startActivityForResult(pickImageIntent, SELECT_FILE);
     }
 
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /** Create a File for saving an image or video */
+    @SuppressLint("SimpleDateFormat")
+    private static File getOutputMediaFile(int type){
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "EnCircleMe");
+
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("EnCircleMe", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpg");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
 
     private void cameraIntent()
     {
@@ -526,7 +561,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 Log.d("selectFromGallery", "scaling bitmap");
                 //int imageRatio = bm.getWidth() / bm.getHeight();
                 //bm = Bitmap.createScaledBitmap(bm, 450 * imageRatio, 450 , false);
-                bm.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                bm.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -555,7 +590,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Bitmap bitmap = imageView.getDrawingCache();
         */
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
         Log.d("profile image size ", Integer.toString(data.length) + " bytes");
@@ -592,7 +627,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     // upload bitmap cover image to Firebase Storage. Displays cover image if successful
     private void uploadCoverImageToFirebaseStorage(final Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
         Log.d("cover image size ", Integer.toString(data.length) + " bytes");
@@ -715,8 +750,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onPause() {
         super.onPause();
-        profileImageBitmap.recycle();
-        coverImageBitmap.recycle();
+        //profileImageBitmap.recycle();
+        //coverImageBitmap.recycle();
     }
 
     /*    //Button

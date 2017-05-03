@@ -251,7 +251,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void loadEventsFromDB(){
-        DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events/geofire_locations");
+        DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events                                                                           /geofire_locations");
         GeoFire eventsGeoFireRef = new GeoFire(eventLocationsRef);
 
         // GeoQuery to retrieve events within a specified distance of the user's current location

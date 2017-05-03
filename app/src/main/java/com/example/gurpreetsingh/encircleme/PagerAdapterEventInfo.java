@@ -24,7 +24,7 @@ public class PagerAdapterEventInfo extends FragmentStatePagerAdapter {
                 EventInfoActivity tab1 = new EventInfoActivity();
                 return tab1;
             case 1:
-                TabFragment2 tab2 = new TabFragment2();
+                TabFragment1 tab2 = new TabFragment1();
                 return tab2;
             /*case 2:
                 TabFragment1 tab3 = new TabFragment1();

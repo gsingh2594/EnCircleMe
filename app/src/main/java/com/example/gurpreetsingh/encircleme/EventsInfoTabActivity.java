@@ -78,4 +78,13 @@ public class EventsInfoTabActivity extends AppCompatActivity {
         });*/
     }
 
+/*    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d("onNewIntent", "method started");
+        super.onNewIntent(intent);
+        Log.d("onNewIntent", "getting extra");
+        eventKey = intent.getStringExtra("eventKey");
+        loadEventInfoFromDB();
+    }*/
+
 }

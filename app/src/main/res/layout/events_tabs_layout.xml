@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="?attr/colorPrimary"
+        app:titleTextColor="@android:color/black"
         android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -26,6 +27,8 @@
         android:background="?attr/colorPrimary"
         android:elevation="6dp"
         android:minHeight="?attr/actionBarSize"
+        app:tabSelectedTextColor="@android:color/white"
+        app:tabTextColor="@android:color/black"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <android.support.v4.view.ViewPager

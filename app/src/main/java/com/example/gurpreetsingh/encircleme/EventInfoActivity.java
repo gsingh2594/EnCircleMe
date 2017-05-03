@@ -158,6 +158,14 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
        return view;
     }
 
+    /*@Override
+    protected void onNewIntent(Intent intent) {
+        Log.d("onNewIntent", "method started");
+        super.onNewIntent(intent);
+        Log.d("onNewIntent", "getting extra");
+        eventKey = intent.getStringExtra("eventKey");
+        loadEventInfoFromDB();
+    }*/
 
     @Override
     public void onStart() {

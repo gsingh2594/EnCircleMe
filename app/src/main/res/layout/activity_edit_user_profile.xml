@@ -38,7 +38,7 @@
                 <EditText
                     android:id="@+id/edit_name"
                     android:hint="Name"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:textColor="@android:color/black"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

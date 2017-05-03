@@ -40,7 +40,7 @@
             <EditText
                 android:id="@+id/signUpName"
                 android:hint="Name"
-                android:inputType="textCapSentences"
+                android:inputType="textCapWords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -57,7 +57,8 @@
                 android:hint="Username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                />
 
             <RelativeLayout
                 android:layout_width="wrap_content"

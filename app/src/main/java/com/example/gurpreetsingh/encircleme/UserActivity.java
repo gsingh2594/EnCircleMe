@@ -1,5 +1,7 @@
 package com.example.gurpreetsingh.encircleme;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -282,16 +284,10 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void locations() {
-/*        Intent location_settings = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(location_settings);*/
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent();
-            intent.setAction("android.settings.");
-            intent.putExtra("app_package", getPackageName());
-            intent.putExtra("app_uid", getApplicationInfo().uid);
-            startActivity(intent);
+       Intent location_settings = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(location_settings);
         }
-    }
+
 
     private void notifications() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -358,7 +354,18 @@ public class UserActivity extends AppCompatActivity {
 
     //sign out method
     public void signOutButton() {
-        auth.signOut();
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Would you like to logout?")
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(UserActivity.this, MainActivity.class));
+                        //finish();
+                    }
+                }).create().show();
+        //auth.signOut();
     }
 
     @Override
