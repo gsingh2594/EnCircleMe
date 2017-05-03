@@ -307,9 +307,9 @@ public class FirebaseNotificationService extends Service {
 
                                 Log.d("onChildAdded", "New event created onChildChanged --> usernameOfCreator = " + usernameOfCreator);
 
-                                // Check if the event created is new or not
+
                                 if (previousFriendsList.contains(userIDOfCreator)) {
-                                // new event created
+
 
                                 // Create notification to be displayed
                                 createNewEventCreatedNotification(userIDOfCreator);
@@ -360,7 +360,7 @@ public class FirebaseNotificationService extends Service {
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
         mBuilder.setContentTitle("New Event Created"); // title for notification
-        mBuilder.setContentText("Check out the new event added"); // message for notification
+        mBuilder.setContentText("Click to check out the new event"); // message for notification
         mBuilder.setAutoCancel(true); // clear notification after click
         mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
         mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
