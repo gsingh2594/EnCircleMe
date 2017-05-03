@@ -44,7 +44,7 @@ public class FirebaseNotificationService extends Service {
                     database = FirebaseDatabase.getInstance();
                     addFriendNotificationListener();
                     acceptedFriendNotificationListener();
-                    addEventNotificationListener();
+                    addEventNotificationListener();//addEventNotificationListener();
                 }
             }).start(); // Run the thread
         }
@@ -248,7 +248,7 @@ public class FirebaseNotificationService extends Service {
 
     public void addEventNotificationListener() {
         final DatabaseReference friendsRef = database.getReference("friends/" + userID);
-        // List for storing all friends. Only newly accepted friends would be notified
+        // List for storing all friends.
         final List<String> previousFriendsList = new ArrayList<String>();
 
         friendsRef.addValueEventListener(new ValueEventListener() {
@@ -256,10 +256,10 @@ public class FirebaseNotificationService extends Service {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot acceptedRequest : dataSnapshot.getChildren()) {
                     String userID = acceptedRequest.getKey().toString();
-                    Log.d("onDataChange", "Existing friend --> username = " + userID);
+                    Log.d("onDataChange", "Existing friends --> userID = " + userID);
                     previousFriendsList.add(userID);
                 }
-                Log.d("previousFriendsList", "userIDs stored : " + previousFriendsList.toString());
+                Log.d("Previous Friends List","arr:" + previousFriendsList.toString());
 
                 final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
                 // List for storing all previously created events. That way only new events will create notifications
@@ -294,7 +294,7 @@ public class FirebaseNotificationService extends Service {
                                     // new event created
                                     Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
                                     // Create notification to be displayed
-                                    createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
+                                    createNewEventCreatedNotification(userIDOfCreator);
                                 }
                             }
 
@@ -308,12 +308,12 @@ public class FirebaseNotificationService extends Service {
                                 Log.d("onChildAdded", "New event created onChildChanged --> usernameOfCreator = " + usernameOfCreator);
 
                                 // Check if the event created is new or not
-                                //if (!previousEventsList.contains(usernameOfCreator)) {
+                                if (previousFriendsList.contains(userIDOfCreator)) {
                                 // new event created
 
                                 // Create notification to be displayed
-                                createNewEventCreatedNotification(usernameOfCreator, userIDOfCreator);
-                                //}
+                                createNewEventCreatedNotification(userIDOfCreator);
+                                }
 
                             }
 
@@ -355,7 +355,7 @@ public class FirebaseNotificationService extends Service {
 
 
 
-            public boolean createNewEventCreatedNotification(String usernameOfCreator, String userIDOfCreator) {
+    public boolean createNewEventCreatedNotification(String userIDOfCreator) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
