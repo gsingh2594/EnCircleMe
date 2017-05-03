@@ -256,9 +256,11 @@ public class FirebaseNotificationService extends Service {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot acceptedRequest : dataSnapshot.getChildren()) {
                     String userID = acceptedRequest.getKey().toString();
-                    Log.d("onDataChange", "Existing friend request --> username = " + userID);
+                    Log.d("onDataChange", "Existing friend --> username = " + userID);
                     previousFriendsList.add(userID);
                 }
+                Log.d("previousFriendsList", "userIDs stored : " + previousFriendsList.toString());
+
                 final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
                 // List for storing all previously created events. That way only new events will create notifications
                 final List<String> previousEventsList = new ArrayList<String>();
@@ -266,11 +268,14 @@ public class FirebaseNotificationService extends Service {
                 addEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot existingEvent : dataSnapshot.getChildren()) {
-                            String eventKey = existingEvent.getKey().toString();
-                            Log.d("onDataChange", "Existing event --> eventKey = " + eventKey);
-                            previousEventsList.add(eventKey);
+                        for (DataSnapshot userID : dataSnapshot.getChildren()) {
+                            for(DataSnapshot userEvent : userID.getChildren()) {
+                                String eventKey = userEvent.getKey().toString();
+                                Log.d("onDataChange", "Existing event --> eventKey = " + eventKey);
+                                previousEventsList.add(eventKey);
+                            }
                         }
+                        Log.d("previousEventsList", previousEventsList.toString());
 
                         // listen for new event creation in DB
                         addEventRef.addChildEventListener(new ChildEventListener() {
