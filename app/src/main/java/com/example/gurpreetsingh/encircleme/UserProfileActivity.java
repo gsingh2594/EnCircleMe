@@ -69,6 +69,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private boolean coverImageSelected;
     private byte[] profileImageBytes;
     private byte[] coverImageBytes;
+    private Bitmap profileImageBitmap, coverImageBitmap;
 
     private String userChoosenTask;
 
@@ -82,6 +83,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     private BottomBar bottomBar;
     private OnTabSelectListener tabSelectListener;
+
 
     /*Button btnAlerts;
     Button btnMaps;
@@ -289,7 +291,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 Log.d("loadUserProfileImage()", "getBytes successful");
                 profileImageBytes = bytes;
                 Log.d("loadUserProfileImage()", "convert bytes to bitmap");
-                Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
+                profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
                 profileImage.setImageBitmap(profileImageBitmap);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -314,7 +316,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 Log.d("loadUserCoverImage()", "getBytes successful");
                 coverImageBytes = bytes;
                 Log.d("loadUserCoverImage()", "convert bytes to bitmap");
-                Bitmap coverImageBitmap = BitmapFactory.decodeByteArray(coverImageBytes, 0, coverImageBytes.length);
+                coverImageBitmap = BitmapFactory.decodeByteArray(coverImageBytes, 0, coverImageBytes.length);
                 coverImage.setImageBitmap(coverImageBitmap);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -443,10 +445,24 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     private void galleryIntent()
     {
-        Intent intent = new Intent();
+        /*Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);*/
+        Intent pickImageIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        pickImageIntent.setType("image/*");
+        pickImageIntent.putExtra("crop", "true");
+        pickImageIntent.putExtra("outputX", 200);
+        pickImageIntent.putExtra("outputY", 200);
+        pickImageIntent.putExtra("aspectX", 1);
+        pickImageIntent.putExtra("aspectY", 1);
+        pickImageIntent.putExtra("scale", true);
+        pickImageIntent.putExtra(MediaStore.EXTRA_OUTPUT,  Uri.fromFile(new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg")));
+        pickImageIntent.putExtra("outputFormat",
+
+                Bitmap.CompressFormat.JPEG.toString());
+        startActivityForResult(pickImageIntent, SELECT_FILE);
     }
 
 
@@ -473,7 +489,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private void onCaptureImageResult(Intent data) {
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         File destination = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
         FileOutputStream fo;
         try {
@@ -504,7 +520,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Bitmap bm=null;
         if (data != null) {
             try {
+                Log.d("selectFromGallery", "creating bitmap");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                Log.d("selectFromGallery", "scaling bitmap");
+                //int imageRatio = bm.getWidth() / bm.getHeight();
+                //bm = Bitmap.createScaledBitmap(bm, 450 * imageRatio, 450 , false);
+                bm.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -689,7 +712,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         // bottomBar.setOnTabSelectListener(tabSelectListener);
     }
 
-/*    //Button
+    @Override
+    protected void onPause() {
+        super.onPause();
+        profileImageBitmap.recycle();
+        coverImageBitmap.recycle();
+    }
+
+    /*    //Button
     public void Profile() {
         btnProfile = (Button) findViewById(R.id.btnProfile);
         btnProfile.setOnClickListener(new View.OnClickListener() {
