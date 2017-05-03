@@ -278,7 +278,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             // Check if the event has already happened
                             Log.d("event already happened?", "checking");
-                            if (eventHasNotHappened(eventKey, event)) {
+                            if (eventHasEnded(event)) {
                                 Log.d("event already happened?", "NOPE for eventKey = " + dataSnapshot.getKey());
                                 // Store event info in HashMap for later access if it is not already there
                                 Log.d("eventInfo", "storing event info in HashMap");
@@ -328,7 +328,68 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private boolean eventHasNotHappened(String eventKey, Event event){
+    // returns true if event **end date** and time is before the current time, or false otherwise
+    private boolean eventHasEnded(Event event){
+        int endMonth, endDay, endYear;
+        if(event.getEndDate() != null) {
+            // End date exists --> use it
+            String[] mdy = event.getEndDate().split("/");
+            endMonth = Integer.parseInt(mdy[0]) -1; // decrement month by 1 because range of months is 0-11
+            endDay = Integer.parseInt(mdy[1]);
+            endYear = Integer.parseInt(mdy[2]);
+        }
+        else{
+            // No end date given --> use start date
+            String[] mdy = event.getDate().split("/");
+            endMonth = Integer.parseInt(mdy[0]) -1; // decrement month by 1 because range of months is 0-11
+            endDay = Integer.parseInt(mdy[1]);
+            endYear = Integer.parseInt(mdy[2]);
+        }
+
+        String hourMin[] = event.getEndTime().split("[: ]");
+        int endHour;
+        if(hourMin[2].equals("pm"))
+            if(Integer.parseInt(hourMin[0]) != 12)
+                endHour = Integer.parseInt(hourMin[0])+ 12; // If pm and hour!=12, add 12 to the hour to convert to 24 hour format
+            else
+                endHour = Integer.parseInt(hourMin[0]);
+        else
+            endHour = Integer.parseInt(hourMin[0]); // Hour is in am
+
+        int endMin = Integer.parseInt(hourMin[1]);
+
+        /*for(String elem : hourMin)
+            Log.d("hourMin", elem);*/
+        Log.d("endYear", Integer.toString(endYear));
+        Log.d("endMonth", Integer.toString(endMonth));
+        Log.d("endDay", Integer.toString(endDay));
+        Log.d("endHour", Integer.toString(endHour));
+        Log.d("endMin", Integer.toString(endMin));
+
+        Calendar endCalendar = Calendar.getInstance();
+        Log.d("endCalendar", Long.toString(endCalendar.getTimeInMillis()));
+        endCalendar.clear(); // Clear the fields in the calendar so the compareTo method works properly
+        endCalendar.set(endYear, endMonth, endDay, endHour, endMin, 0);
+        endCalendar.getTimeInMillis(); // get to recalculate time in millis
+        Log.d("endCalendar", "after setting calendar: " + Long.toString(endCalendar.getTimeInMillis()));
+
+        // Get current time
+        Calendar currentCalendar = Calendar.getInstance();
+        Log.d("currentCalendar", Long.toString(currentCalendar.getTimeInMillis()));
+        // Compare current time to event end time
+        int result = endCalendar.compareTo(currentCalendar);
+        Log.d("eventHasEnded", "result= " + Integer.toString(result));
+        if(result == -1) // End time is before current time
+            return true; // --> Event has ended
+        if(result == 1)  // End time is after end time
+            return false;// --> Event has not ended
+        else             // End time and current time are equal
+            return true; // --> event has ended
+    }
+
+
+    // Returns true if event **start date** and time is before current date and time
+    private boolean eventHasNotStarted(String eventKey, Event event){
         Calendar calendar = Calendar.getInstance();
         String[] mdy = event.getDate().split("/");
         int month = Integer.parseInt(mdy[0]) -1;

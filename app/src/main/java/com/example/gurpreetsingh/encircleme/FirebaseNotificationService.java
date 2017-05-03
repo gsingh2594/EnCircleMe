@@ -277,6 +277,7 @@ public class FirebaseNotificationService extends Service {
                         }
                         Log.d("previousEventsList", previousEventsList.toString());
 
+
                         // listen for new event creation in DB
                         addEventRef.addChildEventListener(new ChildEventListener() {
                             @Override
