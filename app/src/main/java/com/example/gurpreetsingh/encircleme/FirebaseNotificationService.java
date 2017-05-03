@@ -286,11 +286,16 @@ public class FirebaseNotificationService extends Service {
                                 String usernameOfCreator = dataSnapshot.getValue().toString();
                                 String userIDOfCreator = dataSnapshot.getKey().toString();
 
-                                //Iterable<DataSnapshot> allEvents = dataSnapshot.getChildren();
+                                Iterable<DataSnapshot> allEvents = dataSnapshot.getChildren();
                                 //DataSnapshot newEvent = Iterables.getLast(allEvents);
+                                ArrayList<String> userEventsList = new ArrayList<String>();
+                                for(DataSnapshot event : allEvents){
+                                    userEventsList.add(event.getKey());
+                                }
+                                String lastEventKey = userEventsList.get(userEventsList.size() - 1);
 
                                 // Check if the event created is new or not
-                                if (previousFriendsList.contains(userIDOfCreator)) {
+                                if (previousFriendsList.contains(userIDOfCreator) && !previousEventsList.contains(lastEventKey)) {
                                     // new event created
                                     Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
                                     // Create notification to be displayed
@@ -307,8 +312,16 @@ public class FirebaseNotificationService extends Service {
 
                                 Log.d("onChildAdded", "New event created onChildChanged --> usernameOfCreator = " + usernameOfCreator);
 
+                                Iterable<DataSnapshot> allEvents = dataSnapshot.getChildren();
+                                //DataSnapshot newEvent = Iterables.getLast(allEvents);
+                                ArrayList<String> userEventsList = new ArrayList<String>();
+                                for(DataSnapshot event : allEvents){
+                                    userEventsList.add(event.getKey());
+                                }
+                                String lastEventKey = userEventsList.get(userEventsList.size() - 1);
 
-                                if (previousFriendsList.contains(userIDOfCreator)) {
+
+                                if (previousFriendsList.contains(userIDOfCreator) && !previousEventsList.contains(lastEventKey)) {
 
 
                                 // Create notification to be displayed
