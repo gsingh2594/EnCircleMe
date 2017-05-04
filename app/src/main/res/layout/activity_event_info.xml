@@ -12,12 +12,12 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/event_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
         android:elevation="4dp"
-        android:theme="?attr/actionBarTheme"
-        app:title="Event Info" />
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:title="Event Info"
+        android:layout_alignParentTop="true"/>
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -75,7 +75,10 @@
                         android:layout_toEndOf="@id/date_icon"
                         android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:gravity="center_vertical"
-                        android:text="Date"/>
+                        android:text="Date"
+                        android:linksClickable="true"
+                        android:autoLink="all"
+                        android:enabled="true"/>
 
                     <ImageView
                         android:id="@+id/time_icon"
@@ -107,6 +110,9 @@
                         android:id="@+id/location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:linksClickable="true"
+                        android:autoLink="all"
+                        android:enabled="true"
                         android:layout_alignTop="@id/location_icon"
                         android:layout_toRightOf="@id/location_icon"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -163,6 +169,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
             app:contentPadding="@dimen/activity_horizontal_margin"
+            android:elevation="5dp"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
             android:layout_below="@+id/cardview1"

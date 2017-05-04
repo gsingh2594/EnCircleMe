@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/event_chat"
+        android:icon="@drawable/message_board"
+        android:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:title="Event Chat"/>
+    <item
+        android:id="@+id/delete_event"
+        android:icon="@drawable/ic_close_light"
+        android:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:title="Delete Event"/>
+
+</menu>

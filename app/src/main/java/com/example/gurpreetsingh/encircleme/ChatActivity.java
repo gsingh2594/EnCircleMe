@@ -49,7 +49,7 @@ public class ChatActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.chat_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Message Board");
+        setTitle("Event Chat");
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         loadUserName();
@@ -128,8 +128,6 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-
-
     private void loadUserName(){
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
         usernamesRef.orderByChild("id").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -154,27 +152,6 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SIGN_IN_REQUEST_CODE) {
-            if(resultCode == RESULT_OK) {
-                Toast.makeText(this,
-                        "Successfully signed in. Welcome!",
-                        Toast.LENGTH_LONG)
-                        .show();
-
-                displayChatMessages();
-            } else {
-                Toast.makeText(this,
-                        "We couldn't sign you in. Please try again later.",
-                        Toast.LENGTH_LONG)
-                        .show();
-                finish();
-            }
-        }
     }
 
 /*

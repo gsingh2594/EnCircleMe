@@ -66,6 +66,8 @@
         <activity android:name=".PlaceActivity" />
         <activity android:name=".EditUserProfileActivity"
             android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".EventInfoChatActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".EventInfoActivity"
             android:launchMode="singleTop"/>
         <activity

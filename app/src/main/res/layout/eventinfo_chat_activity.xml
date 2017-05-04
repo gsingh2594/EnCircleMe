@@ -5,20 +5,29 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.gurpreetsingh.encircleme.EventInfoChatFragment">
+    tools:context="com.example.gurpreetsingh.encircleme.EventInfoChatActivity">
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:dividerHeight="1dp"
-            android:divider="@android:color/darker_gray"
-            android:id="@+id/list_of_eventmessages"
-            android:stackFromBottom="true"
-            android:layout_toStartOf="@+id/fab"
-            android:layout_alignParentTop="true"
-            android:layout_above="@+id/fab"
-            android:layout_alignParentEnd="true"
-            android:paddingLeft="10dp"/>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/eventchat_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:layout_alignParentTop="true"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:dividerHeight="0dp"
+        android:divider="@android:color/darker_gray"
+        android:id="@+id/list_of_eventmessages"
+        android:stackFromBottom="true"
+        android:layout_toStartOf="@+id/fab"
+        android:layout_above="@+id/fab"
+        android:layout_alignParentEnd="true"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/eventchat_toolbar" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -32,7 +41,7 @@
         android:layout_alignParentEnd="true" />
 
     <EditText
-        android:id="@+id/input"
+        android:id="@+id/input_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Type a message..."

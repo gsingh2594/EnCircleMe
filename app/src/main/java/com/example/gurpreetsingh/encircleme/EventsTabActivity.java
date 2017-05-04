@@ -34,6 +34,7 @@ public class EventsTabActivity extends AppCompatActivity{
         tabLayout.addTab(tabLayout.newTab().setText("Events"));
         tabLayout.addTab(tabLayout.newTab().setText("Your Events"));
         tabLayout.addTab(tabLayout.newTab().setText("EnCircled Events"));
+        tabLayout.addTab(tabLayout.newTab().setText("Event Invites"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);

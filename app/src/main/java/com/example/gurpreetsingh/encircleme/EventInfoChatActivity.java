@@ -2,13 +2,14 @@ package com.example.gurpreetsingh.encircleme;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.text.method.LinkMovementMethod;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
  * Created by GurpreetSingh on 4/30/17.
  */
 
-public class EventInfoChatFragment extends Fragment {
+public class EventInfoChatActivity extends AppCompatActivity {
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessageEvent> adapter;
@@ -39,19 +40,26 @@ public class EventInfoChatFragment extends Fragment {
     private String userID;
     private Event event;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.eventinfo_chat_fragment, container, false);
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        android.util.Log.d("onCreate", "method started");
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.eventinfo_chat_activity);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.eventchat_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        setTitle("Event Chat");
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        eventKey = getActivity().getIntent().getStringExtra("eventKey");
+        eventKey = getIntent().getStringExtra("eventKey");
         loadUserName();
-        displayChatMessages();
 
-        FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText input = (EditText)view.findViewById(R.id.input);
+                EditText input = (EditText)findViewById(R.id.input_event);
 
                 if(usernameIsLoaded) {
                     // Read the input field and push a new instance
@@ -70,7 +78,7 @@ public class EventInfoChatFragment extends Fragment {
                     }
                 }
                 else{
-                    ProgressDialog progressDialog = new ProgressDialog(EventInfoChatFragment.this.getActivity().getApplicationContext());
+                    ProgressDialog progressDialog = new ProgressDialog(EventInfoChatActivity.this);
                     progressDialog.setMessage("One moment please");
 
                     while(!usernameIsLoaded){
@@ -95,21 +103,19 @@ public class EventInfoChatFragment extends Fragment {
                 }
             }
         });
-
-        return view;
     }
 
     private void loadUserName(){
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
-        usernamesRef.orderByValue().equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        usernamesRef.orderByChild("id").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getChildrenCount() == 1) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         username = ds.getKey().toString();
                         usernameIsLoaded = true;
-                        Toast.makeText(EventInfoChatFragment.this.getActivity().getApplicationContext(), "Welcome " + username, Toast.LENGTH_LONG).show();
-                        //displayChatMessages();
+                        Toast.makeText(EventInfoChatActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
+                        displayChatMessages();
                     }
                 }
                 else{
@@ -126,9 +132,9 @@ public class EventInfoChatFragment extends Fragment {
     }
 
     private void displayChatMessages() {
-        ListView listOf_Messages = (ListView) getView().findViewById(R.id.list_of_eventmessages);
+        ListView listOf_Messages = (ListView) findViewById(R.id.list_of_eventmessages);
 
-        adapter = new FirebaseListAdapter<ChatMessageEvent>(this.getActivity(), ChatMessageEvent.class,
+        adapter = new FirebaseListAdapter<ChatMessageEvent>(this, ChatMessageEvent.class,
                 R.layout.message_event, FirebaseDatabase.getInstance().getReference("event_chats/" +eventKey)) {
             @Override
             protected void populateView(View v, ChatMessageEvent model, int position) {
@@ -164,7 +170,7 @@ public class EventInfoChatFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 android.util.Log.d("onCancelled", "Database Error: " + databaseError.getMessage());
-                Toast.makeText(EventInfoChatFragment.this.getActivity().getApplicationContext(), "Could not load event", Toast.LENGTH_LONG).show();
+                Toast.makeText(EventInfoChatActivity.this, "Could not load event", Toast.LENGTH_LONG).show();
             }
         });
     }

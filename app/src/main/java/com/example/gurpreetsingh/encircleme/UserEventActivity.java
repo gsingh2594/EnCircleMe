@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class EventListActivity extends Fragment {
+public class UserEventActivity extends Fragment {
 
 
     FirebaseAuth auth;
@@ -44,13 +44,13 @@ public class EventListActivity extends Fragment {
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_event_list, container, false);
+        View view = inflater.inflate(R.layout.activity_user_event, container, false);
         ListView listView = (ListView) view.findViewById(R.id.events_listview);
-    //ArrayList<String> list=new ArrayList<>();
+        //ArrayList<String> list=new ArrayList<>();
     /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_list);
+        setContentView(R.layout.activity_user_event);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.eventlist_toolbar);
         setSupportActionBar(toolbar);
@@ -143,7 +143,7 @@ public class EventListActivity extends Fragment {
     private void loadEventsList(){
         Log.d("loadEventsList", "method started");
         final ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String,String>>();
-        DatabaseReference eventsRef = database.getReference("events/all_events");
+        DatabaseReference eventsRef = database.getReference("events/user_created_events/" + currentUserID);
         eventsRef.orderByChild("date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -153,7 +153,7 @@ public class EventListActivity extends Fragment {
                         Event event = child.getValue(Event.class);
                         Log.d("event info", event.toString());
                         // Check if event has ended
-                        //if(!eventHasEnded(event)) {
+                        if(!eventHasEnded(event)) {
                             // Event has not ended --> store event info in a hashmap
                             HashMap<String, String> eventInfo = new HashMap<String, String>();
                             eventInfo.put("eventKey", child.getKey());
@@ -165,7 +165,7 @@ public class EventListActivity extends Fragment {
                             eventInfo.put("endTime", event.getEndTime());
                             // Add event info hashmap to the events arraylist
                             eventsList.add(eventInfo);
-                        //}
+                        }
                     }
 
                     // Comparator for comparing and sorting dates for the events
@@ -269,7 +269,7 @@ public class EventListActivity extends Fragment {
 
                     // Find listview from layout and initialize with an adapter
                     final ListView listView = (ListView) getView().findViewById(R.id.events_listview);
-                    simpleAdapter = new SimpleAdapter(EventListActivity.this.getActivity().getApplicationContext(), eventsList, R.layout.events_list_items,
+                    simpleAdapter = new SimpleAdapter(UserEventActivity.this.getActivity().getApplicationContext(), eventsList, R.layout.events_list_items,
                             new String[]{"startDate", "startTime", "name", "description"},
                             new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about});
                     listView.setAdapter(simpleAdapter);
@@ -279,7 +279,7 @@ public class EventListActivity extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String eventKey = eventsList.get(position).get("eventKey");
-                            Intent fullEventInfo = new Intent(EventListActivity.this.getActivity().getApplicationContext(), EventInfoActivity.class);
+                            Intent fullEventInfo = new Intent(UserEventActivity.this.getActivity().getApplicationContext(), EventInfoActivity.class);
                             fullEventInfo.putExtra("eventKey", eventKey);
                             startActivity(fullEventInfo);
                         }
