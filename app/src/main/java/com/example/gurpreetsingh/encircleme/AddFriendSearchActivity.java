@@ -93,6 +93,9 @@ public class AddFriendSearchActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if(!newText.equals(""))
                     doMySearch(newText);
+                else
+                    // clear the list of results because the input is empty
+                    listView.setAdapter(null);
                 return true;
             }
         });
@@ -103,6 +106,9 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         // Find the "no results" views
         textViewNoResults = (TextView) findViewById(R.id.no_users_found_textview);
         sadFaceIcon = (ImageView) findViewById(R.id.sad_face_icon);
+
+        // Find the list view for results
+        listView = (ListView)findViewById(R.id.friend_search_listview);
 
         auth = FirebaseAuth.getInstance();
         currentUserID = auth.getCurrentUser().getUid();
@@ -175,7 +181,6 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         //DatabaseReference namesRef = firebaseDatabase.getReference("userIDs_to_names");
        // Log.d("doMySearch", "dbRef created: " + dbRef.toString());
 
-        listView = (ListView)findViewById(R.id.friend_search_listview);
         final ArrayList<HashMap<String, String>> resultsList = new ArrayList<HashMap<String,String>>();
         final ArrayList<String> userIDList = new ArrayList<>();
         final ArrayList<String> usernamesList = new ArrayList<>();

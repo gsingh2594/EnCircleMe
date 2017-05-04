@@ -16,6 +16,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
@@ -281,6 +282,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             // Check if the event has already happened
                             Log.d("event already happened?", "checking");
+                            boolean eventEnded = eventHasEnded(event);
+                            boolean eventStarted = eventHasNotStarted(event);
                             if (!eventHasEnded(event)) {
                                 Log.d("event already happened?", "NOPE for eventKey = " + dataSnapshot.getKey());
                                 // Store event info in HashMap for later access if it is not already there
@@ -392,7 +395,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     // Returns true if event **start date** and time is before current date and time
-    private boolean eventHasNotStarted(String eventKey, Event event){
+    private boolean eventHasNotStarted(Event event){
         Calendar calendar = Calendar.getInstance();
         String[] mdy = event.getDate().split("/");
         int month = Integer.parseInt(mdy[0]) -1;
@@ -424,7 +427,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return true;
         }
         else { // Event has already ended
-            Log.d("eventHasNotHappened", "eventKey " + eventKey + "has already happened ");
+            //Log.d("eventHasNotHappened", "eventKey " + eventKey + "has already happened ");
             return false;
         }
     }
@@ -435,7 +438,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(location.latitude, location.longitude));
         markerOptions.title(key);   // For retrieving later
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));
+       // BitmapDrawable bitmapDraw=(BitmapDrawable)getResources().getDrawable(R.drawable.ongoingmarker, null);
+        Bitmap onGoingMarkerBM = getMarkerBitmapFromView(R.drawable.ongoingmarker);
+        //Bitmap bm=bitmapDraw.getBitmap();
+        int width = convertDPtoPX(40);
+        int height = convertDPtoPX(40);
+        Bitmap largerMarker = Bitmap.createScaledBitmap(onGoingMarkerBM, width, height, false);
+        //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(largerMarker));
         //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
         mGoogleMap.addMarker(markerOptions);
     }
