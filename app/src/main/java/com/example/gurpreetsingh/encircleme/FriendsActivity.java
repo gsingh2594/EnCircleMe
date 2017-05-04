@@ -60,6 +60,7 @@ public class FriendsActivity extends AppCompatActivity {
     final ArrayList<HashMap<String, String>> friendsList = new ArrayList<HashMap<String,String>>();
     final ArrayList<String> friendsIDList = new ArrayList<>();
     final HashMap<String, HashMap<String, String>> friendsMap = new HashMap<>();
+    final HashMap<String, String> usernameToIDMap = new HashMap<>();
     final ArrayList<HashMap<String, String>> friendsNameUsernameList = new ArrayList<>();
 
     SimpleAdapter simpleAdapter;
@@ -158,9 +159,17 @@ public class FriendsActivity extends AppCompatActivity {
 
     // load and display list of the current user's friends
     private void loadFriendsList(){
+        // Clear all elements in the lists so they may be reloaded
+        friendsMap.clear();
+        usernameToIDMap.clear();
+        friendsIDList.clear();
+        friendsList.clear();
+        friendsNameUsernameList.clear();
+        userWithImageList.clear();
+
         Log.d("loadFriendsList", "method started");
         DatabaseReference friendsRef = database.getReference("friends");
-        friendsRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
+        friendsRef.child(currentUserID).orderByValue().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
@@ -176,7 +185,7 @@ public class FriendsActivity extends AppCompatActivity {
                             friendInfo.put("userID", userID);
                             friendInfo.put("username", username);
                             friendsMap.put(friend.getKey(), friendInfo);
-                            friendsIDList.add(friend.getKey());
+                            friendsIDList.add(userID);
                             friendsList.add(friendInfo);
                             loadUserNameAndID(username);
                             //loadUserProfileImage(userID, username);
@@ -247,7 +256,10 @@ public class FriendsActivity extends AppCompatActivity {
                         NameAndID userNameAndID = result.getValue(NameAndID.class);
                         HashMap<String,String> hashMap = new HashMap<>();
                         hashMap.put("nameAndUsername", userNameAndID.getName() + " (" + username + ")");
+                        hashMap.put("id", userNameAndID.getID());
+                        hashMap.put("username", username);
                         friendsNameUsernameList.add(hashMap);
+                        usernameToIDMap.put(username, userNameAndID.getID());
                         Log.d("loadUserNameAndID", "name and ID loaded: " + userNameAndID.toString());
                         if(friendsNameUsernameList.size() == numOfFriends)
                             displaySimpleResultsList(friendsNameUsernameList, friendsIDList);
@@ -268,7 +280,7 @@ public class FriendsActivity extends AppCompatActivity {
     private void loadUserProfileImage(NameAndID userNameAndID, final String username){
         final String userID = userNameAndID.getID();
         final String name = userNameAndID.getName();
-        Log.d("loadUserProfileImage", "userID = " + userID + "\nname = " + name);
+        Log.d("loadUserProfileImage", "userID = " + userID + "\nname = " + name + "\nusername = " + username);
         Log.d("load profile pic", "about to load from storage");
         StorageReference profilePicStorageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userID);
         profilePicStorageRef.getBytes(1024*1024*5).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -280,6 +292,7 @@ public class FriendsActivity extends AppCompatActivity {
                 Log.d("loadUserProfileImage()", "convert bytes to bitmap");
                 Bitmap profileImageBitmap = BitmapFactory.decodeByteArray(profileImageBytes, 0, profileImageBytes.length);
                 //profileImage.setImageBitmap(profileImageBitmap);
+                Log.d("Image loaded", "UserWithID: \nuserID = " + userID + "\nname = " + name + "\nusername = " + username);
                 UserWithImage uwi = new UserWithImage(userID, username, name, profileImageBitmap);
                 userWithImageList.add(uwi);
                 Log.d("userWithImageList", "size = " + userWithImageList.size());
@@ -303,11 +316,26 @@ public class FriendsActivity extends AppCompatActivity {
 
 
     // populates the listview with results that have a default icon. (No image displayed)
-    private void displaySimpleResultsList(final ArrayList<HashMap<String,String>> nameAndUsernameMap,
+    private void displaySimpleResultsList(final ArrayList<HashMap<String,String>> nameAndUsernameList,
                                           final ArrayList<String> userIDList){
         Log.d("displaySimpleResults", "entering method");
+
+        // Sort user's by name from ArrayList of HashMaps
+        Comparator userHashMapComparator = new Comparator<HashMap<String,String>>() {
+                @Override
+                public int compare(HashMap<String,String> u1, HashMap<String,String> u2) {
+                    int result = u1.get("nameAndUsername").compareTo(u2.get("nameAndUsername"));
+                    if (result < 0) return -1;
+                    else if (result > 0) return 1;
+                    else return 0;
+                }
+            };
+
+        Collections.sort(nameAndUsernameList, userHashMapComparator);
+
+
         final ListView listView = (ListView) findViewById(R.id.friends_listview);
-        SimpleAdapter simpleAdapter = new SimpleAdapter(FriendsActivity.this, nameAndUsernameMap,
+        SimpleAdapter simpleAdapter = new SimpleAdapter(FriendsActivity.this, nameAndUsernameList,
                 R.layout.friends_search_list_items, new String[]{"nameAndUsername"}, new int[]{R.id.friends_search_text_view} );
         listView.setAdapter(simpleAdapter);
 
@@ -315,14 +343,15 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("clicked on item", listView.getItemAtPosition(position).toString());
-                HashMap userInfo = nameAndUsernameMap.get(position);
-                String username = userInfo.get("nameAndUsername").toString();
+                HashMap userInfo = nameAndUsernameList.get(position);
+                String nameAndUsername = userInfo.get("nameAndUsername").toString();
+                String username = userInfo.get("username").toString();
                 Log.d("clicked on item", "username: " + username);
 
                 //Toast.makeText(AddFriendSearchActivity.this, "Clicked on " + Integer.toString(view.getId()), Toast.LENGTH_LONG).show();
                 Toast.makeText(FriendsActivity.this, "User: " + username, Toast.LENGTH_LONG).show();
 
-                String userID = userIDList.get(position);
+                String userID = usernameToIDMap.get(username);
                 //String uID = resultsList.get(position).get("username");
                 Log.d("userID: ", userID);
 
@@ -340,7 +369,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
     }
 
-    // Sorts the list of users with images and displays them in the ListView with an adapter
+    // Sorts the list of users by name with images and displays them in the ListView with an adapter
     private void displayListOfFriends(){
         Log.d("displayListOfFriends()", "entering method");
         // Sort the userWithImages list so that users appear in order of username
@@ -348,13 +377,14 @@ public class FriendsActivity extends AppCompatActivity {
             userWithImageComparator = new Comparator<UserWithImage>() {
                 @Override
                 public int compare(UserWithImage u1, UserWithImage u2) {
-                    int result = u1.getUsername().compareTo(u2.getUsername());
+                    int result = u1.getName().compareTo(u2.getName());
                     if (result < 0) return -1;
                     else if (result > 0) return 1;
                     else return 0;
                 }
             };
         }
+        Log.d("diplayListOfFriends", "sorting userWithImagesList");
         Collections.sort(userWithImageList, userWithImageComparator);
 
         // Initialize the adapter
@@ -365,7 +395,9 @@ public class FriendsActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String otherUserID = friendsList.get(position).get("userID");
+                String otherUserID = userWithImageList.get(position).getUserID();
+                Log.d("onItemClick", "position = " + position + "\n name = " + userWithImageList.get(position).getName()
+                        + "\nuser ID = " + userWithImageList.get(position).getUserID());
                 Intent viewOtherUserProfile = new Intent(FriendsActivity.this, ViewOtherUserProfileActivity.class);
                 viewOtherUserProfile.putExtra("userID", otherUserID);
                 startActivity(viewOtherUserProfile);
