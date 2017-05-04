@@ -199,6 +199,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = (Toolbar) findViewById(R.id.map_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Nearby Events");
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
@@ -253,7 +254,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void loadEventsFromDB(){
-        DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events                                                                           /geofire_locations");
+        DatabaseReference eventLocationsRef = FirebaseDatabase.getInstance().getReference("events/geofire_locations");
         GeoFire eventsGeoFireRef = new GeoFire(eventLocationsRef);
 
         // GeoQuery to retrieve events within a specified distance of the user's current location
@@ -280,7 +281,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             // Check if the event has already happened
                             Log.d("event already happened?", "checking");
-                            if (eventHasEnded(event)) {
+                            if (!eventHasEnded(event)) {
                                 Log.d("event already happened?", "NOPE for eventKey = " + dataSnapshot.getKey());
                                 // Store event info in HashMap for later access if it is not already there
                                 Log.d("eventInfo", "storing event info in HashMap");
@@ -752,14 +753,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        LatLng new_york = new LatLng(40.758879, -73.985110);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
+        //LatLng new_york = new LatLng(40.758879, -73.985110);
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
         //userLocation = new_york;
-        //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        userLocation = new_york;
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        userLocation = latLng;
         //move map camera only the first time location is received
         if(!locationInitialized) {
-            CameraUpdate center=CameraUpdateFactory.newLatLng(new_york);
+            CameraUpdate center=CameraUpdateFactory.newLatLng(latLng);
             CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
             mGoogleMap.moveCamera(center);
             mGoogleMap.animateCamera(zoom);
