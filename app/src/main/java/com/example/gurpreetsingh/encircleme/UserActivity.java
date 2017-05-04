@@ -52,6 +52,8 @@ public class UserActivity extends AppCompatActivity {
     Button friends;
     Button btnSetting;
 
+    //public
+
     private static final long ONE_MEGABYTE = 1024 * 1024;
     private byte[] profileImageBytes;
 
@@ -361,6 +363,7 @@ public class UserActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
                         FirebaseAuth.getInstance().signOut();
+                        stopService(MapsActivity.notificationService);
                         startActivity(new Intent(UserActivity.this, MainActivity.class));
                         //finish();
                     }

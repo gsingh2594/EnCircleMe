@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -280,7 +279,7 @@ public class EventListActivity extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String eventKey = eventsList.get(position).get("eventKey");
-                            Intent fullEventInfo = new Intent(EventListActivity.this.getActivity().getApplicationContext(), EventsInfoTabActivity.class);
+                            Intent fullEventInfo = new Intent(EventListActivity.this.getActivity().getApplicationContext(), EventInfoActivity.class);
                             fullEventInfo.putExtra("eventKey", eventKey);
                             startActivity(fullEventInfo);
                         }

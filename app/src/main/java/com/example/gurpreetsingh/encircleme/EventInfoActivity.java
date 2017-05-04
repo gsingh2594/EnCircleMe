@@ -1,6 +1,7 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,11 +11,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -49,7 +52,7 @@ import java.util.HashMap;
  * Created by GurpreetSingh on 4/18/17.
  */
 
-public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
+public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private static final int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessageEvent> adapter;
@@ -70,24 +73,17 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
     private Button btnEnCircleMe, btnEnCircleFriend, btnUnCircleMe;
 
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_event_info, container, false);
-        //ListView listView = (ListView) view.findViewById(R.id.events_listview);
-/*    @Override
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d("onCreate", "method started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.event_toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();*/
+        ActionBar actionBar = getSupportActionBar();
 
-/*        parentScroll = (ScrollView) findViewById(R.id.parent_scroll);
-        childScroll=(ScrollView)findViewById(R.id.scroll_chat);*/
-
-        //displayChatMessages();
-
-        /*FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fab);
+/*
+        FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,33 +151,32 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
                 return false;
             }
         });*/
-       return view;
     }
 
-    /*@Override
+    @Override
     protected void onNewIntent(Intent intent) {
         Log.d("onNewIntent", "method started");
         super.onNewIntent(intent);
         Log.d("onNewIntent", "getting extra");
         eventKey = intent.getStringExtra("eventKey");
         loadEventInfoFromDB();
-    }*/
+    }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        txtEventName = (TextView) getView().findViewById(R.id.event_name);
-        txtEventStartDate = (TextView) getView().findViewById(R.id.start_date);
-        txtEventTime = (TextView) getView().findViewById(R.id.time);
-        txtEventLocation = (TextView) getView().findViewById(R.id.location);
-        txtEventDescription = (TextView) getView().findViewById(R.id.event_description);
-        txtEventCreator = (TextView) getView().findViewById(R.id.creator_name);
-        creatorProfileImage = (ImageView) getView().findViewById(R.id.creator_profile_image);
+        txtEventName = (TextView) findViewById(R.id.event_name);
+        txtEventStartDate = (TextView)  findViewById(R.id.start_date);
+        txtEventTime = (TextView)  findViewById(R.id.time);
+        txtEventLocation = (TextView)  findViewById(R.id.location);
+        txtEventDescription = (TextView)  findViewById(R.id.event_description);
+        txtEventCreator = (TextView)  findViewById(R.id.creator_name);
+        creatorProfileImage = (ImageView)  findViewById(R.id.creator_profile_image);
 
-        btnEnCircleMe = (Button) getView().findViewById(R.id.encircle_event);
-        btnEnCircleFriend = (Button) getView().findViewById(R.id.encircle_friends);
-        btnUnCircleMe = (Button) getView().findViewById(R.id.uncircle_event);
+        btnEnCircleMe = (Button)  findViewById(R.id.encircle_event);
+        btnEnCircleFriend = (Button)  findViewById(R.id.encircle_friends);
+        btnUnCircleMe = (Button)  findViewById(R.id.uncircle_event);
 
         btnEnCircleMe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +199,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
             }
         });
 
-        eventKey = getActivity().getIntent().getStringExtra("eventKey");
+        eventKey = getIntent().getStringExtra("eventKey");
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Log.d("checking if encircled", "");
@@ -218,11 +213,13 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
                             // user is encircled to the event. Show un-encircleMe button
                             Log.d("userIsEncircled", "EnCircled already");
                             showAsUnCircleMe();
+
                         }
                         else {
                             // user is not encircled. Show en-circleMe button
                             Log.d("userIsEncircled", "EnCircled already");
                             showAsEnCircleMe();
+
                         }
                     }
 
@@ -232,7 +229,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
                     }
                 });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_snippet);
         // Configure MapFragment options and get a new instance
         GoogleMapOptions googleMapOptions =  new GoogleMapOptions().liteMode(true);
@@ -251,7 +248,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         username = ds.getKey().toString();
                         usernameIsLoaded = true;
-                        Toast.makeText(EventInfoActivity.this.getActivity().getApplicationContext(), "Welcome " + username, Toast.LENGTH_LONG).show();
+                        Toast.makeText(EventInfoActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
                         //displayChatMessages();
                     }
                 }
@@ -318,7 +315,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("onCancelled", "Database Error: " + databaseError.getMessage());
-                Toast.makeText(EventInfoActivity.this.getActivity().getApplicationContext(), "Could not load event", Toast.LENGTH_LONG).show();
+                Toast.makeText(EventInfoActivity.this, "Could not load event", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -471,7 +468,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
-        View customMarkerView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.search_marker, null);
+        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.search_marker, null);
         ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.pin_image);
         markerImageView.setImageResource(resId);
         customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -499,7 +496,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
         eventsRef.updateChildren(eventUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(getActivity(), "You are EnCircled!", Toast.LENGTH_LONG).show();
+                Toast.makeText(EventInfoActivity.this, "You are EnCircled!", Toast.LENGTH_LONG).show();
                 showAsUnCircleMe();
             }
         });
@@ -516,7 +513,7 @@ public class EventInfoActivity extends Fragment implements OnMapReadyCallback{
         eventsRef.updateChildren(eventUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(getActivity(), "You are UnCircled!", Toast.LENGTH_LONG).show();
+                Toast.makeText(EventInfoActivity.this, "You are UnCircled!", Toast.LENGTH_LONG).show();
                 showAsEnCircleMe();
             }
         });

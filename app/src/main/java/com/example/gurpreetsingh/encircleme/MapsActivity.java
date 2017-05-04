@@ -126,6 +126,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView textMusic;
     private BottomBar bottomBar;
 
+    public static Intent notificationService;
+
     /*
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
     GeoFire geoFire = new GeoFire(ref);
@@ -203,7 +205,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
-        Intent notificationService = new Intent(getApplicationContext(), FirebaseNotificationService.class);
+        notificationService = new Intent(getApplicationContext(), FirebaseNotificationService.class);
         startService(notificationService);
 
         locationInitialized = false;
@@ -573,6 +575,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                             FirebaseAuth.getInstance().signOut();
+                            stopService(notificationService);
                             startActivity(new Intent(MapsActivity.this, MainActivity.class));
                             //finish();
                         }
@@ -749,14 +752,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        //LatLng new_york = new LatLng(40.758879, -73.985110);
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
+        LatLng new_york = new LatLng(40.758879, -73.985110);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
         //userLocation = new_york;
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        userLocation = latLng;
+        //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        userLocation = new_york;
         //move map camera only the first time location is received
         if(!locationInitialized) {
-            CameraUpdate center=CameraUpdateFactory.newLatLng(latLng);
+            CameraUpdate center=CameraUpdateFactory.newLatLng(new_york);
             CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
             mGoogleMap.moveCamera(center);
             mGoogleMap.animateCamera(zoom);
