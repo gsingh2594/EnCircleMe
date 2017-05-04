@@ -259,7 +259,37 @@ public class FirebaseNotificationService extends Service {
                     Log.d("onDataChange", "Existing friends --> userID = " + userID);
                     previousFriendsList.add(userID);
                 }
-                Log.d("Previous Friends List","arr:" + previousFriendsList.toString());
+
+                friendsRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        String userIDOfSender = dataSnapshot.getKey().toString();
+                        Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + userIDOfSender);
+                        previousFriendsList.remove(userIDOfSender);
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
 
                 final DatabaseReference addEventRef = database.getReference("events/user_created_events/");
                 // List for storing all previously created events. That way only new events will create notifications
@@ -334,7 +364,15 @@ public class FirebaseNotificationService extends Service {
                             public void onChildRemoved(DataSnapshot dataSnapshot) {
                                 String userIDOfSender = dataSnapshot.getKey().toString();
                                 Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + userIDOfSender);
-                                previousFriendsList.remove(userIDOfSender);
+
+                                Iterable<DataSnapshot> allEvents = dataSnapshot.getChildren();
+                                //DataSnapshot newEvent = Iterables.getLast(allEvents);
+                                ArrayList<String> userEventsList = new ArrayList<String>();
+                                for(DataSnapshot event : allEvents){
+                                    userEventsList.add(event.getKey());
+                                }
+                                String lastEventKey = userEventsList.get(userEventsList.size() - 1);
+                                previousEventsList.remove(lastEventKey);
 
                             }
 
