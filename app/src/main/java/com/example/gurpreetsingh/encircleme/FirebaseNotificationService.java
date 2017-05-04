@@ -332,9 +332,9 @@ public class FirebaseNotificationService extends Service {
 
                             @Override
                             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                                String usernameOfSender = dataSnapshot.getValue().toString();
-                                Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + usernameOfSender);
-                                previousEventsList.remove(usernameOfSender);
+                                String userIDOfSender = dataSnapshot.getKey().toString();
+                                Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + userIDOfSender);
+                                previousFriendsList.remove(userIDOfSender);
 
                             }
 
