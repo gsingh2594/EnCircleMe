@@ -329,7 +329,7 @@ public class FirebaseNotificationService extends Service {
                                     // new event created
                                     Log.d("onChildAdded", "New event created --> usernameOfCreator = " + usernameOfCreator);
                                     // Create notification to be displayed
-                                    createNewEventCreatedNotification(userIDOfCreator);
+                                    createNewEventCreatedNotification(userIDOfCreator,lastEventKey );
                                 }
                             }
 
@@ -355,7 +355,7 @@ public class FirebaseNotificationService extends Service {
 
 
                                 // Create notification to be displayed
-                                createNewEventCreatedNotification(userIDOfCreator);
+                                createNewEventCreatedNotification(userIDOfCreator,lastEventKey);
                                 }
 
                             }
@@ -373,6 +373,7 @@ public class FirebaseNotificationService extends Service {
                                 }
                                 String lastEventKey = userEventsList.get(userEventsList.size() - 1);
                                 previousEventsList.remove(lastEventKey);
+
 
                             }
 
@@ -406,7 +407,8 @@ public class FirebaseNotificationService extends Service {
 
 
 
-    public boolean createNewEventCreatedNotification(String userIDOfCreator) {
+    public boolean createNewEventCreatedNotification(String userIDOfCreator, String lastEventKey) {
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
@@ -418,7 +420,8 @@ public class FirebaseNotificationService extends Service {
         mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
         mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
 
-        Intent intent = new Intent(this, EventsTabActivity.class);
+        Intent intent = new Intent(this, EventInfoActivity.class);
+        intent.putExtra("eventKey",lastEventKey);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
