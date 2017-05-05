@@ -1,9 +1,5 @@
 package com.example.gurpreetsingh.encircleme;
 
-/**
- * Created by GurpreetSingh on 4/18/17.
- */
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,7 +25,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class UserEventActivity extends Fragment {
+/**
+ * Created by GurpreetSingh on 5/4/17.
+ */
+
+public class EncircledEventActivity extends Fragment{
+
 
 
     FirebaseAuth auth;
@@ -38,13 +39,16 @@ public class UserEventActivity extends Fragment {
     DatabaseReference dbRef;
     SimpleAdapter simpleAdapter;
     private HashMap<String, Event> eventsInfo;
+    private ArrayList<String> eventKeysList;
+    private ArrayList<HashMap<String,String>> eventsList;
+    private int numOfEvents;
 
     private BottomBar bottomBar;
     private BottomBar topBar;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_user_event, container, false);
+        View view = inflater.inflate(R.layout.activity_encircled_event, container, false);
         ListView listView = (ListView) view.findViewById(R.id.events_listview);
         //ArrayList<String> list=new ArrayList<>();
     /*@Override
@@ -60,6 +64,10 @@ public class UserEventActivity extends Fragment {
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         eventsInfo = new HashMap<String, Event>();
+        eventKeysList = new ArrayList<String>();
+        eventsList = new ArrayList<>();
+        loadEventsList();
+
 
 
 /*        listview=(ListView)findViewById(R.id.listview);
@@ -133,45 +141,78 @@ public class UserEventActivity extends Fragment {
     public void onStart(){
         super.onStart();
         Log.d("onStart", "starting the activity");
-        loadEventsList();
-        if(simpleAdapter != null)
-            simpleAdapter.notifyDataSetChanged();
     }
 
 
+    private void loadEventInfoFromDB(final String eventKey){
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events/all_events/" + eventKey);
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Event event = dataSnapshot.getValue(Event.class);
+                Log.d("event", event.toString());
+                Log.d("event info", event.toString());
+                // Check if event has ended
+                if(!eventHasEnded(event)) {
+                    // Event has not ended --> store event info in a hashmap
+                    HashMap<String, String> eventInfo = new HashMap<String, String>();
+                    eventInfo.put("eventKey", eventKey);
+                    eventInfo.put("name", event.getName());
+                    eventInfo.put("description", event.getAbout());
+                    eventInfo.put("startDate", event.getDate());
+                    eventInfo.put("startTime", event.getStartTime());
+                    eventInfo.put("endDate", event.getEndDate());
+                    eventInfo.put("endTime", event.getEndTime());
+                    // Add event info hashmap to the events arraylist
+                    eventsList.add(eventInfo);
+                    if (eventsList.size() == numOfEvents)
+                        displayListOfEvents();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("onCancelled", "Database Error: " + databaseError.getMessage());
+                // Toast.makeText(EncircledEventActivity.this, "Could not load event", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     // load and display list of all the events (past and future)
-    private void loadEventsList(){
+    private void loadEventsList() {
         Log.d("loadEventsList", "method started");
-        final ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String,String>>();
-        DatabaseReference eventsRef = database.getReference("events/user_created_events/" + currentUserID);
+        final ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String, String>>();
+        DatabaseReference eventsRef = database.getReference("events/user_encircled_events/" + currentUserID);
         eventsRef.orderByChild("date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChildren()){
-                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                if (dataSnapshot.hasChildren()) {
+                    numOfEvents = (int) dataSnapshot.getChildrenCount();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
                         // Retrieve data as the Event object
-                        Event event = child.getValue(Event.class);
-                        Log.d("event info", event.toString());
-                        // Check if event has ended
-                        //if(!eventHasEnded(event)) {
-                            // Event has not ended --> store event info in a hashmap
-                            HashMap<String, String> eventInfo = new HashMap<String, String>();
-                            eventInfo.put("eventKey", child.getKey());
-                            eventInfo.put("name", event.getName());
-                            eventInfo.put("description", event.getAbout());
-                            eventInfo.put("startDate", event.getDate());
-                            eventInfo.put("startTime", event.getStartTime());
-                            eventInfo.put("endDate", event.getEndDate());
-                            eventInfo.put("endTime", event.getEndTime());
-                            // Add event info hashmap to the events arraylist
-                            eventsList.add(eventInfo);
+                        String eventKey = child.getKey();
+                        eventKeysList.add(eventKey);
+                        //Event event = child.getValue(Event.class);
+                        loadEventInfoFromDB(eventKey);
                         //}
                     }
 
-                    // Comparator for comparing and sorting dates for the events
-                    Comparator eventDatesAndTimesComparator = new Comparator<HashMap<String, String>>() {
-                        @Override
-                        public int compare(HashMap<String, String> event1, HashMap<String, String> event2) {
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void displayListOfEvents(){
+        // Comparator for comparing and sorting dates for the events
+        Comparator eventDatesAndTimesComparator = new Comparator<HashMap<String, String>>() {
+            @Override
+            public int compare(HashMap<String, String> event1, HashMap<String, String> event2) {
                             /*String[] startMDY1 = event1.get("startDate").split("/");
                             String[] startMDY2 = event2.get("startDate").split("/"); */
 
@@ -200,98 +241,94 @@ public class UserEventActivity extends Fragment {
                                     }
                                 }
                             } */
-                            int event1Month, event1Day, event1Year, event1Hour, event1Min;
-                            int event2Month, event2Day, event2Year, event2Hour, event2Min;
+                int event1Month, event1Day, event1Year, event1Hour, event1Min;
+                int event2Month, event2Day, event2Year, event2Hour, event2Min;
 
-                            // Get event1 start month, day, year
-                            String[] mdy1 = event1.get("startDate").split("/");
-                            event1Month = Integer.parseInt(mdy1[0]);
-                            event1Month-=1; // decrement month by 1 because range of months is 0-11
-                            event1Day = Integer.parseInt(mdy1[1]);
-                            event1Year = Integer.parseInt(mdy1[2]);
+                // Get event1 start month, day, year
+                String[] mdy1 = event1.get("startDate").split("/");
+                event1Month = Integer.parseInt(mdy1[0]);
+                event1Month-=1; // decrement month by 1 because range of months is 0-11
+                event1Day = Integer.parseInt(mdy1[1]);
+                event1Year = Integer.parseInt(mdy1[2]);
 
-                            // Get event2 start month, day, year
-                            String[] mdy2 = event2.get("startDate").split("/");
-                            event2Month = Integer.parseInt(mdy2[0]);
-                            event2Month-=1; // decrement month by 1 because range of months is 0-11
-                            event2Day = Integer.parseInt(mdy2[1]);
-                            event2Year = Integer.parseInt(mdy2[2]);
+                // Get event2 start month, day, year
+                String[] mdy2 = event2.get("startDate").split("/");
+                event2Month = Integer.parseInt(mdy2[0]);
+                event2Month-=1; // decrement month by 1 because range of months is 0-11
+                event2Day = Integer.parseInt(mdy2[1]);
+                event2Year = Integer.parseInt(mdy2[2]);
 
-                            // Get event1 start hour and min
-                            String hourMin1[] = event1.get("startTime").split("[: ]");
-                            if(hourMin1[2].equals("pm"))
-                                if(Integer.parseInt(hourMin1[0]) != 12)
-                                    event1Hour = Integer.parseInt(hourMin1[0])+ 12; // If pm and hour!=12, add 12 to the hour to convert to 24 hour format
-                                else
-                                    event1Hour = Integer.parseInt(hourMin1[0]);
-                            else
-                                event1Hour = Integer.parseInt(hourMin1[0]); // Hour is in am
-                            event1Min = Integer.parseInt(hourMin1[1]);
+                // Get event1 start hour and min
+                String hourMin1[] = event1.get("startTime").split("[: ]");
+                if(hourMin1[2].equals("pm"))
+                    if(Integer.parseInt(hourMin1[0]) != 12)
+                        event1Hour = Integer.parseInt(hourMin1[0])+ 12; // If pm and hour!=12, add 12 to the hour to convert to 24 hour format
+                    else
+                        event1Hour = Integer.parseInt(hourMin1[0]);
+                else
+                    event1Hour = Integer.parseInt(hourMin1[0]); // Hour is in am
+                event1Min = Integer.parseInt(hourMin1[1]);
 
-                            // Get event2 start hour and min
-                            String[] hourMin2 = event2.get("startTime").split("[: ]");
-                            if(hourMin2[2].equals("pm"))
-                                if(Integer.parseInt(hourMin2[0]) != 12)
-                                    event2Hour = Integer.parseInt(hourMin2[0])+ 12; // If pm and hour!=12, add 12 to the hour to convert to 24 hour format
-                                else
-                                    event2Hour = Integer.parseInt(hourMin2[0]);
-                            else
-                                event2Hour = Integer.parseInt(hourMin2[0]); // Hour is in am
-                            event2Min = Integer.parseInt(hourMin2[1]);
+                // Get event2 start hour and min
+                String[] hourMin2 = event2.get("startTime").split("[: ]");
+                if(hourMin2[2].equals("pm"))
+                    if(Integer.parseInt(hourMin2[0]) != 12)
+                        event2Hour = Integer.parseInt(hourMin2[0])+ 12; // If pm and hour!=12, add 12 to the hour to convert to 24 hour format
+                    else
+                        event2Hour = Integer.parseInt(hourMin2[0]);
+                else
+                    event2Hour = Integer.parseInt(hourMin2[0]); // Hour is in am
+                event2Min = Integer.parseInt(hourMin2[1]);
 
 
-                            // Calendar for event1
-                            Calendar event1Calendar = Calendar.getInstance();
-                            event1Calendar.clear(); // Clear the fields in the calendar so the compareTo method works properly
-                            event1Calendar.set(event1Year, event1Month, event1Day, event1Hour, event1Min, 0);
-                            //event1Calendar.getTimeInMillis(); // get to recalcculate time in millis
-                            Log.d("event1Calendar", "after setting calendar: " + Long.toString(event1Calendar.getTimeInMillis()));
+                // Calendar for event1
+                Calendar event1Calendar = Calendar.getInstance();
+                event1Calendar.clear(); // Clear the fields in the calendar so the compareTo method works properly
+                event1Calendar.set(event1Year, event1Month, event1Day, event1Hour, event1Min, 0);
+                //event1Calendar.getTimeInMillis(); // get to recalcculate time in millis
+                Log.d("event1Calendar", "after setting calendar: " + Long.toString(event1Calendar.getTimeInMillis()));
 
-                            // Calendar for event1
-                            Calendar event2Calendar = Calendar.getInstance();
-                            event2Calendar.clear(); // Clear the fields in the calendar so the compareTo method works properly
-                            event2Calendar.set(event2Year, event2Month, event2Day, event2Hour, event2Min, 0);
-                            //event1Calendar.getTimeInMillis(); // get to recalcculate time in millis
-                            Log.d("event2Calendar", "after setting calendar: " + Long.toString(event2Calendar.getTimeInMillis()));
+                // Calendar for event1
+                Calendar event2Calendar = Calendar.getInstance();
+                event2Calendar.clear(); // Clear the fields in the calendar so the compareTo method works properly
+                event2Calendar.set(event2Year, event2Month, event2Day, event2Hour, event2Min, 0);
+                //event1Calendar.getTimeInMillis(); // get to recalcculate time in millis
+                Log.d("event2Calendar", "after setting calendar: " + Long.toString(event2Calendar.getTimeInMillis()));
 
-                            // Compare the event1 and event2 calendars and and return the result
-                            int result = event1Calendar.compareTo(event2Calendar);
-                            Log.d("comparator result", Integer.toString(result));
-                            return result;
-                        }
-                    };
+                // Compare the event1 and event2 calendars and and return the result
+                int result = event1Calendar.compareTo(event2Calendar);
+                Log.d("comparator result", Integer.toString(result));
+                return result;
+            }
+        };
 
                     /* Sort the events in the events list by date using the comparator
                      https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)
                      The documentation says it uses a mergesort implementation ^
                      --> Runtime of O(n * log n) worst case, or almost O(n) when mostly sorted */
-                    Collections.sort(eventsList, eventDatesAndTimesComparator);
+        Collections.sort(eventsList, eventDatesAndTimesComparator);
 
-                    // Find listview from layout and initialize with an adapter
-                    final ListView listView = (ListView) getView().findViewById(R.id.events_listview);
-                    simpleAdapter = new SimpleAdapter(UserEventActivity.this.getActivity().getApplicationContext(), eventsList, R.layout.events_list_items,
-                            new String[]{"startDate", "startTime", "name", "description"},
-                            new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about});
-                    listView.setAdapter(simpleAdapter);
+        // Find listview from layout and initialize with an adapter
+        final ListView listView = (ListView) getView().findViewById(R.id.events_listview);
+        simpleAdapter = new SimpleAdapter(EncircledEventActivity.this.getActivity().getApplicationContext(), eventsList, R.layout.events_list_items,
+                new String[]{"startDate", "startTime", "name", "description"},
+                new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about});
+        listView.setAdapter(simpleAdapter);
 
-                    // Show EventViewActivity when clicked
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            String eventKey = eventsList.get(position).get("eventKey");
-                            Intent fullEventInfo = new Intent(UserEventActivity.this.getActivity().getApplicationContext(), EventInfoActivity.class);
-                            fullEventInfo.putExtra("eventKey", eventKey);
-                            startActivity(fullEventInfo);
-                        }
-                    });
-                }
-            }
+
+
+        // Show EventViewActivity when clicked
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String eventKey = eventsList.get(position).get("eventKey");
+                Intent fullEventInfo = new Intent(EncircledEventActivity.this.getActivity().getApplicationContext(), EventInfoActivity.class);
+                fullEventInfo.putExtra("eventKey", eventKey);
+                startActivity(fullEventInfo);
             }
         });
     }
+
 
 
     // returns true if event end date is before the current time, or false otherwise
@@ -359,7 +396,8 @@ public class UserEventActivity extends Fragment {
         super.onResume();
         //bottomBar.setDefaultTab(R.id.tab_alerts);
         //topBar.setDefaultTab(R.id.event_info);
+        if (simpleAdapter != null) {
+            simpleAdapter.notifyDataSetChanged();
+        }
     }
-
-
 }

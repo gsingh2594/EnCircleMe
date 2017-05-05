@@ -26,7 +26,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 UserEventActivity tab2 = new UserEventActivity();
                 return tab2;
             case 2:
-                TabFragment1 tab3 = new TabFragment1();
+                EncircledEventActivity tab3 = new EncircledEventActivity();
                 return tab3;
             case 3:
                 TabFragment1 tab4 = new TabFragment1();
