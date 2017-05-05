@@ -283,14 +283,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             // Check if the event has already happened
                             Log.d("event already happened?", "checking");
                             boolean eventEnded = eventHasEnded(event);
-                            boolean eventStarted = eventHasNotStarted(event);
-                            if (!eventHasEnded(event)) {
-                                Log.d("event already happened?", "NOPE for eventKey = " + dataSnapshot.getKey());
-                                // Store event info in HashMap for later access if it is not already there
-                                Log.d("eventInfo", "storing event info in HashMap");
+                            boolean isFutureEvent;
+                            if(!eventEnded){
+                                // Event has not ended. Check if it has started
+                                if(eventHasNotStarted(event)) {
+                                    // Event is in the future
+                                    isFutureEvent = true;
+                                }else{
+                                    // Event has started --> currently happening
+                                    isFutureEvent = false;
+                                }
+                                // Store event in HashMap
                                 eventsInfoMap.put(eventKey, event);
-                                // Load the event creator's profile image
-                                loadCreatorProfileImage(eventKey, eventLocation);
+                                loadCreatorProfileImage(eventKey, eventLocation, isFutureEvent);
                             }
                         }
 
@@ -433,20 +438,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void addLocationMarker(String key, GeoLocation location) {
+    private void addLocationMarker(String key, GeoLocation location, boolean isFutureEvent) {
         // Create location marker
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(location.latitude, location.longitude));
         markerOptions.title(key);   // For retrieving later
-       // BitmapDrawable bitmapDraw=(BitmapDrawable)getResources().getDrawable(R.drawable.ongoingmarker, null);
-        Bitmap onGoingMarkerBM = getMarkerBitmapFromView(R.drawable.ongoingmarker);
-        //Bitmap bm=bitmapDraw.getBitmap();
-        int width = convertDPtoPX(40);
-        int height = convertDPtoPX(40);
-        Bitmap largerMarker = Bitmap.createScaledBitmap(onGoingMarkerBM, width, height, false);
+
+        // For scaling markers later if possible
+        /*BitmapDrawable bitmapDraw;
+        if(!isFutureEvent)
+            // Is a current event --> use red marker
+            bitmapDraw =(BitmapDrawable)getResources().getDrawable(R.drawable.ongoingmarker, null);
+        else
+            // Is a future event --> use green marker
+            bitmapDraw =(BitmapDrawable)getResources().getDrawable(R.drawable.marker_encircleme, null);
+        //Bitmap onGoingMarkerBM = getMarkerBitmapFromView(R.drawable.ongoingmarker);
+        Bitmap markerBM=bitmapDraw.getBitmap();
+        int width = (int) (markerBM.getWidth() * 1.3);
+        int height = (int) (markerBM.getHeight() * 1.3);
+        Bitmap largerMarkerBM = Bitmap.createScaledBitmap(markerBM, width, height, false);
+
         //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(largerMarker));
-        //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(largerMarkerBM));
+        //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);*/
+
+        // Show the correct marker depending on whether event is current or in future
+        if(!isFutureEvent)
+            // Event is in future --> show green marker
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.marker_encircleme)));
+        else
+            // Event is currently happening
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));
+
         mGoogleMap.addMarker(markerOptions);
     }
 
@@ -1042,7 +1065,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     */
 
-    private void loadCreatorProfileImage(String key, GeoLocation location){
+    private void loadCreatorProfileImage(String key, GeoLocation location, final boolean isFutureEvent){
         final String eventKey = key;
         final GeoLocation eventLocation = location;
         // Load event creator's userID from DB
@@ -1068,7 +1091,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Bitmap scaledProfileImage = profileImage.createScaledBitmap(profileImage, convertDPtoPX(60), convertDPtoPX(60), false);
                             creatorProfileImagesMap.put(eventKey, scaledProfileImage);
                             // Create location marker
-                            addLocationMarker(eventKey, eventLocation);
+                            addLocationMarker(eventKey, eventLocation, isFutureEvent);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -1077,7 +1100,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Log.d("Creator's profile image", "no image found");
                             creatorProfileImagesMap.put(eventKey, null);    // null to indicate no profile image
                             // Create location marker
-                            addLocationMarker(eventKey, eventLocation);
+                            addLocationMarker(eventKey, eventLocation, isFutureEvent);
                         }
                     });
                 }

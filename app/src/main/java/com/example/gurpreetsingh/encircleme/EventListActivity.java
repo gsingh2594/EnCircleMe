@@ -153,7 +153,7 @@ public class EventListActivity extends Fragment {
                         Event event = child.getValue(Event.class);
                         Log.d("event info", event.toString());
                         // Check if event has ended
-                        //if(!eventHasEnded(event)) {
+                        if(!eventHasEnded(event)) {
                             // Event has not ended --> store event info in a hashmap
                             HashMap<String, String> eventInfo = new HashMap<String, String>();
                             eventInfo.put("eventKey", child.getKey());
@@ -165,7 +165,7 @@ public class EventListActivity extends Fragment {
                             eventInfo.put("endTime", event.getEndTime());
                             // Add event info hashmap to the events arraylist
                             eventsList.add(eventInfo);
-                        //}
+                        }
                     }
 
                     // Comparator for comparing and sorting dates for the events
