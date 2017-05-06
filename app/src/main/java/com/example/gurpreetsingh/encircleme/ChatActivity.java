@@ -154,34 +154,6 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_sign_out) {
-            AuthUI.getInstance().signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(ChatActivity.this,
-                                    "You have been signed out.",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-
-                            // Close activity
-                            finish();
-                        }
-                    });
-        }
-        return true;
-    }
-*/
-
     private void displayChatMessages() {
         final ListView listOfMessages = (ListView)findViewById(R.id.list_of_messages);
 

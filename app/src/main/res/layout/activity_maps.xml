@@ -149,23 +149,6 @@
                     android:linksClickable="true"
                     android:enabled="true"/>
 
-                <!--<TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Price level:"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/detail_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/detail_rating"
-                    android:layout_marginLeft="10dp"
-                    android:padding="5dp"
-                    android:text="Price level"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-    -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -183,73 +166,8 @@
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
 
-                <!--<TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Place Type:"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/detail_placetype"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/detail_price"
-                    android:layout_marginLeft="10dp"
-                    android:padding="5dp"
-                    android:text="Place type"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />-->
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </android.support.v4.widget.NestedScrollView>
-
-
-    <!--
-            <Button
-                android:id="@+id/friends"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:background="@color/colorPrimary"
-                android:drawableTop="@drawable/friends"
-                android:padding="10dp"
-                android:text="Friends"
-                android:textSize="12sp"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btnMaps"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:background="@color/colorPrimary"
-                android:drawableTop="@drawable/ic_map_black_24dp"
-                android:padding="10dp"
-                android:scaleType="centerCrop"
-                android:text="Maps"
-                android:textSize="12sp"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btnAlerts"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:background="@color/colorPrimary"
-                android:drawableTop="@drawable/alerts"
-                android:padding="10dp"
-                android:scaleType="centerCrop"
-                android:text="Alerts"
-                android:textSize="12sp"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/setting"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:background="@color/colorPrimary"
-                android:drawableTop="@drawable/ic_settings_black_24dp"
-                android:padding="10dp"
-                android:scaleType="centerCrop"
-                android:text="Settings"
-                android:textSize="12sp"
-                android:layout_weight="1"/>-->
 
 </android.support.design.widget.CoordinatorLayout>

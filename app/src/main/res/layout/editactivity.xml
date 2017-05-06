@@ -162,19 +162,6 @@
                 android:lines="4"
                 android:textAlignment="viewStart" />
 
-            <!--<Button
-                android:id="@+id/pickerButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/btn_endtime"
-                android:layout_below="@+id/btn_endtime"
-                android:layout_marginTop="5dp"
-                android:background="@color/colorPrimaryDark"
-                android:itemBackground="@drawable/ripple_effect"
-                android:text="Pick Place"
-                android:clickable="true"
-                android:textColor="@android:color/white" />-->
-
             <TextView
                 android:id="@+id/selected_place1"
                 android:layout_width="wrap_content"

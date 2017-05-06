@@ -89,14 +89,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private BottomBar bottomBar;
     private OnTabSelectListener tabSelectListener;
 
-
-    /*Button btnAlerts;
-    Button btnMaps;
-    Button btnProfile;
-    Button friends;
-    Button btnSetting;*/
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,11 +141,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         loadUserProfileImage();
         loadUserCoverImage();
 
-/*      Alerts();
-        Maps();
-        Friends();
-        Profile();
-        Settings();*/
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_profile);
         tabSelectListener = new OnTabSelectListener() {
@@ -180,33 +167,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         };
         bottomBar.setOnTabSelectListener(tabSelectListener);
     }
-
-
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_profile:
-                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                        startActivity(profile);
-                        break;
-                    case R.id.action_friends:
-                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
-                        startActivity(friends);
-                        break;
-                    case R.id.action_map:
-                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
-                        startActivity(map);
-                        break;
-*//*                            case R.id.action_alerts:
-                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
-                                startActivity(events);
-                                break;
-                        *//*}
-                return false;
-            }
-        });*/
 
     @Override
     protected void onDestroy() {
@@ -248,31 +208,31 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                         int paddingSize = convertDPtoPX(10);
                         interestImageView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
                         interestImageView.setBackgroundColor(Color.WHITE);
-                            switch (userInterests.get(i)) {
-                                case "Movie Theatres":
-                                    interestImageView.setBackgroundResource(R.drawable.movies);
-                                    break;
-                                case "Art Gallery":
-                                    interestImageView.setBackgroundResource(R.drawable.artgallery);
-                                    break;
-                                case "Cafe":
-                                    interestImageView.setBackgroundResource(R.drawable.cafe);
-                                    break;
-                                case "Bars":
-                                    interestImageView.setBackgroundResource(R.drawable.bars);
-                                    break;
-                                case "Restaurants":
-                                    interestImageView.setBackgroundResource(R.drawable.restaurants);
-                                    break;
-                                case "Department Stores":
-                                    interestImageView.setBackgroundResource(R.drawable.deptstores);
-                                    break;
+                        switch (userInterests.get(i)) {
+                            case "Movie Theatres":
+                                interestImageView.setBackgroundResource(R.drawable.movies);
+                                break;
+                            case "Art Gallery":
+                                interestImageView.setBackgroundResource(R.drawable.artgallery);
+                                break;
+                            case "Cafe":
+                                interestImageView.setBackgroundResource(R.drawable.cafe);
+                                break;
+                            case "Bars":
+                                interestImageView.setBackgroundResource(R.drawable.bars);
+                                break;
+                            case "Restaurants":
+                                interestImageView.setBackgroundResource(R.drawable.restaurants);
+                                break;
+                            case "Department Stores":
+                                interestImageView.setBackgroundResource(R.drawable.deptstores);
+                                break;
                         }
                         if (i < 3){
                             interestsLinearLayout.addView(interestImageView);
                         }
                         else
-                        interestsLinearLayout2.addView(interestImageView);
+                            interestsLinearLayout2.addView(interestImageView);
                     }
                 }
             }
@@ -369,22 +329,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }
         return super.onOptionsItemSelected(item);
     }
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Bitmap bitmap = getPath(data.getData());
-            imageView.setImageBitmap(bitmap);
-        }
-    }
-
-
-    public void selectImage(View view) {
-        Intent intent = new Intent();
-        intent.setType("image*//*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
-    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -436,15 +380,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         });
-        /*
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                profileImageSelected = false;
-                coverImageSelected = false;
-            }
-        });
-        */
+
         builder.show();
     }
 
@@ -754,56 +690,4 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         //profileImageBitmap.recycle();
         //coverImageBitmap.recycle();
     }
-
-    /*    //Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent time = new Intent(UserProfileActivity.this, UserProfileActivity.class);
-                startActivity(time);
-            }
-        });
-    }
-    public void Alerts(){
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent alerts = new Intent(UserProfileActivity.this, PlacePickerActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-    public void Maps(){
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent alerts = new Intent(UserProfileActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-    public void Friends(){
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(UserProfileActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-    public void Settings(){
-        btnSetting = (Button) findViewById(R.id.setting);
-        btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent setting = new Intent(UserProfileActivity.this, UserActivity.class);
-                startActivity(setting);
-            }
-        });
-    }*/
 }

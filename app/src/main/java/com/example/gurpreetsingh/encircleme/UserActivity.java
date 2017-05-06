@@ -46,13 +46,6 @@ public class UserActivity extends AppCompatActivity {
     private FirebaseStorage fbStorage;
     private StorageReference fbStorageRef;
     private User user;
-    Button btnAlerts;
-    Button btnMaps;
-    Button btnProfile;
-    Button friends;
-    Button btnSetting;
-
-    //public
 
     private static final long ONE_MEGABYTE = 1024 * 1024;
     private byte[] profileImageBytes;
@@ -63,63 +56,6 @@ public class UserActivity extends AppCompatActivity {
     private TextView textAlerts;
     private TextView profileName;
     private ImageView profileImage;
-
-
-/*    //Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent time = new Intent(UserActivity.this, UserProfileActivity.class);
-                startActivity(time);
-            }
-        });
-    }
-
-    public void Alerts() {
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(UserActivity.this, PlacePickerActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Maps() {
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(UserActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Friends() {
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(UserActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-
-    public void Settings() {
-        btnSetting = (Button) findViewById(R.id.setting);
-        btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent setting = new Intent(UserActivity.this, UserActivity.class);
-                startActivity(setting);
-            }
-        });
-    }*/
 
 
     @Override
@@ -142,49 +78,6 @@ public class UserActivity extends AppCompatActivity {
         loadUserProfile();
         loadUserProfileImage();
 
-        /*textProfile = (TextView) findViewById(R.id.text_profile);
-        textFriends = (TextView) findViewById(R.id.text_friends);
-        textMap = (TextView) findViewById(R.id.text_map);
-        textAlerts = (TextView) findViewById(R.id.text_alerts);
-
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.bottom_navigation);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_profile:
-                                textProfile.setVisibility(View.VISIBLE);
-                                textFriends.setVisibility(View.GONE);
-                                textMap.setVisibility(View.GONE);
-                                textAlerts.setVisibility(View.GONE);
-                                break;
-                            case R.id.action_friends:
-                                textProfile.setVisibility(View.GONE);
-                                textFriends.setVisibility(View.VISIBLE);
-                                textMap.setVisibility(View.GONE);
-                                textAlerts.setVisibility(View.GONE);
-                                break;
-                            case R.id.action_map:
-                                textProfile.setVisibility(View.GONE);
-                                textFriends.setVisibility(View.GONE);
-                                textMap.setVisibility(View.VISIBLE);
-                                textAlerts.setVisibility(View.GONE);
-                                break;
-                            case R.id.action_alerts:
-                                textProfile.setVisibility(View.GONE);
-                                textFriends.setVisibility(View.GONE);
-                                textMap.setVisibility(View.GONE);
-                                textAlerts.setVisibility(View.VISIBLE);
-                                break;
-                        }
-                        return false;
-                    }
-                });
-*/
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
         signOutButton = (Button) findViewById(R.id.sign_out);
@@ -240,55 +133,12 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-/*        Alerts();
-        Maps();
-        Friends();
-        Profile();
-        Settings();*/
-
-
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_profile:
-                        *//*textProfile.setVisibility(View.VISIBLE);
-                        textFriends.setVisibility(View.GONE);
-                        textMap.setVisibility(View.GONE);*//*
-                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                        startActivity(profile);
-                        break;
-                    case R.id.action_friends:
-                        *//*textProfile.setVisibility(View.GONE);
-                        textFriends.setVisibility(View.VISIBLE);
-                        textMap.setVisibility(View.GONE);*//*
-                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
-                        startActivity(friends);
-                        break;
-                    case R.id.action_map:
-                        *//*textProfile.setVisibility(View.GONE);
-                        textFriends.setVisibility(View.GONE);
-                        textMap.setVisibility(View.VISIBLE);*//*
-                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
-                        startActivity(map);
-                        break;
-*//*                            case R.id.action_alerts:
-                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
-                                startActivity(events);
-                                break;
-                        *//*
-                }
-                return false;
-            }
-        });*/
     }
 
     private void locations() {
-       Intent location_settings = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        Intent location_settings = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(location_settings);
-        }
+    }
 
 
     private void notifications() {

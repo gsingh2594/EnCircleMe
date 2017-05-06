@@ -116,34 +116,8 @@ public class FriendsActivity extends AppCompatActivity {
                     Intent events = new Intent(getApplicationContext(), ChatActivity.class);
                     startActivity(events);
                 }
-
             }
         });
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_profile:
-                        Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                        startActivity(profile);
-                        break;
-                    case R.id.action_friends:
-                        Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
-                        startActivity(friends);
-                        break;
-                    case R.id.action_map:
-                        Intent map = new Intent(getApplicationContext(), MapsActivity.class);
-                        startActivity(map);
-                        break;
-*//*                            case R.id.action_alerts:
-                                Intent events = new Intent(getApplicationContext(), SearchActivity.class);
-                                startActivity(events);
-                                break;
-                        *//*}
-                return false;
-            }
-        });*/
     }
 
 
@@ -155,7 +129,6 @@ public class FriendsActivity extends AppCompatActivity {
         if(simpleAdapter != null)
             simpleAdapter.notifyDataSetChanged();
     }
-
 
     // load and display list of the current user's friends
     private void loadFriendsList(){
@@ -196,24 +169,6 @@ public class FriendsActivity extends AppCompatActivity {
                     neutralFace.setVisibility(View.GONE);
                     noFriendsTextView.setVisibility(View.GONE);
                     findFriendsButton.setVisibility(View.GONE);
-                    /*
-                    // Find listview from layout and initialize with an adapter
-                    final ListView listView = (ListView) findViewById(R.id.friends_listview);
-                    simpleAdapter = new SimpleAdapter(FriendsActivity.this, friendsList,
-                            R.layout.friend_requests_list_items, new String[]{"username"}, new int[]{R.id.friend_requests_text_view});
-                    listView.setAdapter(simpleAdapter);
-                    simpleAdapter.notifyDataSetChanged();
-
-                    // Show friend's user profile when clicked
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            String otherUserID = friendsList.get(position).get("userID");
-                            Intent viewOtherUserProfile = new Intent(FriendsActivity.this, ViewOtherUserProfileActivity.class);
-                            viewOtherUserProfile.putExtra("userID", otherUserID);
-                            startActivity(viewOtherUserProfile);
-                        }
-                    }); */
                 }
                 else{
                     // User does not have friends
@@ -436,61 +391,4 @@ public class FriendsActivity extends AppCompatActivity {
         super.onResume();
         bottomBar.setDefaultTab(R.id.tab_friends);
     }
-
-
-/*    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent profile = new Intent(FriendsActivity.this, UserProfileActivity.class);
-                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(profile);
-            }
-        });
-    }
-
-    public void Alerts() {
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(FriendsActivity.this, PlacePickerActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Maps() {
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(FriendsActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Friends() {
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(FriendsActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-
-    public void Settings() {
-        btnSetting = (Button) findViewById(R.id.setting);
-        btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent setting = new Intent(FriendsActivity.this, UserActivity.class);
-                startActivity(setting);
-            }
-        });
-    }*/
 }

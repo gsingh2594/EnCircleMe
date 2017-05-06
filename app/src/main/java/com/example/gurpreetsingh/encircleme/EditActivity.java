@@ -1,7 +1,6 @@
 package com.example.gurpreetsingh.encircleme;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -117,7 +116,6 @@ public class EditActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.activity_edit);
 
         btnPlacemap = (Button) findViewById(R.id.placemap);
-        mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
         btnDatePicker=(Button)findViewById(R.id.btn_date);
         btnTimePicker=(Button)findViewById(R.id.btn_time);
         btnEndDatePicker = (Button)findViewById(R.id.btn_end_date);
@@ -128,7 +126,6 @@ public class EditActivity extends Activity implements View.OnClickListener{
         txtEndDate = (TextView)findViewById(R.id.end_date);
         txtEndTime=(TextView)findViewById(R.id.end_time);
 
-        mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
         //btnPlacePicker=(Button)findViewById(R.id.pickerButton);
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
@@ -157,27 +154,6 @@ public class EditActivity extends Activity implements View.OnClickListener{
         database = FirebaseDatabase.getInstance();
         dbRef = database.getReference();
         //loadNextUserCreatedEventIndex();
-
-        //Button button1 = (Button) findViewById(R.id.pickerButton);
-
-        /*
-        final TextView Date = (TextView) findViewById(R.id.textView3);
-        final TextView Time = (TextView) findViewById(R.id.textView4);*/
-
-        /*timePicker1 = (TimePicker) findViewById(R.id.timePicker1);
-        timePicker2 = (TimePicker) findViewById(R.id.timePicker2);
-        time = (TextView) findViewById(R.id.textView4);
-        dateView = (TextView) findViewById(R.id.textView3);
-        calendar = Calendar.getInstance();
-        year = calendar.get(Calendar.YEAR);
-
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        showDate(year, month, day);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
-        showStartTime(hour, min);
-        showEndTime(hour, min);*/
     }
 
     private void loadNextUserCreatedEventIndex(){
@@ -376,17 +352,6 @@ public class EditActivity extends Activity implements View.OnClickListener{
                 endTimePickerDialog.show();
             }
 
-        /*if (v == btnPlacePicker) {
-            mAddress = (TextView) findViewById(R.id.textView2);
-            btnPlacePicker=(Button)findViewById(R.id.pickerButton1);
-
-            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-            try {
-                startActivityForResult(builder.build(EditActivity.this), PLACE_PICKER_REQUEST);
-            } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-            }
-        }*/
 
         if (v == btnPlacemap) {
             Intent i = new Intent(this, PlaceActivity.class);
@@ -397,8 +362,6 @@ public class EditActivity extends Activity implements View.OnClickListener{
             saveEventInDB();
         }
     }
-
-
 
     // Checks for valid inputs (showing error messages if not valid) and saves event in DB if inputs are valid
     private void saveEventInDB() {
@@ -858,56 +821,4 @@ public class EditActivity extends Activity implements View.OnClickListener{
         dateView.setText(new StringBuilder().append(month).append("/")
                 .append(day).append("/").append(year));
     }
-
-/*
-
-    @TargetApi(Build.VERSION_CODES.M)
-    public void setTime(View view) {
-        showDialog(888);
-        Toast.makeText(getApplicationContext(), "Choose a date",
-                Toast.LENGTH_LONG)
-                .show();
-    }
-
-    public void showStartTime(int hour, int min) {
-        if (hour == 0) {
-            hour += 12;
-            format = "AM";
-        } else if (hour == 12) {
-            format = "PM";
-        } else if (hour > 12) {
-            hour -= 12;
-            format = "PM";
-        } else {
-            format = "AM";
-        }
-
-        time.setText(new StringBuilder().append(hour).append(" : ").append(min)
-                .append(" ").append(format));
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    public void setTimePicker2(View view) {
-        int hour = timePicker2.getHour();
-        int min = timePicker2.getMinute();
-        showEndTime(hour, min);
-    }
-
-    public void showEndTime(int hour, int min) {
-        if (hour == 0) {
-            hour += 12;
-            format = "AM";
-        } else if (hour == 12) {
-            format = "PM";
-        } else if (hour > 12) {
-            hour -= 12;
-            format = "PM";
-        } else {
-            format = "AM";
-        }
-
-        time.setText(new StringBuilder().append(hour).append(" : ").append(min)
-                .append(" ").append(format));
-    }*/
-
 }

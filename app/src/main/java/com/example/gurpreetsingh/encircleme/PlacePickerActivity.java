@@ -23,75 +23,9 @@ public class PlacePickerActivity extends AppCompatActivity {
     private TextView mAddress;
     private TextView mLatLng;
     //private TextView mAttributions;
-    /*private static final LatLngBounds newyork = new LatLngBounds(
-            new LatLng(40.758879, -73.985110),
-            new LatLng(40.758879, -73.985110));*/
 
     private static final int PLACE_PICKER_REQUEST = 1000;
     private GoogleApiClient mClient;
-
-    Button btnAlerts;
-    Button btnMaps;
-    Button btnProfile;
-    Button friends;
-    Button btnSetting;
-
-
-    /*//Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent time = new Intent(PlacePickerActivity.this, UserProfileActivity.class);
-                startActivity(time);
-            }
-        });
-    }
-
-    public void Alerts() {
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(PlacePickerActivity.this, PlacePickerActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Maps() {
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(PlacePickerActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Friends() {
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(PlacePickerActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-
-    public void Settings() {
-        btnSetting = (Button) findViewById(R.id.setting);
-        btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent setting = new Intent(PlacePickerActivity.this, UserActivity.class);
-                startActivity(setting);
-            }
-        });
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,12 +64,6 @@ public class PlacePickerActivity extends AppCompatActivity {
                 }*/
             }
         });
-
-/*        Alerts();
-        Maps();
-        Friends();
-        Profile();
-        Settings();*/
     }
 
     @Override

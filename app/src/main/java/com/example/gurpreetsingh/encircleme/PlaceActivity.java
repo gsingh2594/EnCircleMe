@@ -273,27 +273,6 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         });
     }
 
-     /*   Button btnSchool = (Button) findViewById(R.id.btnSchool);
-        btnSchool.setOnClickListener(new View.OnClickListener() {
-            String School = "school";
-            @Override
-            public void onClick(View v) {
-                Log.d("onClick", "Button is Clicked");
-                mMap.clear();
-                if (mCurrLocationMarker != null) {
-                    mCurrLocationMarker.remove();
-                }
-                String url = getUrl(latitude, longitude, School);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(PlaceActivity.this, "Nearby Schools", Toast.LENGTH_LONG).show();
-            }
-        });*/
-
     public void onMapLongClick(LatLng latLng) {
         // Retrieve address of dropped marker
         Geocoder geocoder = new Geocoder(PlaceActivity.this);

@@ -62,7 +62,6 @@
         <activity
             android:name=".UserProfileActivity"
             android:launchMode="singleTop" /> <!-- singleTop to prevent fetching from DB every time activity is started -->
-        <activity android:name=".SearchActivity" />
         <activity android:name=".PlaceActivity" />
         <activity android:name=".EditUserProfileActivity"
             android:windowSoftInputMode="stateHidden"/>
@@ -94,7 +93,6 @@
         <activity android:name=".FriendsActivity" />
         <activity android:name=".ViewOtherUserProfileActivity" />
         <activity android:name=".FriendRequestsActivity" />
-        <activity android:name=".SettingsActivity" />
         <activity android:name=".SettingsActivity2" />
         <activity android:name=".EventsTabActivity"/>
         <service android:name=".FirebaseNotificationService"

@@ -177,7 +177,7 @@ public class CreateUserProfileActivity extends AppCompatActivity implements View
                                                 + databaseReference.child("users").child(uid).toString() + "\n"
                                                 + databaseReference.child("usernames").child(username).toString());
 
-                                        Intent showProfile = new Intent(CreateUserProfileActivity.this, MapsActivity.class);
+                                        Intent showProfile = new Intent(CreateUserProfileActivity.this, UserProfileActivity.class);
                                         startActivity(showProfile);
                                     }
                                 }

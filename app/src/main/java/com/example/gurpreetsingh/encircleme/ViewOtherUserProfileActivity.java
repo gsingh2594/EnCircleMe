@@ -115,36 +115,6 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                                 + databaseError.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-
-
-
-/*        bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setDefaultTab(R.id.tab_profile);
-        tabSelectListener = new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                if (tabId == R.id.tab_profile) {
-                    Intent profile = new Intent(ViewOtherUserProfileActivity.this, UserProfileActivity.class);
-                    startActivity(profile);
-                    if (tabId == R.id.tab_friends) {
-                        Log.d("bottomBar", "friends clicked");
-                        Intent friends = new Intent(ViewOtherUserProfileActivity.this, FriendsActivity.class);
-                        startActivity(friends);
-                    } else if (tabId == R.id.tab_map) {
-                        Intent map = new Intent(ViewOtherUserProfileActivity.this, MapsActivity.class);
-                        startActivity(map);
-                    } else if (tabId == R.id.tab_alerts) {
-                        Intent events = new Intent(ViewOtherUserProfileActivity.this, EventListActivity.class);
-                        startActivity(events);
-                    } else if (tabId == R.id.tab_chats) {
-                        Intent events = new Intent(getApplicationContext(), ChatActivity.class);
-                        startActivity(events);
-                    }
-                }
-            }
-
-        };
-        bottomBar.setOnTabSelectListener(tabSelectListener);*/
     }
 
     // Load user profile from DB
@@ -268,23 +238,23 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
     private void checkForPendingFriendRequest(){
         DatabaseReference friendRequestsRef = database.getReference("friend_requests/" + currentUserID + "/" + userID);
         friendRequestsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            // Pending friend request exists --> Display icon for accepting it
-                            showAsAcceptableFriendRequest();
-                        }
-                        else
-                            // No friend request --> show as an addable friend (can send a friend request)
-                            // because user is not a friend and no pending friend request received
-                            showAsAddableFriend();
-                    }
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    // Pending friend request exists --> Display icon for accepting it
+                    showAsAcceptableFriendRequest();
+                }
+                else
+                    // No friend request --> show as an addable friend (can send a friend request)
+                    // because user is not a friend and no pending friend request received
+                    showAsAddableFriend();
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        });
     }
 
 
@@ -505,39 +475,39 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                     DatabaseReference usernamesRef = database.getReference("usernames");
                     Log.d("usernamesRef.toString()", usernamesRef.toString());
                     usernamesRef.orderByChild("id").equalTo(currentUserID)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d("onDataChange", "about to check for dataSnapshot.exists()");
-                            if (dataSnapshot.hasChildren()) {
-                                Log.d("onDataChange", "snapshot exists!");
-                                // variable to store current user's username
-                                String currentUserUsername = null;
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Log.d("onDataChange", "about to check for dataSnapshot.exists()");
+                                    if (dataSnapshot.hasChildren()) {
+                                        Log.d("onDataChange", "snapshot exists!");
+                                        // variable to store current user's username
+                                        String currentUserUsername = null;
 
-                                for(DataSnapshot user :  dataSnapshot.getChildren())
-                                    // retrieve username
-                                    currentUserUsername = user.getKey();
+                                        for(DataSnapshot user :  dataSnapshot.getChildren())
+                                            // retrieve username
+                                            currentUserUsername = user.getKey();
 
-                                Log.d("onDataChange", "stored username to variable");
+                                        Log.d("onDataChange", "stored username to variable");
 
-                                if(currentUserUsername!=null) {
+                                        if(currentUserUsername!=null) {
                                     /* Save at friend_requests/otherUserID/currentUserID
                                     with the username of the user that sent the request (the current user) */
-                                    friendRequestsRef.child(userID).child(currentUserID).setValue(currentUserUsername);
-                                    Toast.makeText(ViewOtherUserProfileActivity.this, "Friend request sent!", Toast.LENGTH_LONG).show();
+                                            friendRequestsRef.child(userID).child(currentUserID).setValue(currentUserUsername);
+                                            Toast.makeText(ViewOtherUserProfileActivity.this, "Friend request sent!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                    else{
+                                        Log.d("dataSnapshot.exists()", "No username for that currentUserID: " + currentUserID );
+                                        Log.d("dataSnapshot.toString: ", dataSnapshot.toString());
+                                    }
                                 }
-                            }
-                            else{
-                                Log.d("dataSnapshot.exists()", "No username for that currentUserID: " + currentUserID );
-                                Log.d("dataSnapshot.toString: ", dataSnapshot.toString());
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(ViewOtherUserProfileActivity.this, "Database Error", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Toast.makeText(ViewOtherUserProfileActivity.this, "Database Error", Toast.LENGTH_LONG).show();
+                                }
+                            });
                 }
             }
 

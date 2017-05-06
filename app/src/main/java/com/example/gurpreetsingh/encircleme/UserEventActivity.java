@@ -60,72 +60,6 @@ public class UserEventActivity extends Fragment {
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();
         eventsInfo = new HashMap<String, Event>();
-
-
-/*        listview=(ListView)findViewById(R.id.listview);
-        final ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,list);
-        listview.setAdapter(adapter);
-        dref=FirebaseDatabase.getInstance().getReference("events/all_events");
-        dref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                list.add(dataSnapshot.getValue(String.class));
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                list.remove(dataSnapshot.getValue(String.class));
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
-
-        /*bottomBar = (BottomBar) view.findViewById(R.id.bottomBar);
-        bottomBar.setDefaultTab(R.id.tab_alerts);
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                if (tabId == R.id.tab_profile) {
-                    Intent profile = new Intent(getApplicationContext(), UserProfileActivity.class);
-                    startActivity(profile);
-                } else if (tabId == R.id.tab_friends) {
-                    Intent friends = new Intent(getApplicationContext(), FriendsActivity.class);
-                    startActivity(friends);
-                } else if (tabId == R.id.tab_map) {
-                    Intent map = new Intent(getApplicationContext(), MapsActivity.class);
-                    startActivity(map);
-*//*                } else if (tabId == R.id.tab_alerts) {
-                    Intent events = new Intent(getApplicationContext(), EventListActivity.class);
-                    startActivity(events);*//*
-                } else if (tabId == R.id.tab_chats) {
-                    Intent events = new Intent(getApplicationContext(), ChatActivity.class);
-                    startActivity(events);
-                }
-            }
-        });*/
-
-        /*topBar = (BottomBar) findViewById(R.id.topBar);
-        topBar.setDefaultTab(R.id.event_info);
-        topBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                if (tabId == R.id.event_info) {
-                    Intent profile = new Intent(getApplicationContext(), EventListActivity.class);
-                    startActivity(profile);
-                } else if (tabId == R.id.event_chat) {
-                    Intent friends = new Intent(getApplicationContext(), SearchActivity.class);
-                    startActivity(friends);
-                }
-        }
-    });*/
         return view;
     }
 
@@ -144,7 +78,7 @@ public class UserEventActivity extends Fragment {
         Log.d("loadEventsList", "method started");
         final ArrayList<HashMap<String, String>> eventsList = new ArrayList<HashMap<String,String>>();
         DatabaseReference eventsRef = database.getReference("events/user_created_events/" + currentUserID);
-        eventsRef.orderByChild("date").addValueEventListener(new ValueEventListener() {
+        eventsRef.orderByChild("date").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
@@ -154,17 +88,17 @@ public class UserEventActivity extends Fragment {
                         Log.d("event info", event.toString());
                         // Check if event has ended
                         //if(!eventHasEnded(event)) {
-                            // Event has not ended --> store event info in a hashmap
-                            HashMap<String, String> eventInfo = new HashMap<String, String>();
-                            eventInfo.put("eventKey", child.getKey());
-                            eventInfo.put("name", event.getName());
-                            eventInfo.put("description", event.getAbout());
-                            eventInfo.put("startDate", event.getDate());
-                            eventInfo.put("startTime", event.getStartTime());
-                            eventInfo.put("endDate", event.getEndDate());
-                            eventInfo.put("endTime", event.getEndTime());
-                            // Add event info hashmap to the events arraylist
-                            eventsList.add(eventInfo);
+                        // Event has not ended --> store event info in a hashmap
+                        HashMap<String, String> eventInfo = new HashMap<String, String>();
+                        eventInfo.put("eventKey", child.getKey());
+                        eventInfo.put("name", event.getName());
+                        eventInfo.put("description", event.getAbout());
+                        eventInfo.put("startDate", event.getDate());
+                        eventInfo.put("startTime", event.getStartTime());
+                        eventInfo.put("endDate", event.getEndDate());
+                        eventInfo.put("endTime", event.getEndTime());
+                        // Add event info hashmap to the events arraylist
+                        eventsList.add(eventInfo);
                         //}
                     }
 
@@ -172,34 +106,7 @@ public class UserEventActivity extends Fragment {
                     Comparator eventDatesAndTimesComparator = new Comparator<HashMap<String, String>>() {
                         @Override
                         public int compare(HashMap<String, String> event1, HashMap<String, String> event2) {
-                            /*String[] startMDY1 = event1.get("startDate").split("/");
-                            String[] startMDY2 = event2.get("startDate").split("/"); */
 
-                            /*int year1 = Integer.parseInt(startMDY1[2]);
-                            int year2 = Integer.parseInt(startMDY2[2]);
-                            if(year1 < year2)
-                                return -1; // first event date is before the second event
-                            else if(year1 > year2)
-                                return 1; // second event date is before the first event
-                            else { // years are equal --> check months
-                                int month1 = Integer.parseInt(startMDY1[0]);
-                                int month2 = Integer.parseInt(startMDY2[0]);
-                                if (month1 < month2)
-                                    return -1;
-                                else if(month1 > month2)
-                                    return 1;
-                                else{ // months are equal --> check days
-                                    int day1 = Integer.parseInt(startMDY1[1]);
-                                    int day2 = Integer.parseInt(startMDY2[1]);
-                                    if(day1 < day2)
-                                        return -1;
-                                    else if(day1 > day2)
-                                        return 1;
-                                    else{ // days are equal --> check times
-                                        return 0;
-                                    }
-                                }
-                            } */
                             int event1Month, event1Day, event1Year, event1Hour, event1Min;
                             int event2Month, event2Day, event2Year, event2Hour, event2Min;
 
@@ -358,7 +265,6 @@ public class UserEventActivity extends Fragment {
     public void onResume() {
         super.onResume();
         //bottomBar.setDefaultTab(R.id.tab_alerts);
-        //topBar.setDefaultTab(R.id.event_info);
     }
 
 

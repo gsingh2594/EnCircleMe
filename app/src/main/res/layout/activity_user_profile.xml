@@ -31,19 +31,6 @@
                 android:layout_height="200dp"
                 android:scaleType="centerCrop" />
 
-            <!--<ImageView
-                android:id="@+id/profile_image"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_below="@+id/cover_image"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="-60dp"
-                android:background="@drawable/circle_with_border"
-                android:elevation="5dp"
-                android:padding="20dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_profile_photo" />-->
-
             <RelativeLayout
                 android:id="@+id/profile_layout"
                 android:layout_width="match_parent"
@@ -55,16 +42,6 @@
                 android:layout_alignTop="@+id/view2"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="74dp">
-                <!--
-                <ImageView
-                    android:id="@+id/add_friend_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@drawable/ic_add_user"/>
-                -->
 
                 <TextView
                     android:id="@+id/user_profile_name"
@@ -298,118 +275,27 @@
                         android:textStyle="bold"
                         android:layout_toEndOf="@+id/interest_icon" />
 
-                <LinearLayout
-                    android:id="@+id/interests_linearlayout2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_below="@+id/interests_linearlayout">
+                    <LinearLayout
+                        android:id="@+id/interests_linearlayout2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/interests_linearlayout">
 
-                </LinearLayout>
+                    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/interests_linearlayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/interest_text">
-            </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/interests_linearlayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/interest_text">
+                    </LinearLayout>
 
                 </RelativeLayout>
-        </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>
         </RelativeLayout>
     </ScrollView>
-
-
-
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:id="@+id/menubar"
-        android:layout_alignParentBottom="true"
-        android:background="#75B095"
-        android:baselineAligned="false">
-
-        <Button
-            android:id="@+id/btnProfile"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/profile"
-            android:padding="10dp"
-            android:text="Profile"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/friends"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/friends"
-            android:padding="10dp"
-            android:text="Friends"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btnMaps"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/ic_map_black_24dp"
-            android:padding="10dp"
-            android:scaleType="centerCrop"
-            android:text="Maps"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btnAlerts"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/alerts"
-            android:padding="10dp"
-            android:scaleType="centerCrop"
-            android:text="Alerts"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/setting"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/ic_settings_black_24dp"
-            android:padding="10dp"
-            android:scaleType="centerCrop"
-            android:text="Settings"
-            android:textSize="12sp"
-            android:layout_weight="1"/>
-
-    </LinearLayout>-->
-
-    <!--    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:id="@+id/menubar"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorPrimary"
-            android:baselineAligned="false">
-            <android.support.design.widget.BottomNavigationView
-                android:id="@+id/bottom_navigation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:itemBackground="@drawable/ripple_effect"
-                app:elevation="8dp"
-                app:itemIconTint="@android:color/black"
-                app:menu="@menu/bottom_navigation_main"
-                app:itemTextColor="@android:color/black"
-                android:layout_alignParentBottom="true"/>
-        </LinearLayout>-->
-
-
 
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"

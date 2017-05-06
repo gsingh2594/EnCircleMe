@@ -149,5 +149,9 @@
     <string name="pref_title_vibrate">Vibrate</string>
 
     <string name="firebase_listener_service_description"/>
+    <string name="manage_notifications">Manage Notifications</string>
+    <string name="location_settings">Location Settings</string>
+    <string name="edit_profile">EDIT PROFILE</string>
+    <string name="name">Name</string>
 
 </resources>

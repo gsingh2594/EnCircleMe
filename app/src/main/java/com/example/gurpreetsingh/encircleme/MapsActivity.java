@@ -1,5 +1,8 @@
 package com.example.gurpreetsingh.encircleme;
 
+/*This product includes software developed by
+        Iiro Krankka (https://github.com/roughike)*/
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,7 +19,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
@@ -37,7 +39,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -114,12 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private HashMap<String, Place> placeInfoBottomSheet;
 
     private static final long ONE_MEGABYTE = 1024*1024;
-    /*Button btnAlerts;
-    Button btnMaps;
-    Button btnProfile;
-    Button friends;
-    Button btnSetting;*/
-    ImageButton btnSearch;
+
     private BottomSheetBehavior bottomSheetBehavior;
     private View bottomSheet;
     private TextView textFavorites;
@@ -128,69 +124,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomBar bottomBar;
 
     public static Intent notificationService;
-
-    /*
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
-    GeoFire geoFire = new GeoFire(ref);
-    */
-
-    /*//Button
-    public void Profile() {
-        btnProfile = (Button) findViewById(R.id.btnProfile);
-        btnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent profile = new Intent(MapsActivity.this, UserProfileActivity.class);
-                profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(profile);
-            }
-        });
-    }
-
-    public void Alerts() {
-        btnAlerts = (Button) findViewById(R.id.btnAlerts);
-        btnAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(MapsActivity.this, SearchActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Maps() {
-        btnMaps = (Button) findViewById(R.id.btnMaps);
-        btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent alerts = new Intent(MapsActivity.this, MapsActivity.class);
-                startActivity(alerts);
-            }
-        });
-    }
-
-    public void Friends() {
-        friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent offMaps = new Intent(MapsActivity.this, FriendsActivity.class);
-                startActivity(offMaps);
-            }
-        });
-    }
-
-    public void Settings() {
-        btnSetting = (Button) findViewById(R.id.setting);
-        btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent setting = new Intent(MapsActivity.this, UserActivity.class);
-                startActivity(setting);
-            }
-        });
-    }*/
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,20 +137,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
-        mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
-        mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
+
 
         notificationService = new Intent(getApplicationContext(), FirebaseNotificationService.class);
         startService(notificationService);
 
         locationInitialized = false;
         buildGoogleApiClient();
-        /*Alerts();
-        Maps();
-        Friends();
-        Profile();
-        Settings();
-        //Search();*/
 
         bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -259,7 +185,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         GeoFire eventsGeoFireRef = new GeoFire(eventLocationsRef);
 
         // GeoQuery to retrieve events within a specified distance of the user's current location
-        GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 160); // 160 km == 100 miles
+        GeoQuery eventsGeoQuery = eventsGeoFireRef.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude), 200); // 200 km == 124 miles
         Log.d("loadEventsFromDB()", "starting GeoQuery");
         eventsGeoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -337,7 +263,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
-
 
     // returns true if event **end date** and time is before the current time, or false otherwise
     private boolean eventHasEnded(Event event){
@@ -473,41 +398,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.addMarker(markerOptions);
     }
 
-        /*mAutoCompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        mAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName());
-
-                String placeDetailsStr = place.getName() + "\n"
-                        + place.getId() + "\n"
-                        + place.getLatLng().toString() + "\n"
-                        + place.getAddress() + "\n"
-                        + place.getAttributions() + "\n"
-                        + place.getPhoneNumber() + "\n"
-                        + place.getWebsiteUri() + "\n"
-                        + place.getRating();
-                mAutoCompleteFragment.setText(placeDetailsStr);
-
-                String placeName = (String) place.getName();
-                String placeAddress = (String) place.getAddress();
-                String placeNumber = (String) place.getPhoneNumber();
-                String placeUri = place.getWebsiteUri().toString();
-                String placeRating = Float.toString(place.getRating());
-                LatLng latLng = place.getLatLng();
-                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeRating + " " + placeUri*//*placeAddress + " Phone:" + placeNumber*//*));
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });*/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -543,7 +433,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String placeRating = Float.toString(place.getRating());
                 mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeAddress)
                         .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.pin))));
-                        // .icon(BitmapDescriptorFactory.fromResource((person_pin))));
+                // .icon(BitmapDescriptorFactory.fromResource((person_pin))));
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
             }
@@ -554,18 +444,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             /*else switch(requestCode) {
                 case (EDIT_REQUEST) :*/
     }
-
-
-    /*private void drawCircle( LatLng location ) {
-        CircleOptions options = new CircleOptions();
-        options.center( location );
-        //Radius in meters
-        options.radius( 50 );
-        options.strokeWidth( 10 );
-        options.strokeColor(Color.BLUE);
-        options.fillColor(Color.TRANSPARENT);
-        mGoogleMap.addCircle(options);
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -692,10 +570,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public boolean onMarkerClick(Marker marker) {
                 if (eventsInfoMap.get(marker.getTitle()) == null){
                     if(placeInfoBottomSheet.containsKey(marker.getSnippet()));
-                        updateBottomSheetContent(placeInfoBottomSheet.get(marker.getSnippet().toString()));
+                    updateBottomSheetContent(placeInfoBottomSheet.get(marker.getSnippet().toString()));
                 }
-                //bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                //return true;
                 return false;
             }
         });
@@ -786,9 +662,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        //LatLng new_york = new LatLng(40.758879, -73.985110);
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
-        //userLocation = new_york;
+        //LatLng nyit = new LatLng(40.758879, -73.985110);
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nyit, 12));
+        //userLocation = nyit;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
         //move map camera only the first time location is received
@@ -891,18 +767,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void onBackPressed() {
         moveTaskToBack(true);
-
-    /*//put the AlertDialog code here
-        new AlertDialog.Builder(this)
-                .setTitle("Logout")
-                .setMessage("Would you like to logout?")
-                .setNegativeButton("No", null)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        startActivity(new Intent(MapsActivity.this, MainActivity.class));
-                       //finish();
-                    }
-                }).create().show();*/
     }
 
     @Override
@@ -920,7 +784,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else
             // Marker represents a place
             return null;
-                    //preparePlaceInfoView(marker);
+        //preparePlaceInfoView(marker);
     }
 
     @Override
