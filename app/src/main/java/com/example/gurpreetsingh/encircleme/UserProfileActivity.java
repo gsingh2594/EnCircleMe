@@ -178,7 +178,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private void loadUserProfile() {
         final LinearLayout interestsLinearLayout = (LinearLayout) findViewById(R.id.interests_linearlayout);
         final LinearLayout interestsLinearLayout2 = (LinearLayout) findViewById(R.id.interests_linearlayout2);
-        dbUserRef.addValueEventListener(new ValueEventListener() {
+        dbUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
@@ -636,8 +636,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onClick(DialogInterface dialog, int ID){
                 // User clicked save button
                 saveUserBio();
-                Intent refreshProfile = new Intent(UserProfileActivity.this, UserProfileActivity.class);
-                startActivity(refreshProfile);
             }
         });
         editBioDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -651,12 +649,17 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
     public void saveUserBio(){
         EditText dialogTextBox = (EditText) editBioDialog.findViewById(R.id.edit_bio_text);
-        String bio = dialogTextBox.getText().toString().trim();
-        user.setBio(bio);
+        final String bio = dialogTextBox.getText().toString().trim();
 
         // dbUserRef.setValue(user);    --> Unnecessary because it rewrites the whole User object to the DB
         // use this line instead to update only the "bio" value
-        dbUserRef.child("bio").setValue(bio);
+        dbUserRef.child("bio").setValue(bio, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                profileBio.setText(bio);
+                Toast.makeText(UserProfileActivity.this, "Saved", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 

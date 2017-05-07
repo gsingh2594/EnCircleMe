@@ -128,6 +128,7 @@ public class EnCircleFriendsActivity extends AppCompatActivity {
                 if(dataSnapshot.hasChildren()){
                     numOfFriends = dataSnapshot.getChildrenCount();
                     Log.d("numOfFriends", Long.toString(numOfFriends));
+                    Log.d("list of friends in DB", dataSnapshot.getChildren().toString());
                     // User has friends -> store the info for each friend
                     for(DataSnapshot friend : dataSnapshot.getChildren()){
                         if(!friendsMap.containsKey(friend.getKey())) {

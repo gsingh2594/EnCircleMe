@@ -380,7 +380,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Get the marker bitmap and scale it
         Bitmap markerBM=bitmapDraw.getBitmap();
-        Bitmap largerMarkerBM = Bitmap.createScaledBitmap(markerBM, convertDPtoPX(32), convertDPtoPX(50), false);
+        Bitmap largerMarkerBM = Bitmap.createScaledBitmap(markerBM, convertDPtoPX(25), convertDPtoPX(40), false);
 
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(largerMarkerBM));
         //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));

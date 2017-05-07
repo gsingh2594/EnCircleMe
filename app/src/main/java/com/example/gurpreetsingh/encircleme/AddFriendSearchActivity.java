@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -65,21 +67,21 @@ public class AddFriendSearchActivity extends AppCompatActivity {
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
-        RelativeLayout relative=new RelativeLayout(getApplicationContext());
+
         SearchView searchView = new SearchView(AddFriendSearchActivity.this);
-        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.LEFT));
+        searchView.setLayoutParams(new ActionBar.LayoutParams(
+                ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
         searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT);
-        searchView.setIconified(false);
-        searchView.isActivated();
+        searchView.setActivated(true);
+        searchView.setIconifiedByDefault(false);
         searchView.setQueryHint("Enter name or username (case sensitive)");
 
+        RelativeLayout relative=new RelativeLayout(getApplicationContext());
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        rlp.setMargins(0,0,30,0);
+        relative.setLayoutParams(rlp);
         relative.addView(searchView);
-        relative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSearchRequested();
-            }
-        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -98,9 +100,9 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                 return true;
             }
         });
+        actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setCustomView(relative);
         //actionBar.setTitle("Add Friends");
-        actionBar.setDisplayShowTitleEnabled(false);
 
         // Find the "no results" views
         textViewNoResults = (TextView) findViewById(R.id.no_users_found_textview);
