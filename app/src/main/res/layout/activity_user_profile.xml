@@ -85,7 +85,7 @@
                 app:cardElevation="20dp">
 
                 <android.support.v7.widget.CardView
-                    android:id="@+id/view2"
+                    android:id="@+id/view1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
@@ -175,7 +175,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/edit_bio_icon"
+                        android:id="@+id/email_icon"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:elevation="0dp"
@@ -193,9 +193,9 @@
                         android:textStyle="bold"
                         android:paddingBottom="2dp"
                         android:paddingLeft="10dp"
-                        android:layout_alignBottom="@+id/edit_bio_icon"
+                        android:layout_alignBottom="@+id/email_icon"
                         android:layout_alignParentEnd="true"
-                        android:layout_toEndOf="@+id/edit_bio_icon" />
+                        android:layout_toEndOf="@+id/email_icon" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 

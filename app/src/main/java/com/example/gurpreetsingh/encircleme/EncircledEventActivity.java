@@ -289,8 +289,6 @@ public class EncircledEventActivity extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        //bottomBar.setDefaultTab(R.id.tab_alerts);
-        //topBar.setDefaultTab(R.id.event_info);
         eventsList.clear();
         eventKeysList.clear();
         loadEventsList();

@@ -204,7 +204,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 // User has not set profile image
                 Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                Toast.makeText(ViewOtherUserProfileActivity.this, "No profile image", Toast.LENGTH_LONG).show();
+                //Toast.makeText(ViewOtherUserProfileActivity.this, "No profile image", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -229,7 +229,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 // User has not set cover image
                 Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                Toast.makeText(ViewOtherUserProfileActivity.this, "No cover image", Toast.LENGTH_LONG).show();
+                //Toast.makeText(ViewOtherUserProfileActivity.this, "No cover image", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -398,7 +398,7 @@ public class ViewOtherUserProfileActivity extends AppCompatActivity {
                                                                 updatesRef.updateChildren(friendsUpdates, new DatabaseReference.CompletionListener() {
                                                                     @Override
                                                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                                                        Toast.makeText(ViewOtherUserProfileActivity.this, "You are now friends!", Toast.LENGTH_LONG).show();
+                                                                        //Toast.makeText(ViewOtherUserProfileActivity.this, "You are now friends!", Toast.LENGTH_LONG).show();
                                                                         // Show as a friend now that the request is accepted
                                                                         showAsFriend();
                                                                     }

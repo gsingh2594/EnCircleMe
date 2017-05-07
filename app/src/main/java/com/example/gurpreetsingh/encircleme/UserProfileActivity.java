@@ -264,7 +264,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onFailure(@NonNull Exception exception) {
                 // User has not set profile image or storage error
                 Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                Toast.makeText(UserProfileActivity.this, "No profile image", Toast.LENGTH_LONG).show();
+                //Toast.makeText(UserProfileActivity.this, "No profile image", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -289,7 +289,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onFailure(@NonNull Exception exception) {
                 // User has not set cover image
                 Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                Toast.makeText(UserProfileActivity.this, "No cover image", Toast.LENGTH_LONG).show();
+                //Toast.makeText(UserProfileActivity.this, "No cover image", Toast.LENGTH_LONG).show();
             }
         });
     }

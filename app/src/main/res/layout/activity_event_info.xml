@@ -131,11 +131,11 @@
 
                     <ImageView
                         android:id="@+id/creator_profile_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_below="@id/created_by"
-                        android:maxHeight="30dp"
-                        android:maxWidth="30dp"
+                        android:maxHeight="50dp"
+                        android:maxWidth="50dp"
                         android:layout_marginTop="8dp"
                         android:src="@drawable/default_profile_photo"/>
 

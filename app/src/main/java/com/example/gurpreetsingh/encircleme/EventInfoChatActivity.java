@@ -114,7 +114,7 @@ public class EventInfoChatActivity extends AppCompatActivity {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         username = ds.getKey().toString();
                         usernameIsLoaded = true;
-                        Toast.makeText(EventInfoChatActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(EventInfoChatActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
                         displayChatMessages();
                     }
                 }

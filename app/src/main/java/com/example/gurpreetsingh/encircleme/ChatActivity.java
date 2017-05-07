@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -137,7 +136,7 @@ public class ChatActivity extends AppCompatActivity {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         username = ds.getKey().toString();
                         usernameIsLoaded = true;
-                        Toast.makeText(ChatActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(ChatActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
                         displayChatMessages();
                     }
                 }

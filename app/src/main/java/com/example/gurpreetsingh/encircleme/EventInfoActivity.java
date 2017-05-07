@@ -215,7 +215,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         username = ds.getKey().toString();
                         usernameIsLoaded = true;
-                        Toast.makeText(EventInfoActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(EventInfoActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
                         //displayChatMessages();
                     }
                 }
@@ -463,7 +463,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         eventsRef.updateChildren(eventUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(EventInfoActivity.this, "You are EnCircled!", Toast.LENGTH_LONG).show();
+                Toast.makeText(EventInfoActivity.this, "You are EnCircled!", Toast.LENGTH_SHORT).show();
                 showAsUnCircleMe();
             }
         });
@@ -480,7 +480,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         eventsRef.updateChildren(eventUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(EventInfoActivity.this, "You are UnCircled!", Toast.LENGTH_LONG).show();
+                Toast.makeText(EventInfoActivity.this, "You are UnCircled!", Toast.LENGTH_SHORT).show();
                 showAsEnCircleMe();
             }
         });
