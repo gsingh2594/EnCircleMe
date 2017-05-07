@@ -366,7 +366,7 @@ public class FirebaseNotificationService extends Service {
                                 Log.d("onChildRemoved", "Friend request removed --> usernameOfSender = " + userIDOfSender);
 
                                 Iterable<DataSnapshot> allEvents = dataSnapshot.getChildren();
-                                //DataSnapshot newEvent = Iterables.getLast(allEvents);
+
                                 ArrayList<String> userEventsList = new ArrayList<String>();
                                 for(DataSnapshot event : allEvents){
                                     userEventsList.add(event.getKey());
@@ -432,6 +432,101 @@ public class FirebaseNotificationService extends Service {
 
 
     }
+    public void eventInviteListener() {
+        final DatabaseReference eventInviteRef = database.getReference("event_invites/" + userID);
 
+        final List<String> recieversList = new ArrayList<String>();
+
+        eventInviteRef.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                /*for (DataSnapshot previousEvents : dataSnapshot.getChildren())
+                {
+                    String username = previousEvents.getValue().toString();
+                    Log.d("onDataChange", "Existing invite --> username = " + username);
+                    previousEventInvites.add(username);
+                }
+                */
+
+                // listen for new accepted friends in DB
+                eventInviteRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        // Get username of the event invite reciever
+                        String userIDOfReciever = dataSnapshot.getKey().toString();
+                        recieversList.add(userIDOfReciever);
+
+
+                        if (recieversList.contains(userIDOfReciever)) {
+                            // Accepted Friend Request
+                            Log.d("onChildAdded", "New Event Invite --> usernameOfReciever = " + userIDOfReciever);
+                            // Create notification to be displayed
+                            newEventInviteNotification();
+                        }
+                    }
+
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s)
+                    {
+
+                        String eventKey = dataSnapshot.getKey().toString();
+                        Log.d("onChildChanged", "New Event Invite --> eventKey = " +eventKey);
+                        newEventInviteNotification();
+
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("NotificationService", "DB error: " + databaseError.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("NotificationService", "DB error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    public boolean newEventInviteNotification()
+    {
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
+        mBuilder.setContentTitle("Event Invite"); // title for notification
+        mBuilder.setContentText("Click now to check out the new event you have been invited to"); // message for notification
+        mBuilder.setAutoCancel(true); // clear notification after click
+        mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
+        mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
+        mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
+        mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
+
+        Intent intent = new Intent(this, EventListActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pi);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+
+        return true;
+
+
+    }
 
 }
