@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="2dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="2dp"
+    android:descendantFocusability="blocksDescendants">
+
+    <ImageView
+        android:id="@+id/friend_requests_item_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/profile" />
+
+    <TextView
+        android:id="@+id/friend_requests_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/friend_requests_item_image"
+        android:layout_alignTop="@id/friend_requests_item_image"
+        android:layout_alignBottom="@id/friend_requests_item_image"
+        android:text="result"
+        android:textSize="@dimen/text_large" />
+    <CheckBox
+        android:id="@+id/checkbox_encircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/friend_requests_item_image"
+        android:layout_alignTop="@id/friend_requests_item_image"
+        android:gravity="center_vertical" />
+</RelativeLayout>

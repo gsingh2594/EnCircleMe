@@ -19,6 +19,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
@@ -367,33 +368,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Create location marker
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(location.latitude, location.longitude));
-        markerOptions.title(key);   // For retrieving later
+        markerOptions.title(key);   // For retrieving associated event info later
 
-        // For scaling markers later if possible
-        /*BitmapDrawable bitmapDraw;
-        if(!isFutureEvent)
-            // Is a current event --> use red marker
-            bitmapDraw =(BitmapDrawable)getResources().getDrawable(R.drawable.ongoingmarker, null);
-        else
+        BitmapDrawable bitmapDraw;
+        if(isFutureEvent)
             // Is a future event --> use green marker
             bitmapDraw =(BitmapDrawable)getResources().getDrawable(R.drawable.marker_encircleme, null);
-        //Bitmap onGoingMarkerBM = getMarkerBitmapFromView(R.drawable.ongoingmarker);
-        Bitmap markerBM=bitmapDraw.getBitmap();
-        int width = (int) (markerBM.getWidth() * 1.3);
-        int height = (int) (markerBM.getHeight() * 1.3);
-        Bitmap largerMarkerBM = Bitmap.createScaledBitmap(markerBM, width, height, false);
-
-        //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(largerMarkerBM));
-        //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);*/
-
-        // Show the correct marker depending on whether event is current or in future
-        if(!isFutureEvent)
-            // Event is in future --> show green marker
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.marker_encircleme)));
         else
-            // Event is currently happening
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));
+            // Is a current event --> use red marker
+            bitmapDraw =(BitmapDrawable)getResources().getDrawable(R.drawable.ongoingmarker, null);
+
+        // Get the marker bitmap and scale it
+        Bitmap markerBM=bitmapDraw.getBitmap();
+        Bitmap largerMarkerBM = Bitmap.createScaledBitmap(markerBM, convertDPtoPX(32), convertDPtoPX(50), false);
+
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(largerMarkerBM));
+        //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.ongoingmarker)));
 
         mGoogleMap.addMarker(markerOptions);
     }
@@ -983,6 +973,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         float scale = getResources().getDisplayMetrics().density;       // note that 1dp = 1px on a 160dpi screen
         int dpAsPixels = (int) (sizeInDP * scale + 0.5f);
         return dpAsPixels;  // return the size in pixels
+    }
+
+    private int convertDPtoPX(double sizeInDP){
+        float scale = getResources().getDisplayMetrics().density;       // note that 1dp = 1px on a 160dpi screen
+        double dpAsPixels = Math.floor(sizeInDP * scale + 0.5f);
+        return (int)dpAsPixels;  // return the size in pixels
     }
 
 }

@@ -359,7 +359,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                                           final ArrayList<String> userIDList){
         Log.d("displaySimpleResults", "entering method");
         SimpleAdapter simpleAdapter = new SimpleAdapter(AddFriendSearchActivity.this, nameAndUsernameMap,
-                R.layout.friends_search_list_items, new String[]{"nameAndUsername"}, new int[]{R.id.friends_search_text_view} );
+                R.layout.friend_requests_list_items, new String[]{"nameAndUsername"}, new int[]{R.id.friend_requests_text_view} );
         listView.setAdapter(simpleAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

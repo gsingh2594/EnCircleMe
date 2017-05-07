@@ -153,7 +153,9 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         btnEnCircleFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //enCircleFriendsInDB();
+                Intent enCircleFriends = new Intent(EventInfoActivity.this, EnCircleFriendsActivity.class);
+                enCircleFriends.putExtra("eventKey", eventKey);
+                startActivity(enCircleFriends);
             }
         });
 
