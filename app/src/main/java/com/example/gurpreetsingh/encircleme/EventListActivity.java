@@ -45,17 +45,6 @@ public class EventListActivity extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_event_list, container, false);
-        //ListView listView = (ListView) view.findViewById(R.id.events_listview);
-        //ArrayList<String> list=new ArrayList<>();
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_list);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.eventlist_toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("EnCircleMe Events");*/
 
         currentUserID = auth.getInstance().getCurrentUser().getUid();
         database = FirebaseDatabase.getInstance();

@@ -197,10 +197,10 @@ public class EncircledEventActivity extends Fragment{
             }
         };
 
-                    /* Sort the events in the events list by date using the comparator
-                     https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)
-                     The documentation says it uses a mergesort implementation ^
-                     --> Runtime of O(n * log n) worst case, or almost O(n) when mostly sorted */
+        /* Sort the events in the events list by date using the comparator
+         https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)
+         The documentation says it uses a mergesort implementation ^
+         --> Runtime of O(n * log n) worst case, or almost O(n) when mostly sorted */
         Collections.sort(eventsList, eventDatesAndTimesComparator);
 
         // Find listview from layout and initialize with an adapter

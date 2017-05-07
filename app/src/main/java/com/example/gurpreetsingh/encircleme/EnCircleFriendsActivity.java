@@ -122,7 +122,7 @@ public class EnCircleFriendsActivity extends AppCompatActivity {
 
         Log.d("loadFriendsList", "method started");
         DatabaseReference friendsRef = database.getReference("friends");
-        friendsRef.child(currentUserID).orderByValue().addValueEventListener(new ValueEventListener() {
+        friendsRef.child(currentUserID).orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){

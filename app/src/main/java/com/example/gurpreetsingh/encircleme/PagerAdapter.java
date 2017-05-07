@@ -29,7 +29,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 EncircledEventActivity tab3 = new EncircledEventActivity();
                 return tab3;
             case 3:
-                TabFragment1 tab4 = new TabFragment1();
+                EventInvitesFragment tab4 = new EventInvitesFragment();
                 return tab4;
             default:
                 return null;
