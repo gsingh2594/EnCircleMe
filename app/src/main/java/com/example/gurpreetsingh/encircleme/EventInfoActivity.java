@@ -70,7 +70,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
     private Event event;
 
     private GoogleMap googleMap;
-    private TextView txtEventName, txtEventStartDate, txtEventTime, txtEventLocation, txtEventDescription, txtEventCreator;
+    private TextView txtEventName, txtEventStartDate, txtEventTime, txtEventLocation, txtEventDescription, txtEventCreator, txtNumAttendees;
     private ImageView creatorProfileImage;
     private ScrollView childScroll;
     private ScrollView parentScroll;
@@ -142,6 +142,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         txtEventDescription = (TextView)  findViewById(R.id.event_description);
         txtEventCreator = (TextView)  findViewById(R.id.creator_name);
         creatorProfileImage = (ImageView)  findViewById(R.id.creator_profile_image);
+        txtNumAttendees = (TextView) findViewById(R.id.number_attendees);
 
         btnEnCircleMe = (Button)  findViewById(R.id.encircle_event);
         btnEnCircleFriend = (Button)  findViewById(R.id.encircle_friends);
@@ -286,6 +287,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                 displayEventInfo();
                 showEventInMap();
                 loadEventCreatorName();
+                loadAttendees();
                 if(MapsActivity.eventHasEnded(event))
                     disableEnCircleFriends();
             }
@@ -453,6 +455,29 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+    private void loadAttendees(){
+        DatabaseReference attendeesRef = FirebaseDatabase.getInstance().getReference("events/event_attendees");
+        attendeesRef.child(eventKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long numOfAttendees;
+                if(dataSnapshot.exists()) {
+                    // Users have EnCircled this event
+                    numOfAttendees = dataSnapshot.getChildrenCount();
+                    Log.d("loadAttendees", Long.toString(numOfAttendees));
+                }
+                else
+                    // No users have EnCircled this event yet
+                    numOfAttendees = 0;
+                txtNumAttendees.setText(Long.toString(numOfAttendees));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("loadAttendees", "DB error" + databaseError.getMessage());
+            }
+        });
+    }
     // used to set sizes in dp units programmatically. (Some views set sizes programmtically in px, not dp)
     // We should use this method to make certain views display consistently on different screen densities
     private int convertDPtoPX(int sizeInDP){
