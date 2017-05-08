@@ -437,19 +437,20 @@ public class FirebaseNotificationService extends Service {
         final DatabaseReference eventInviteRef = database.getReference("event_invites/" + userID);
 
         final List<String> recieversList = new ArrayList<String>();
+        final List<String> previousInvitesList = new ArrayList<>();
 
         eventInviteRef.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                /*for (DataSnapshot previousEvents : dataSnapshot.getChildren())
+                for (DataSnapshot previousEvents : dataSnapshot.getChildren())
                 {
-                    String username = previousEvents.getValue().toString();
-                    Log.d("onDataChange", "Existing invite --> username = " + username);
-                    previousEventInvites.add(username);
+                    String eventKey = previousEvents.getValue().toString();
+                    Log.d("onDataChange", "Existing invite --> username = " + eventKey);
+                    previousInvitesList.add(eventKey);
                 }
-                */
+
 
                 // listen for new accepted friends in DB
                 eventInviteRef.addChildEventListener(new ChildEventListener() {
@@ -475,7 +476,11 @@ public class FirebaseNotificationService extends Service {
 
                         String eventKey = dataSnapshot.getKey().toString();
                         Log.d("onChildChanged", "New Event Invite --> eventKey = " +eventKey);
-                        newEventInviteNotification();
+                        if(!previousInvitesList.contains(eventKey))
+                        {
+
+                            newEventInviteNotification();
+                        }
 
 
                     }
