@@ -437,9 +437,9 @@ public class FirebaseNotificationService extends Service {
         final DatabaseReference eventInviteRef = database.getReference("event_invites/" + userID);
 
 
-        final List<String> previousInvitesList = new ArrayList<>();
+        final List<String> previousInvitesList = new ArrayList<String>();
 
-        eventInviteRef.addListenerForSingleValueEvent(new ValueEventListener()
+        eventInviteRef.addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
@@ -456,13 +456,12 @@ public class FirebaseNotificationService extends Service {
                 eventInviteRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        // Get username of the event invite reciever
+
                         String eventKey = dataSnapshot.getKey().toString();
-                        previousInvitesList.add(eventKey);
 
 
                         if (!previousInvitesList.contains(eventKey)) {
-                            // Accepted Friend Request
+
                             Log.d("onChildAdded", "New Event Invite --> eventKey = " + eventKey);
                             // Create notification to be displayed
                             newEventInviteNotification(eventKey);
@@ -474,13 +473,14 @@ public class FirebaseNotificationService extends Service {
                     public void onChildChanged(DataSnapshot dataSnapshot, String s)
                     {
 
-                        String eventKey = dataSnapshot.getKey().toString();
+                        /*String eventKey = dataSnapshot.getKey().toString();
                         Log.d("onChildChanged", "New Event Invite --> userID = " +eventKey);
                         if(!previousInvitesList.contains(eventKey))
                         {
 
                             newEventInviteNotification(eventKey);
                         }
+                        */
 
 
                     }
@@ -516,7 +516,7 @@ public class FirebaseNotificationService extends Service {
 
         mBuilder.setSmallIcon(R.drawable.ic_request); // notification icon
         mBuilder.setContentTitle("Event Invite"); // title for notification
-        mBuilder.setContentText("Click now to check out the new event you have been invited to"); // message for notification
+        mBuilder.setContentText("Click now to check out the event you have been invited to"); // message for notification
         mBuilder.setAutoCancel(true); // clear notification after click
         mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH); // setting priority in order to bring it up on the notification screen
         mBuilder = mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000}); // setting vibrate for a notification
