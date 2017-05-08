@@ -436,7 +436,7 @@ public class FirebaseNotificationService extends Service {
     public void eventInviteListener() {
         final DatabaseReference eventInviteRef = database.getReference("event_invites/" + userID);
 
-        final List<String> recieversList = new ArrayList<String>();
+
         final List<String> previousInvitesList = new ArrayList<>();
 
         eventInviteRef.addListenerForSingleValueEvent(new ValueEventListener()
@@ -446,9 +446,9 @@ public class FirebaseNotificationService extends Service {
             {
                 for (DataSnapshot previousEvents : dataSnapshot.getChildren())
                 {
-                    String userID = previousEvents.getKey().toString();
-                    Log.d("onDataChange", "Existing invite --> username = " + userID);
-                    previousInvitesList.add(userID);
+                    String eventKey = previousEvents.getKey().toString();
+                    Log.d("onDataChange", "Existing invite --> username = " + eventKey);
+                    previousInvitesList.add(eventKey);
                 }
 
 
@@ -457,15 +457,15 @@ public class FirebaseNotificationService extends Service {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         // Get username of the event invite reciever
-                        String userIDOfReciever = dataSnapshot.getKey().toString();
-                        recieversList.add(userIDOfReciever);
+                        String eventKey = dataSnapshot.getKey().toString();
+                        previousInvitesList.add(eventKey);
 
 
-                        if (recieversList.contains(userIDOfReciever)) {
+                        if (!previousInvitesList.contains(eventKey)) {
                             // Accepted Friend Request
-                            Log.d("onChildAdded", "New Event Invite --> usernameOfReciever = " + userIDOfReciever);
+                            Log.d("onChildAdded", "New Event Invite --> eventKey = " + eventKey);
                             // Create notification to be displayed
-                            newEventInviteNotification();
+                            newEventInviteNotification(eventKey);
                         }
                     }
 
@@ -474,12 +474,12 @@ public class FirebaseNotificationService extends Service {
                     public void onChildChanged(DataSnapshot dataSnapshot, String s)
                     {
 
-                        String userID = dataSnapshot.getKey().toString();
-                        Log.d("onChildChanged", "New Event Invite --> userID = " +userID);
-                        if(!previousInvitesList.contains(userID))
+                        String eventKey = dataSnapshot.getKey().toString();
+                        Log.d("onChildChanged", "New Event Invite --> userID = " +eventKey);
+                        if(!previousInvitesList.contains(eventKey))
                         {
 
-                            newEventInviteNotification();
+                            newEventInviteNotification(eventKey);
                         }
 
 
@@ -509,7 +509,7 @@ public class FirebaseNotificationService extends Service {
         });
     }
 
-    public boolean newEventInviteNotification()
+    public boolean newEventInviteNotification(String eventKey)
     {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -523,7 +523,8 @@ public class FirebaseNotificationService extends Service {
         mBuilder.setLights(Color.BLUE, 500, 500); // light for notification display
         mBuilder.setDefaults(Notification.DEFAULT_SOUND); // setting the notification sound to default device sound
 
-        Intent intent = new Intent(this, Event.class);
+        Intent intent = new Intent(this, EventInfoActivity.class);
+        intent.putExtra("eventKey",eventKey);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         NotificationManager mNotificationManager =
