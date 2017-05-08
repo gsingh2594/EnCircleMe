@@ -446,9 +446,9 @@ public class FirebaseNotificationService extends Service {
             {
                 for (DataSnapshot previousEvents : dataSnapshot.getChildren())
                 {
-                    String eventKey = previousEvents.getValue().toString();
-                    Log.d("onDataChange", "Existing invite --> username = " + eventKey);
-                    previousInvitesList.add(eventKey);
+                    String userID = previousEvents.getValue().toString();
+                    Log.d("onDataChange", "Existing invite --> username = " + userID);
+                    previousInvitesList.add(userID);
                 }
 
 
@@ -474,9 +474,9 @@ public class FirebaseNotificationService extends Service {
                     public void onChildChanged(DataSnapshot dataSnapshot, String s)
                     {
 
-                        String eventKey = dataSnapshot.getKey().toString();
-                        Log.d("onChildChanged", "New Event Invite --> eventKey = " +eventKey);
-                        if(!previousInvitesList.contains(eventKey))
+                        String userID = dataSnapshot.getKey().toString();
+                        Log.d("onChildChanged", "New Event Invite --> userID = " +userID);
+                        if(!previousInvitesList.contains(userID))
                         {
 
                             newEventInviteNotification();
