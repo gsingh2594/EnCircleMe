@@ -58,7 +58,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText)findViewById(R.id.input);
-
                 if(usernameIsLoaded) {
                     // Read the input field and push a new instance
                     // of ChatMessage to the Firebase database
@@ -70,7 +69,6 @@ public class ChatActivity extends AppCompatActivity {
                                     .getReference("chat")
                                     .push()
                                     .setValue(new ChatMessage(input.getText().toString(), username));
-
                             // Clear the input
                             input.setText("");
                         }
@@ -78,13 +76,11 @@ public class ChatActivity extends AppCompatActivity {
                 else{
                     ProgressDialog progressDialog = new ProgressDialog(ChatActivity.this);
                     progressDialog.setMessage("One moment please");
-
                     while(!usernameIsLoaded){
                         Log.d("onClick", "Entering while loop because username is not loaded");
                         progressDialog.show();
                     }
                     progressDialog.hide();
-
                     if(input.getText().toString().equals("")){
                         //input.setError("Type a message");
                     }
@@ -94,7 +90,6 @@ public class ChatActivity extends AppCompatActivity {
                                 .getReference("chat")
                                 .push()
                                 .setValue(new ChatMessage(input.getText().toString(), username));
-
                         // Clear the input
                         input.setText("");
                     }

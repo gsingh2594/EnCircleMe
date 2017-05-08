@@ -496,7 +496,6 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-
     // Saves the user in user_encricled_events and event_attendees in DB
     private void unCircleUserInDB(){
         DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");

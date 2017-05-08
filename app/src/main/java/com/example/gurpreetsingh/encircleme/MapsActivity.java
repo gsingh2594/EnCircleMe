@@ -514,8 +514,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        //LatLng new_york = new LatLng(40.758879, -73.985110);
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new_york, 12));
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
@@ -650,11 +648,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-
-
-        //LatLng nyit = new LatLng(40.758879, -73.985110);
-        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nyit, 12));
-        //userLocation = nyit;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         userLocation = latLng;
         //move map camera only the first time location is received
@@ -663,8 +656,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
             mGoogleMap.moveCamera(center);
             mGoogleMap.animateCamera(zoom);
-            //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            //mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
             locationInitialized = true;
         }
         // Reload events from DB based on new location

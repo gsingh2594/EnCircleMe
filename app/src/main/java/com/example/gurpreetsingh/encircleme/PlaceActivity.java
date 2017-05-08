@@ -111,7 +111,6 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         onCameraIdleListener = new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-
                 LatLng latLng = mMap.getCameraPosition().target;
                 Geocoder geocoder = new Geocoder(PlaceActivity.this);
                 mMap.clear();

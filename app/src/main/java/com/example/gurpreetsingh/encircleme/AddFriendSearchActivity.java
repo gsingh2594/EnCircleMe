@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -25,7 +24,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -157,16 +155,12 @@ public class AddFriendSearchActivity extends AppCompatActivity {
 
     private void doMySearch(String query){
         DatabaseReference usernamesRef = firebaseDatabase.getReference("usernames");
-        //DatabaseReference namesRef = firebaseDatabase.getReference("userIDs_to_names");
-        // Log.d("doMySearch", "dbRef created: " + dbRef.toString());
-
         final ArrayList<HashMap<String, String>> resultsList = new ArrayList<HashMap<String,String>>();
         final ArrayList<String> userIDList = new ArrayList<>();
         final ArrayList<String> usernamesList = new ArrayList<>();
         final ArrayList<NameAndID> userNameAndIDList = new ArrayList<>();
         // List of type HashMap<String,String> for simple results list
         final ArrayList<HashMap<String, String>> nameAndUsernameMap = new ArrayList<>();
-
         // class for mutable value that indicates whether the results have been returned from a query
         class Result{
             int value;      // -1 --> results not returned yet, 0 --> no results, 1 --> has results
@@ -174,12 +168,9 @@ public class AddFriendSearchActivity extends AppCompatActivity {
             void setValue(int value){this.value = value;}
             int getValue(){return value;}
         }
-
         final Result hasUsernameResults = new Result();
         final Result hasNameResults = new Result();
-
         Log.d("doMySearch", "about to add listener");
-
         // Query for finding usernames that match the input
         usernamesRef.orderByKey()
                 .startAt(query)
@@ -200,8 +191,6 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                                     Log.d("onDataChange", "Adding child from DB to resultsList");
                                     HashMap<String, String> hashMap = new HashMap<String, String>();
                                     hashMap.put("nameAndUsername", nameAndID.getName() + " (" + username + ")");
-                                    // hashMap.put("uid", user.getValue().toString());
-                                    //resultsList.add(hashMap);
                                     nameAndUsernameMap.add(hashMap);
                                     Log.d("adding userID", nameAndID.getID());
                                     userIDList.add(nameAndID.getID());
@@ -344,7 +333,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Exception exception) {
                     // User has not set profile image
                     Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                    Toast.makeText(AddFriendSearchActivity.this, "No profile image", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(AddFriendSearchActivity.this, "No profile image", Toast.LENGTH_LONG).show();
                     UserWithImage uwi = new UserWithImage(userID, username, name, null);
                     userWithImageList.add(uwi);
                     Log.d("userWithImageList", "size = " + userWithImageList.size());
@@ -373,7 +362,7 @@ public class AddFriendSearchActivity extends AppCompatActivity {
                 Log.d("clicked on item", "username: " + username);
 
                 //Toast.makeText(AddFriendSearchActivity.this, "Clicked on " + Integer.toString(view.getId()), Toast.LENGTH_LONG).show();
-                Toast.makeText(AddFriendSearchActivity.this, "User: " + username, Toast.LENGTH_LONG).show();
+                //Toast.makeText(AddFriendSearchActivity.this, "User: " + username, Toast.LENGTH_LONG).show();
 
                 String userID = userIDList.get(position);
                 //String uID = resultsList.get(position).get("username");
