@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -69,12 +70,14 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
     private Event event;
 
     private GoogleMap googleMap;
-    private TextView txtEventName, txtEventStartDate, txtEventTime, txtEventLocation, txtEventDescription, txtEventCreator;
+    private TextView txtEventName, txtEventStartDate, txtEventTime, txtEventLocation, txtEventDescription, txtEventCreator, txtNumAttendees;
     private ImageView creatorProfileImage;
     private ScrollView childScroll;
     private ScrollView parentScroll;
 
-    private Button btnEnCircleMe, btnEnCircleFriend, btnUnCircleMe;
+    private Button btnEnCircleMe, btnEnCircleFriend, btnUnCircleMe, btnDeleteEvent;
+    private Menu menu;
+    private boolean userIsEventCreator = false;
 
 
     @Override
@@ -99,6 +102,7 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.eventinfo_menu, menu);
         return true;
     }
@@ -138,10 +142,29 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         txtEventDescription = (TextView)  findViewById(R.id.event_description);
         txtEventCreator = (TextView)  findViewById(R.id.creator_name);
         creatorProfileImage = (ImageView)  findViewById(R.id.creator_profile_image);
+        txtNumAttendees = (TextView) findViewById(R.id.number_attendees);
 
         btnEnCircleMe = (Button)  findViewById(R.id.encircle_event);
         btnEnCircleFriend = (Button)  findViewById(R.id.encircle_friends);
         btnUnCircleMe = (Button)  findViewById(R.id.uncircle_event);
+        btnDeleteEvent = (Button)findViewById(R.id.delete_button);
+
+        btnDeleteEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(EventInfoActivity.this)
+                        .setTitle("Delete Event")
+                        .setMessage("Would you like delete this event? This action cannot be undone.")
+                        .setNegativeButton("No", null)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                startActivity(new Intent(EventInfoActivity.this, EventsTabActivity.class));
+                                //finish();
+                            }
+                        }).create().show();
+            }
+        });
+
 
         btnEnCircleMe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,9 +189,56 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-        eventKey = getIntent().getStringExtra("eventKey");
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        eventKey = getIntent().getStringExtra("eventKey");
 
+        checkIfUserIsEventCreator();
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map_snippet);
+        // Configure MapFragment options and get a new instance
+        GoogleMapOptions googleMapOptions =  new GoogleMapOptions().liteMode(true);
+        mapFragment.newInstance(googleMapOptions);
+        mapFragment.getMapAsync(this);
+    }
+
+    // Checks in DB to see if the current user created the event being viewed
+    private void checkIfUserIsEventCreator(){
+        Log.d("checkIfUserIsEvent", "entering");
+        DatabaseReference eventCreatorsRef = FirebaseDatabase.getInstance().getReference("events/event_key_creators");
+        eventCreatorsRef.child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            Log.d("datasnapshot value", dataSnapshot.getValue().toString());
+                            if (dataSnapshot.getValue().toString().equals(userID)) {
+                                // User created the event --> show them as the event creator
+                                Log.d("eventCreator", "user created this event");
+                                showAsEventCreator();
+                            } else {
+                                // User did not make the event --> Check if they are encircled in the event
+                                Log.d("eventCreator", "user did not create this event");
+                                checkIfEnCircled();
+                            }
+                        }
+                        else{
+                            // User did not make the event --> Check if they are encircled in the event
+                            Log.d("eventCreator", "user did not create this event");
+                            checkIfEnCircled();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+
+    // Checks to see whether the user has already EnCircled the event in the DB
+    private void checkIfEnCircled(){
         Log.d("checking if encircled", "");
         // Check if user is already encircled for the event
         DatabaseReference userEncircledEventsRef = FirebaseDatabase.getInstance().getReference("events/user_encircled_events/" + userID);
@@ -180,13 +250,11 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                             // user is encircled to the event. Show un-encircleMe button
                             Log.d("userIsEncircled", "EnCircled already");
                             showAsUnCircleMe();
-
                         }
                         else {
                             // user is not encircled. Show en-circleMe button
                             Log.d("userIsEncircled", "EnCircled already");
                             showAsEnCircleMe();
-
                         }
                     }
 
@@ -195,66 +263,8 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                         Log.d("checkIfEncircled", "DB error: " + databaseError.getMessage());
                     }
                 });
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map_snippet);
-        // Configure MapFragment options and get a new instance
-        GoogleMapOptions googleMapOptions =  new GoogleMapOptions().liteMode(true);
-        mapFragment.newInstance(googleMapOptions);
-        mapFragment.getMapAsync(this);
-
-        loadUserName();
     }
 
-    private void loadUserName(){
-        DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
-        usernamesRef.orderByChild("id").equalTo(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount() == 1) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        username = ds.getKey().toString();
-                        usernameIsLoaded = true;
-                        //Toast.makeText(EventInfoActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
-                        //displayChatMessages();
-                    }
-                }
-                else{
-                    Log.d("Error", "user somehow has more than 1 username!");
-                    throw new IllegalStateException("user has more than 1 username!");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    /*private void displayChatMessages() {
-        ListView listOf_Messages = (ListView)getView().findViewById(R.id.list_of_eventmessages);
-
-        adapter = new FirebaseListAdapter<ChatMessageEvent>(this, ChatMessageEvent.class,
-                R.layout.message_event, FirebaseDatabase.getInstance().getReference("event_chats/" +eventKey)) {
-            @Override
-            protected void populateView(View v, ChatMessageEvent model, int position) {
-                // Get references to the views of message.xml
-                TextView messageText = (TextView)v.findViewById(R.id.message_text);
-                TextView messageUser = (TextView)v.findViewById(R.id.message_user);
-                TextView messageTime = (TextView)v.findViewById(R.id.message_time);
-                Log.d("populate view", "getting msgs");
-
-                // Set their text
-                messageText.setText(model.getMessageText());
-                messageText.setMovementMethod(LinkMovementMethod.getInstance());
-                messageUser.setText(model.getMessageUser());
-                messageTime.setText(DateFormat.format("MM/dd/yy (hh:mma)",
-                        model.getMessageTime()));
-            }
-        };
-        listOf_Messages.setAdapter(adapter);
-    }*/
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -277,6 +287,9 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
                 displayEventInfo();
                 showEventInMap();
                 loadEventCreatorName();
+                loadAttendees();
+                if(MapsActivity.eventHasEnded(event))
+                    disableEnCircleFriends();
             }
 
             @Override
@@ -356,8 +369,24 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(eventLatLng)
                 .title(event.getName())
-                .snippet(event.getAddress())
-                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.marker_encircleme)));
+                .snippet(event.getAddress());
+                //.icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.marker_encircleme)));
+
+        boolean isCurrentEvent = !MapsActivity.eventHasNotStarted(event) && !MapsActivity.eventHasEnded(event);
+        BitmapDrawable bitmapDraw;
+        if(isCurrentEvent)
+            // Is a future event --> use green marker
+            bitmapDraw =(BitmapDrawable)getResources().getDrawable(R.drawable.ongoingmarker, null);
+        else
+            // Is a current event --> use red marker
+            bitmapDraw =(BitmapDrawable)getResources().getDrawable(R.drawable.marker_encircleme, null);
+
+        // Get the marker bitmap and scale it
+        Bitmap markerBM=bitmapDraw.getBitmap();
+        Bitmap largerMarkerBM = Bitmap.createScaledBitmap(markerBM, convertDPtoPX(25), convertDPtoPX(40), false);
+
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(largerMarkerBM));
+
         googleMap.addMarker(markerOptions);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 12));
     }
@@ -426,6 +455,29 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+    private void loadAttendees(){
+        DatabaseReference attendeesRef = FirebaseDatabase.getInstance().getReference("events/event_attendees");
+        attendeesRef.child(eventKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long numOfAttendees;
+                if(dataSnapshot.exists()) {
+                    // Users have EnCircled this event
+                    numOfAttendees = dataSnapshot.getChildrenCount();
+                    Log.d("loadAttendees", Long.toString(numOfAttendees));
+                }
+                else
+                    // No users have EnCircled this event yet
+                    numOfAttendees = 0;
+                txtNumAttendees.setText(Long.toString(numOfAttendees));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("loadAttendees", "DB error" + databaseError.getMessage());
+            }
+        });
+    }
     // used to set sizes in dp units programmatically. (Some views set sizes programmtically in px, not dp)
     // We should use this method to make certain views display consistently on different screen densities
     private int convertDPtoPX(int sizeInDP){
@@ -469,7 +521,6 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-
     // Saves the user in user_encricled_events and event_attendees in DB
     private void unCircleUserInDB(){
         DatabaseReference eventsRef = FirebaseDatabase.getInstance().getReference("events");
@@ -488,13 +539,41 @@ public class EventInfoActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     private void showAsEnCircleMe(){
+        Log.d("showAsEnCircleMe", "entering");
         btnEnCircleMe.setVisibility(View.VISIBLE);
         btnUnCircleMe.setVisibility(View.GONE);
     }
 
     private void showAsUnCircleMe(){
+        Log.d("showAsUnCircleMe", "entering");
         btnEnCircleMe.setVisibility(View.GONE);
         btnUnCircleMe.setVisibility(View.VISIBLE);
+    }
+
+    private void showAsEventCreator(){
+        Log.d("showAsEventCreator", "entering");
+        btnEnCircleMe.setVisibility(View.GONE);
+        btnUnCircleMe.setVisibility(View.GONE);
+        userIsEventCreator = true;
+        // invalidate menu so that onPrepareOptionsMenu gets called
+        //invalidateOptionsMenu();
+        // Show the delete button
+       btnDeleteEvent.setVisibility(View.VISIBLE);
+    }
+
+    private void disableEnCircleFriends(){
+        btnEnCircleFriend.setVisibility(View.GONE);
+    }
+
+    // For showing the delete icon in the menu if user is event creator
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if(userIsEventCreator) {
+            MenuItem deleteItem = menu.findItem(R.id.delete_event);
+            deleteItem.setVisible(true);
+        }
+        super.onPrepareOptionsMenu(menu);
+        return true;
     }
 
 }

@@ -255,7 +255,6 @@ public class EventListActivity extends Fragment {
     public void onResume() {
         super.onResume();
         //bottomBar.setDefaultTab(R.id.tab_alerts);
-        //topBar.setDefaultTab(R.id.event_info);
     }
 
 

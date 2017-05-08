@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,11 +40,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class FriendsActivity extends AppCompatActivity {
-    Button btnAlerts;
-    Button btnMaps;
-    Button btnProfile;
-    Button friends;
-    Button btnSetting;
 
     ImageView neutralFace;
     TextView noFriendsTextView;
@@ -79,14 +73,6 @@ public class FriendsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("My Friends");
-
-/*
-        Profile();
-        Friends();
-        Alerts();
-        Maps();
-        Settings();
-*/
 
         neutralFace = (ImageView) findViewById(R.id.neutral_face_icon);
         noFriendsTextView = (TextView) findViewById(R.id.no_friends_textview);
@@ -259,7 +245,7 @@ public class FriendsActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 // User has not set profile image
                 Log.d("loadUserProfileImage()", "Firebase storage exception " + exception.getMessage());
-                Toast.makeText(FriendsActivity.this, "No profile image", Toast.LENGTH_LONG).show();
+                //Toast.makeText(FriendsActivity.this, "No profile image", Toast.LENGTH_LONG).show();
                 UserWithImage uwi = new UserWithImage(userID, username, name, null);
                 userWithImageList.add(uwi);
                 Log.d("userWithImageList", "size = " + userWithImageList.size());
@@ -304,7 +290,7 @@ public class FriendsActivity extends AppCompatActivity {
                 Log.d("clicked on item", "username: " + username);
 
                 //Toast.makeText(AddFriendSearchActivity.this, "Clicked on " + Integer.toString(view.getId()), Toast.LENGTH_LONG).show();
-                Toast.makeText(FriendsActivity.this, "User: " + username, Toast.LENGTH_LONG).show();
+                //Toast.makeText(FriendsActivity.this, "User: " + username, Toast.LENGTH_LONG).show();
 
                 String userID = usernameToIDMap.get(username);
                 //String uID = resultsList.get(position).get("username");

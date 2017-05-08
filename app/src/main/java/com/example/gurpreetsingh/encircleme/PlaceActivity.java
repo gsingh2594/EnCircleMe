@@ -111,7 +111,6 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         onCameraIdleListener = new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-
                 LatLng latLng = mMap.getCameraPosition().target;
                 Geocoder geocoder = new Geocoder(PlaceActivity.this);
                 mMap.clear();
@@ -303,7 +302,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
                 .draggable(true));
 
         Toast.makeText(getApplicationContext(),
-                "New marker added@" + latLng.toString(), Toast.LENGTH_LONG)
+                "New marker added@" + latLng.toString() + "\n" + address, Toast.LENGTH_LONG)
                 .show();
 
 /*        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {

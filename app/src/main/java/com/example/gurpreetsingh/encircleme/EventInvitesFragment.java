@@ -1,9 +1,8 @@
 package com.example.gurpreetsingh.encircleme;
 
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.roughike.bottombar.BottomBar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -295,7 +292,7 @@ public class EventInvitesFragment extends Fragment {
         final ListView listView = (ListView) getView().findViewById(R.id.events_listview);
         simpleAdapter = new SimpleAdapter(EventInvitesFragment.this.getActivity().getApplicationContext(), eventsList, R.layout.event_invites_list_items,
                 new String[]{"startDate", "startTime", "name", "description", "invitedBy"},
-                new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about, R.id.invited_by});
+                new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about, R.id.inviter});
         listView.setAdapter(simpleAdapter);
 
         // Show event info when clicking on item in list
@@ -309,6 +306,4 @@ public class EventInvitesFragment extends Fragment {
             }
         });
     }
-
-
 }

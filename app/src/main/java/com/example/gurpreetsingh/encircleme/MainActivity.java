@@ -197,16 +197,9 @@ public class MainActivity extends AppCompatActivity {
                             // Check if user has already created a profile
                             loadUserFromDB();
                         }
-
-                        // ...
                     }
                 });
-
     }
-
-
-
-
 
     // Obtains the user profile in the DB and load the correct activity
     private void loadUserFromDB(){

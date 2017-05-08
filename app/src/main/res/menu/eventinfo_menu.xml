@@ -14,6 +14,7 @@
         android:actionViewClass="android.widget.SearchView"
         app:showAsAction="always"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:title="Delete Event"/>
+        android:title="Delete Event"
+        android:visible="false"/>
 
 </menu>
