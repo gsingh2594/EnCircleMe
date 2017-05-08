@@ -579,10 +579,15 @@ public class EditActivity extends Activity implements View.OnClickListener{
                         LatLng eventLocation = new LatLng(lat, lng);
                         // set latLng for saving in DB
                         latLng = eventLocation;
+                    }
+                    if(!address.isEmpty())
+                        // Display address of dropped marker
+                        mplace.setText(address);
+                    else
                         // display lat and lng of user's selected place
                         mplace.setText("Lat:\n" + String.valueOf(latLng.latitude)
                                 + "\nLng:\n" + String.valueOf(latLng.longitude));
-                    }
+
                 }
                 else {
                     // User selected a place on the map

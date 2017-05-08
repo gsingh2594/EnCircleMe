@@ -174,7 +174,8 @@
                 android:layout_marginRight="6dp"
                 android:layout_below="@+id/cardview1"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
 
                 <RelativeLayout
                     android:id="@+id/relative_layout2"
@@ -219,6 +220,20 @@
                         android:textSize="18sp"
                         android:layout_margin="5dp"
                         android:layout_below="@+id/uncircle_event" />
+
+                    <Button
+                        android:id="@+id/delete_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/holo_red_light"
+                        android:itemBackground="@drawable/ripple_effect"
+                        android:text="Delete Event"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:layout_margin="5dp"
+                        android:visibility="gone"
+                        android:layout_below="@+id/encircle_friends" />
 
                 </RelativeLayout>
             </android.support.v7.widget.CardView>

@@ -295,7 +295,7 @@ public class EventInvitesFragment extends Fragment {
         final ListView listView = (ListView) getView().findViewById(R.id.events_listview);
         simpleAdapter = new SimpleAdapter(EventInvitesFragment.this.getActivity().getApplicationContext(), eventsList, R.layout.event_invites_list_items,
                 new String[]{"startDate", "startTime", "name", "description", "invitedBy"},
-                new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about, R.id.invited_by});
+                new int[]{R.id.start_date, R.id.start_time, R.id.event_name, R.id.event_about, R.id.inviter});
         listView.setAdapter(simpleAdapter);
 
         // Show event info when clicking on item in list

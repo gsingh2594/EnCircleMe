@@ -266,7 +266,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // returns true if event **end date** and time is before the current time, or false otherwise
-    private boolean eventHasEnded(Event event){
+    static boolean eventHasEnded(Event event){
         int endMonth, endDay, endYear;
         if(event.getEndDate() != null) {
             // End date exists --> use it
@@ -326,7 +326,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     // Returns true if event **start date** and time is before current date and time
-    private boolean eventHasNotStarted(Event event){
+    static boolean eventHasNotStarted(Event event){
         Calendar calendar = Calendar.getInstance();
         String[] mdy = event.getDate().split("/");
         int month = Integer.parseInt(mdy[0]) -1;

@@ -303,7 +303,7 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
                 .draggable(true));
 
         Toast.makeText(getApplicationContext(),
-                "New marker added@" + latLng.toString(), Toast.LENGTH_LONG)
+                "New marker added@" + latLng.toString() + "\n" + address, Toast.LENGTH_LONG)
                 .show();
 
 /*        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
