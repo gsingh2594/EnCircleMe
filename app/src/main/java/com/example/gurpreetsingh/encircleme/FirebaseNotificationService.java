@@ -446,7 +446,7 @@ public class FirebaseNotificationService extends Service {
             {
                 for (DataSnapshot previousEvents : dataSnapshot.getChildren())
                 {
-                    String userID = previousEvents.getValue().toString();
+                    String userID = previousEvents.getKey().toString();
                     Log.d("onDataChange", "Existing invite --> username = " + userID);
                     previousInvitesList.add(userID);
                 }
