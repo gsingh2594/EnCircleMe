@@ -287,7 +287,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int endHour;
         if(hourMin[2].equals("pm"))
             if(Integer.parseInt(hourMin[0]) != 12)
-                endHour = Integer.parseInt(hourMin[0])+ 12; // If pm and hour!=12, add 12 to the hour to convert to 24 hour format
+                endHour = Integer.parseInt(hourMin[0])+ 12;
+                // If pm and hour!=12, add 12 to the hour to convert to 24 hour format
             else
                 endHour = Integer.parseInt(hourMin[0]);
         else
@@ -544,14 +545,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mGoogleMap.setMyLocationEnabled(true);
         }
 
-        /*mGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        mGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng latLng) {
                 Intent edit = new Intent(MapsActivity.this, EditActivity.class);
                 edit.putExtra("location", latLng);
                 MapsActivity.this.startActivityForResult(edit, EDIT_REQUEST);
             }
-        });*/
+        });
 
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

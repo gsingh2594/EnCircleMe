@@ -587,7 +587,6 @@ public class EditActivity extends Activity implements View.OnClickListener{
                         // display lat and lng of user's selected place
                         mplace.setText("Lat:\n" + String.valueOf(latLng.latitude)
                                 + "\nLng:\n" + String.valueOf(latLng.longitude));
-
                 }
                 else {
                     // User selected a place on the map
