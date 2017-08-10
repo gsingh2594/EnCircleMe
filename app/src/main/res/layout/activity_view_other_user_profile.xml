@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#e5e5e5"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
@@ -12,7 +13,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp">
 
             <ImageView
                 android:id="@+id/cover_image"
@@ -23,13 +25,13 @@
             <RelativeLayout
                 android:id="@+id/profile_layout"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:background="@color/colorPrimary"
-                android:elevation="9dp"
-                android:paddingBottom="2dp"
-                android:paddingTop="65dp"
+                android:layout_height="170dp"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/cover_image"
-                android:layout_alignParentStart="true">
+                android:background="@color/colorPrimary"
+                android:elevation="4dp"
+                android:paddingBottom="2dp"
+                android:paddingTop="65dp">
 
                 <ImageView
                     android:id="@+id/add_friend_icon"
@@ -39,7 +41,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
                     android:src="@drawable/add_user_icon"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/already_friends_icon"
@@ -49,7 +51,7 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
                     android:src="@drawable/friends"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/accept_friend_request_icon"
@@ -59,30 +61,30 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
                     android:src="@drawable/add_alert_icon"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/user_profile_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"
                     android:text="Name"
                     android:textColor="@android:color/black"
                     android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="40dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
+                    android:layout_below="@+id/user_profile_name"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
                     android:text="Username"
                     android:textColor="@android:color/black"
-                    android:textSize="14dp"
-                    android:layout_below="@+id/user_profile_name"
-                    android:layout_centerHorizontal="true" />
+                    android:textSize="14dp" />
 
             </RelativeLayout>
 
@@ -143,7 +145,8 @@
                         android:elevation="0dp"
                         android:src="@drawable/info"
                         android:layout_alignParentTop="true"
-                        android:layout_toStartOf="@+id/user_bio" />
+                        android:layout_toStartOf="@+id/user_bio"
+                        android:layout_marginRight="10dp"/>
 
                     <TextView
                         android:id="@+id/user_bio"
@@ -166,7 +169,6 @@
                         android:textColor="@android:color/black"
                         android:textSize="16dp"
                         android:paddingTop="8dp"
-                        android:textStyle="bold"
                         android:layout_below="@+id/user_bio"
                         android:layout_alignParentStart="true" />
 
@@ -204,7 +206,6 @@
                         android:text="Email"
                         android:textColor="@android:color/black"
                         android:textSize="16dp"
-                        android:textStyle="bold"
                         android:paddingBottom="2dp"
                         android:paddingLeft="10dp"
                         android:layout_alignBottom="@+id/email_icon"
@@ -252,7 +253,6 @@
                         android:textColor="@android:color/black"
                         android:paddingLeft="10dp"
                         android:textSize="16sp"
-                        android:textStyle="bold"
                         android:layout_alignBottom="@+id/edit_bio_icon"
                         android:layout_toEndOf="@+id/edit_bio_icon" />
                 </RelativeLayout>
@@ -264,7 +264,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 app:cardCornerRadius="4dp"
-                app:contentPadding="5dp"
+                app:contentPadding="15dp"
                 android:elevation="15dp"
                 android:layout_below="@+id/card_phone">
 
@@ -289,26 +289,26 @@
                         android:textColor="@android:color/black"
                         android:textSize="16dp"
                         android:paddingTop="2dp"
-                        android:layout_marginLeft="10dp"
                         android:textStyle="bold"
                         android:layout_toEndOf="@+id/interest_icon" />
 
-
-                    <LinearLayout
-                        android:id="@+id/interests_linearlayout2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_below="@+id/interests_linearlayout">
-
-                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/interests_linearlayout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:gravity="center"
                         android:layout_below="@+id/interest_text">
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/interests_linearlayout2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_below="@+id/interests_linearlayout">
                     </LinearLayout>
 
                 </RelativeLayout>

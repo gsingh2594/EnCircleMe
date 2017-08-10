@@ -20,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -189,44 +190,56 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 // display bio if it has been set
                 if (user.getBio() != null)
                     profileBio.setText(user.getBio());
-                // load and display interests if they exist
+
+                // load and display interests in a grid if they exist
                 if (user.getInterests() != null) {
                     ArrayList<String> userInterests = user.getInterests();
-                    for (int i = 0; i < userInterests.size(); i++) {
+
+                    int interestsGridMax = userInterests.size() >= 3? 6 : 3;
+                    int imageSizeinPX = convertDPtoPX(120);
+
+                    for (int i = 0; i < interestsGridMax; i++) {
                         // Create and add a new TextView to the LinearLayout
                         ImageView interestImageView= new ImageView(UserProfileActivity.this);
                         interestImageView.getMeasuredHeight();
-                        int marginSize = convertDPtoPX(1);
-                        RelativeLayout.LayoutParams layoutParams =
-                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        int marginSize = convertDPtoPX(4);
+                        LinearLayout.LayoutParams layoutParams =
+                               /* new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT, 1);*/
+                                new LinearLayout.LayoutParams(imageSizeinPX, imageSizeinPX);
                         layoutParams.setMargins(marginSize, marginSize, marginSize, marginSize);
                         interestImageView.setLayoutParams(layoutParams);
+
                         /*interestImageView.setTextSize(15);
                         interestImageView.setTextColor(Color.BLACK);
-                        interestImageView.setText(userInterests.get(i));*/
+                        interestImageView.setText(userInterests.get(i));
                         interestImageView.setElevation((float) convertDPtoPX(2));
+                        interestImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         int paddingSize = convertDPtoPX(10);
-                        interestImageView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+                        interestImageView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);*/
                         interestImageView.setBackgroundColor(Color.WHITE);
-                        switch (userInterests.get(i)) {
-                            case "Movie Theatres":
-                                interestImageView.setBackgroundResource(R.drawable.movies);
-                                break;
-                            case "Art Gallery":
-                                interestImageView.setBackgroundResource(R.drawable.artgallery);
-                                break;
-                            case "Cafe":
-                                interestImageView.setBackgroundResource(R.drawable.cafe);
-                                break;
-                            case "Bars":
-                                interestImageView.setBackgroundResource(R.drawable.bars);
-                                break;
-                            case "Restaurants":
-                                interestImageView.setBackgroundResource(R.drawable.restaurants);
-                                break;
-                            case "Department Stores":
-                                interestImageView.setBackgroundResource(R.drawable.deptstores);
-                                break;
+
+                        if(i < userInterests.size()) {
+                            switch (userInterests.get(i)) {
+                                case "Movie Theatres":
+                                    interestImageView.setImageResource(R.drawable.movies);
+                                    break;
+                                case "Art Gallery":
+                                    interestImageView.setImageResource(R.drawable.artgallery);
+                                    break;
+                                case "Cafe":
+                                    interestImageView.setImageResource(R.drawable.cafe);
+                                    break;
+                                case "Bars":
+                                    interestImageView.setImageResource(R.drawable.bars);
+                                    break;
+                                case "Restaurants":
+                                    interestImageView.setImageResource(R.drawable.restaurants);
+                                    break;
+                                case "Department Stores":
+                                    interestImageView.setImageResource(R.drawable.deptstores);
+                                    break;
+                            }
                         }
                         if (i < 3){
                             interestsLinearLayout.addView(interestImageView);
