@@ -481,10 +481,13 @@ public class PlaceActivity extends AppCompatActivity implements OnMapReadyCallba
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         //mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
 
-        CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+        /*CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
         CameraUpdate zoom=CameraUpdateFactory.zoomTo(11);
         mMap.moveCamera(center);
-        mMap.animateCamera(zoom);
+        mMap.animateCamera(zoom);*/
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate centerAndZoom = CameraUpdateFactory.newLatLngZoom(latLng, 11);
+        mMap.animateCamera(centerAndZoom);
         Toast.makeText(PlaceActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
 
         Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));

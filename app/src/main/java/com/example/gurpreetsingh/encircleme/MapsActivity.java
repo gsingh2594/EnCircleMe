@@ -136,6 +136,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ActionBar actionBar = getSupportActionBar();
         setTitle("Nearby Events");
 
+        bottomSheet = findViewById(R.id.bottom_sheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setPeekHeight(250);
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
@@ -145,12 +151,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         locationInitialized = false;
         buildGoogleApiClient();
-
-        bottomSheet = findViewById(R.id.bottom_sheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setPeekHeight(250);
-        bottomSheetBehavior.setHideable(true);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setDefaultTab(R.id.tab_map);
@@ -653,10 +653,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         userLocation = latLng;
         //move map camera only the first time location is received
         if(!locationInitialized) {
-            CameraUpdate center=CameraUpdateFactory.newLatLng(latLng);
-            CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
-            mGoogleMap.moveCamera(center);
-            mGoogleMap.animateCamera(zoom);
+            CameraUpdate centerAndZoom = CameraUpdateFactory.newLatLngZoom(userLocation, 13);
+            //CameraUpdate center=CameraUpdateFactory.newLatLng(latLng);
+            //CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
+            //mGoogleMap.moveCamera(center);
+            //mGoogleMap.animateCamera(zoom);
+            mGoogleMap.animateCamera(centerAndZoom);
             locationInitialized = true;
         }
         // Reload events from DB based on new location
